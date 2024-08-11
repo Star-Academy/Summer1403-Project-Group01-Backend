@@ -1,5 +1,12 @@
 name: CI_Backend
 
+permissions:
+  contents: write
+  packages: write
+  issues: write
+  pull-requests: write
+  deployments: write
+
 on:
   pull_request:
     branches:
@@ -26,3 +33,32 @@ jobs:
 
       - name: Run tests
         run: dotnet test --no-build --verbosity normal
+
+  semantic-versioning:
+    runs-on: ubuntu-latest
+    needs: build # Ensure this job runs after the build job
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch the full history to calculate the next version
+
+      - name: Get next version
+        id: get_next_version
+        uses: thenativeweb/get-next-version@main
+        with:
+          prefix: "v"
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_next_version.outputs.version }}
+          release_name: Release ${{ steps.get_next_version.outputs.version }}
+          body: |
+            content change
+          draft: false
+          prerelease: false
