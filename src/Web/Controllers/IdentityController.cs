@@ -3,7 +3,6 @@ using Infrastructure.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Web.DTOs.Identity;
 using Web.Identity;
 using Web.Interfaces;
@@ -34,7 +33,7 @@ public class IdentityController : ControllerBase
     [HttpPost]
     [Authorize]
     [RequiresClaim(Claims.Role, AppRoles.Admin)]
-    public async Task<IActionResult> Register([FromBody] CreateIdentityDto createIdentityDto)
+    public async Task<IActionResult> Signup([FromBody] CreateIdentityDto createIdentityDto)
     {
         if (!await _roleManager.RoleExistsAsync(createIdentityDto.Role))
         {
@@ -43,6 +42,9 @@ public class IdentityController : ControllerBase
         
         var appUser = new AppUser
         {
+            FirstName = createIdentityDto.FirstName,
+            LastName = createIdentityDto.LastName,
+            Email = createIdentityDto.Email,
             UserName = createIdentityDto.Username
         };
         
@@ -60,6 +62,9 @@ public class IdentityController : ControllerBase
 
         return Ok(new IdentityCreatedDto
         {
+            FirstName = appUser.FirstName,
+            LastName = appUser.LastName,
+            Email = appUser.Email,
             Username = appUser.UserName,
             Role = createIdentityDto.Role.ToLower()
         });
