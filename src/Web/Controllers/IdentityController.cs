@@ -36,19 +36,20 @@ public class IdentityController : ControllerBase
     [RequiresClaim(Claims.Role, AppRoles.Admin)]
     public async Task<IActionResult> Register([FromBody] CreateIdentityDto createIdentityDto)
     {
+        if (!await _roleManager.RoleExistsAsync(createIdentityDto.Role))
+        {
+            return BadRequest("Role does not exist");
+        }
+        
         var appUser = new AppUser
         {
             UserName = createIdentityDto.Username
         };
+        
         var appUserResult = await _userManager.CreateAsync(appUser, createIdentityDto.Password);
         if (!appUserResult.Succeeded)
         {
             return BadRequest(appUserResult.Errors);
-        }
-
-        if (!await _roleManager.RoleExistsAsync(createIdentityDto.Role))
-        {
-            return BadRequest("Role does not exist");
         }
         
         var roleResult = await _userManager.AddToRoleAsync(appUser, createIdentityDto.Role);
