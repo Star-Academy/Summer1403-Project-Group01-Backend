@@ -14,7 +14,7 @@ public class JwtGeneratorService : IJwtGenerator
     {
         _configuration = configuration;
         _symmetricSecurityKey = new SymmetricSecurityKey(
-            System.Text.Encoding.UTF8.GetBytes(_configuration["JWT:Key"])
+            System.Text.Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"])
         );
     }
     public string GenerateToken(AppUser user)
@@ -31,8 +31,8 @@ public class JwtGeneratorService : IJwtGenerator
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.Now.AddHours(8),
             SigningCredentials = credentials,
-            Issuer = _configuration["JWT:Issuer"],
-            Audience = _configuration["JWT:Audience"]
+            Issuer = _configuration["JwtSettings:Issuer"],
+            Audience = _configuration["JwtSettings:Audience"]
         };
         
         var tokenHandler = new JwtSecurityTokenHandler();
