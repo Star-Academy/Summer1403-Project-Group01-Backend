@@ -76,20 +76,33 @@ public class IdentityController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var user = await _userManager.FindByNameAsync(loginDto.UserName);
+        AppUser? user;
 
-        if (user == null) return Unauthorized("Invalid username!");
+        if (!string.IsNullOrEmpty(loginDto.UserName))
+        {
+            user = await _userManager.FindByNameAsync(loginDto.UserName);
+        }
+        else if (!string.IsNullOrEmpty(loginDto.Email))
+        {
+            user = await _userManager.FindByEmailAsync(loginDto.Email);
+        }
+        else
+        {
+            return Unauthorized("You should enter email or username!");
+        }
+
+        if (user is null) return Unauthorized("Invalid username/email!");
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-        if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
+        if (!result.Succeeded) return Unauthorized("Username/Email not found and/or password incorrect");
         
         var roles = await _userManager.GetRolesAsync(user);
 
         return Ok(
             new UserLoggedInDto
             {
-                UserName = user.UserName,
+                UserName = user.UserName!,
                 Token = _jwtGeneratorService.GenerateToken(user, roles)
             }
         );
