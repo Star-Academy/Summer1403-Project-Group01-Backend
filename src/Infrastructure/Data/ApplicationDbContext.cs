@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Domain.Entities;
+using Infrastructure.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

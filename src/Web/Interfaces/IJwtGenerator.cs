@@ -1,4 +1,4 @@
-using Domain.Entities;
+using Infrastructure.Entities;
 
 namespace Web.Interfaces;
 

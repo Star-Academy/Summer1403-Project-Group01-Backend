@@ -1,6 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Domain.Entities;
+using Infrastructure.Entities;
 using Microsoft.IdentityModel.Tokens;
 using Web.Interfaces;
 
@@ -21,6 +21,7 @@ public class JwtGeneratorService : IJwtGenerator
     {
         var claims = new List<Claim>
         {
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.GivenName, user.UserName)
         };
         
