@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.DTOs.Identity;
+using Web.Identity;
 using Web.Interfaces;
 
 namespace Web.Controllers;
@@ -31,7 +32,8 @@ public class IdentityController : ControllerBase
     }
 
     [HttpPost]
-    // [Authorize(Roles = AppRoles.Admin)]
+    [Authorize]
+    [RequiresClaim(Claims.Role, AppRoles.Admin)]
     public async Task<IActionResult> Register([FromBody] CreateIdentityDto createIdentityDto)
     {
         var appUser = new AppUser
@@ -75,22 +77,15 @@ public class IdentityController : ControllerBase
         var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
         if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
+        
+        var roles = await _userManager.GetRolesAsync(user);
 
         return Ok(
             new UserLoggedInDto
             {
                 UserName = user.UserName,
-                Token = _jwtGeneratorService.GenerateToken(user)
+                Token = _jwtGeneratorService.GenerateToken(user, roles)
             }
         );
-    }
-    
-    [HttpGet]
-    [Authorize]
-    public IActionResult GetCurrentUser()
-    {
-        // var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity.Name);
-
-        return Ok(User);
     }
 }

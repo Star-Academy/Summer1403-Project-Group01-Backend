@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Infrastructure.Entities;
 using Microsoft.IdentityModel.Tokens;
+using Web.Identity;
 using Web.Interfaces;
 
 namespace Web.Services;
@@ -17,11 +18,13 @@ public class JwtGeneratorService : IJwtGenerator
             System.Text.Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"])
         );
     }
-    public string GenerateToken(AppUser user)
+    public string GenerateToken(AppUser user, IList<string> roles)
     {
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.GivenName, user.UserName)
+            new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+            new Claim(Claims.UserId, user.Id),
+            new Claim(Claims.Role, roles.Single())
         };
         
         var credentials = new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha512Signature);
