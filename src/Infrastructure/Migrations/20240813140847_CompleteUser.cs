@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+=======
+using Microsoft.EntityFrameworkCore.Migrations;
+>>>>>>> 10b875f4fcba626d0bc2bf417cd94af17a032b23
 
 #nullable disable
 
@@ -91,4 +95,8 @@ namespace Infrastructure.Migrations
                 });
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 10b875f4fcba626d0bc2bf417cd94af17a032b23
