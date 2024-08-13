@@ -4,10 +4,12 @@ using Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Web.Interfaces;
 using Web.Services;
+using Web.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -82,6 +84,12 @@ builder.Services.AddSwaggerGen(opt =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await SeedData.Initialize(services, config);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
