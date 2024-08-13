@@ -29,8 +29,7 @@ public class IdentityController : ControllerBase
     {
         var appUser = new AppUser
         {
-            UserName = createIdentityDto.Username,
-            Email = createIdentityDto.Email
+            UserName = createIdentityDto.Username
         };
         var appUserResult = await _userManager.CreateAsync(appUser, createIdentityDto.Password);
         if (!appUserResult.Succeeded)

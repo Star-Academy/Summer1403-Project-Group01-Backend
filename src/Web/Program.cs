@@ -35,11 +35,7 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-// builder.Services.AddAuthorization(options =>
-// {
-//     options.AddPolicy(IdentityData.AdminUserPolicyName, p =>
-//         p.RequireClaim(IdentityData.AdminUserClaimName, "true"));
-// });
+builder.Services.AddAuthorization();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
