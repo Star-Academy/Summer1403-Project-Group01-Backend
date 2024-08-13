@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240813083855_AppRoles")]
+    partial class AppRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,21 +117,18 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c03dacd0-7454-42e4-b617-eeb9e3863c0d",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
+                            Id = "940eea0a-aff9-497e-b067-d163f7d3ac79",
+                            Name = "Admin"
                         },
                         new
                         {
-                            Id = "6399bc6d-8c5a-4d79-9045-820446775acd",
-                            Name = "DataAdmin",
-                            NormalizedName = "DATAADMIN"
+                            Id = "91b16f58-93ec-4ab4-b83a-2cb20580c540",
+                            Name = "DataAdmin"
                         },
                         new
                         {
-                            Id = "1db5e3c3-d967-4403-b64c-f3dab04f3b9c",
-                            Name = "DataAnalyst",
-                            NormalizedName = "DATAANALYST"
+                            Id = "6a084367-d2b5-4014-bbcd-7f0a8d14a7de",
+                            Name = "DataAnalyst"
                         });
                 });
 

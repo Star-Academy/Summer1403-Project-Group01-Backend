@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Domain.Constants;
 using Infrastructure.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -14,8 +15,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbConte
         base.OnModelCreating(modelBuilder);
         List<IdentityRole> roles =
         [
-            new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
-            new IdentityRole { Name = "User", NormalizedName = "USER" }
+            new IdentityRole { Name = AppRoles.Admin, NormalizedName = AppRoles.Admin.ToUpper()},
+            new IdentityRole { Name = AppRoles.DataAdmin, NormalizedName = AppRoles.DataAdmin.ToUpper()},
+            new IdentityRole { Name = AppRoles.DataAnalyst, NormalizedName = AppRoles.DataAnalyst.ToUpper()}
         ];
         modelBuilder.Entity<IdentityRole>().HasData(roles);
     }

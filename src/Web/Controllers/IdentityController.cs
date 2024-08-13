@@ -1,4 +1,5 @@
-﻿using Infrastructure.Entities;
+﻿using Domain.Constants;
+using Infrastructure.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,16 +16,22 @@ public class IdentityController : ControllerBase
     private readonly UserManager<AppUser> _userManager;
     private readonly IJwtGenerator _jwtGeneratorService;
     private readonly SignInManager<AppUser> _signInManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public IdentityController(UserManager<AppUser> userManager, IJwtGenerator jwtGeneratorService, SignInManager<AppUser> signInManager)
+    public IdentityController(UserManager<AppUser> userManager,
+        IJwtGenerator jwtGeneratorService,
+        SignInManager<AppUser> signInManager, 
+        RoleManager<IdentityRole> roleManager
+    )
     {
         _userManager = userManager;
         _jwtGeneratorService = jwtGeneratorService;
         _signInManager = signInManager;
+        _roleManager = roleManager;
     }
 
     [HttpPost]
-    [Authorize]
+    // [Authorize(Roles = AppRoles.Admin)]
     public async Task<IActionResult> Register([FromBody] CreateIdentityDto createIdentityDto)
     {
         var appUser = new AppUser
@@ -36,18 +43,31 @@ public class IdentityController : ControllerBase
         {
             return BadRequest(appUserResult.Errors);
         }
+
+        if (!await _roleManager.RoleExistsAsync(createIdentityDto.Role))
+        {
+            return BadRequest("Role does not exist");
+        }
+        
+        var roleResult = await _userManager.AddToRoleAsync(appUser, createIdentityDto.Role);
+        if (!roleResult.Succeeded)
+        {
+            return BadRequest(roleResult.Errors);
+        }
+
         return Ok(new IdentityCreatedDto
         {
-            Username = appUser.UserName
+            Username = appUser.UserName,
+            Role = createIdentityDto.Role.ToLower()
         });
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        
+
         var user = await _userManager.FindByNameAsync(loginDto.UserName);
 
         if (user == null) return Unauthorized("Invalid username!");
@@ -63,5 +83,14 @@ public class IdentityController : ControllerBase
                 Token = _jwtGeneratorService.GenerateToken(user)
             }
         );
+    }
+    
+    [HttpGet]
+    [Authorize]
+    public IActionResult GetCurrentUser()
+    {
+        // var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity.Name);
+
+        return Ok(User);
     }
 }
