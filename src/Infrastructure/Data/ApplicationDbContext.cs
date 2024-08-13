@@ -13,6 +13,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbConte
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        
         List<IdentityRole> roles =
         [
             new IdentityRole { Name = AppRoles.Admin, NormalizedName = AppRoles.Admin.ToUpper()},
