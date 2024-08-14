@@ -45,22 +45,14 @@ public static class IdentityMapper
     {
         return new UserLoggedInDto
         {
+            FirstName = loginUserResponse.FirstName,
+            LastName = loginUserResponse.LastName,
+            Email = loginUserResponse.Email,
             UserName = loginUserResponse.UserName,
+            Role = loginUserResponse.Role,
             Token = loginUserResponse.Token
         };
     }
 
-    public static EditProfileInfoRequest ToEditProfileInfoRequest(this EditProfileInfoDto editProfileInfoDto,
-        string userId)
-    {
-        return new EditProfileInfoRequest
-        {
-            UserId = userId,
-            UserName = editProfileInfoDto.UserName,
-            FirstName = editProfileInfoDto.FirstName,
-            LastName = editProfileInfoDto.LastName,
-            OldPassword = editProfileInfoDto.OldPassword,
-            NewPassword = editProfileInfoDto.NewPassword
-        };
-    }
+    
 }

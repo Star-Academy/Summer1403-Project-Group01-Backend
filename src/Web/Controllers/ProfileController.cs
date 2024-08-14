@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Identity;
 using Application.Interfaces;
 using Application.Interfaces.Services;
 using Domain.Entities;
@@ -37,6 +38,24 @@ public class ProfileController : ControllerBase
         }
         
         return BadRequest(Errors.New(nameof(EditProfileInfo), result.Message));
+    }
+    
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> GetProfileInfo()
+    {
+        var userId = User.Claims.First(x => x.Type == Claims.UserId).Value;
+
+        var result = await _profileService.GetProfileInfo(new GetProfileInfoRequest{UserId = userId});
+
+        if (!result.Succeed)
+        {
+            return NotFound(Errors.New(nameof(GetProfileInfo), "User not found!"));
+        }
+        
+        var user = result.Value!;
+
+        return Ok(user.ToProfileInfoDto());
     }
     
 }

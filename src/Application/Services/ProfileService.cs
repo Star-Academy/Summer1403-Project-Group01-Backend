@@ -3,6 +3,7 @@ using Application.DTOs.Identity;
 using Application.ExtensionMethods;
 using Application.Interfaces;
 using Application.Interfaces.Services;
+using Application.Mappers;
 
 namespace Application.Services;
 
@@ -51,5 +52,17 @@ public class ProfileService : IProfileService
             FirstName = user.FirstName,
             LastName = user.LastName
         });
+    }
+
+    public async Task<Result<GetProfileInfoResponse>> GetProfileInfo(GetProfileInfoRequest getProfileInfoRequest)
+    {
+        var user = await _userManager.FindByIdAsync(getProfileInfoRequest.UserId);
+        
+        if (user == null)
+            return Result<GetProfileInfoResponse>.Fail("User not found!");
+
+        var role = await _userManager.GetRoleAsync(user);
+        
+        return Result<GetProfileInfoResponse>.Ok(user.ToGetProfileInfoResponse(role));
     }
 }
