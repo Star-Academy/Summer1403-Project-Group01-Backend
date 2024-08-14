@@ -1,6 +1,7 @@
 using Application.DTOs;
 using Application.DTOs.Identity;
 using Application.Interfaces;
+using Application.Interfaces.Services;
 using Domain.Entities;
 using Web.Interfaces;
 

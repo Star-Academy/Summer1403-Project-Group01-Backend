@@ -1,5 +1,6 @@
 using System.Text;
 using Application.Interfaces;
+using Application.Interfaces.Services;
 using Application.Services;
 using Domain.Entities;
 using Infrastructure.Data;
@@ -54,6 +55,7 @@ builder.Services.AddScoped<IJwtGenerator, JwtGeneratorService>();
 builder.Services.AddScoped<IRoleManager, RoleManagerService>();
 builder.Services.AddScoped<IUserManager, UserManagerService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;

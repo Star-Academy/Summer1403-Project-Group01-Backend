@@ -1,5 +1,4 @@
-﻿using Application.DTOs.Identity;
-using Application.Interfaces;
+﻿using Application.Interfaces.Services;
 using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +30,7 @@ public class IdentityController : ControllerBase
             return BadRequest(result.Message);
         }
 
-        CreateUserResponse response = result.Value;
+        var response = result.Value!;
         
         return Ok(response.ToUserSignedUpDto());
     }
@@ -46,7 +45,7 @@ public class IdentityController : ControllerBase
             return Unauthorized(result.Message);
         }
         
-        LoginUserResponse response = result.Value;
+        var response = result.Value!;
 
         return Ok(response.ToUserLoggedInDto());
     }

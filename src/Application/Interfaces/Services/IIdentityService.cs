@@ -1,7 +1,7 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Identity;
 
-namespace Application.Interfaces;
+namespace Application.Interfaces.Services;
 
 public interface IIdentityService
 {
