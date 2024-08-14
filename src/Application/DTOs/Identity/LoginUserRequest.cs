@@ -1,9 +1,8 @@
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Application.DTOs.Identity;
 
-public class LoginDto
+public class LoginUserRequest
 {
     public string? UserName { get; set; }
     public string? Email { get; set; } 

@@ -1,6 +1,9 @@
 using System.Text;
-using Infrastructure.Entities;
+using Application.Interfaces;
+using Application.Services;
+using Domain.Entities;
 using Infrastructure.Data;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +51,9 @@ builder.Services.AddAuthentication(x =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IJwtGenerator, JwtGeneratorService>();
+builder.Services.AddScoped<IRoleManager, RoleManagerService>();
+builder.Services.AddScoped<IUserManager, UserManagerService>();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;

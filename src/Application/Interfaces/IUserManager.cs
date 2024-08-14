@@ -15,5 +15,5 @@ public interface IUserManager
     Task<IdentityResult> UpdateAsync(AppUser user);
     Task<IdentityResult> ChangePasswordAsync(AppUser user, string currentPassword, string newPassword);
     Task<string> GetRoleAsync(AppUser user);
-    Task<Result> CheckPasswordAsync(AppUser user, string password, bool lockoutOnFailure);
+    Task<bool> CheckPasswordAsync(AppUser user, string password);
 }

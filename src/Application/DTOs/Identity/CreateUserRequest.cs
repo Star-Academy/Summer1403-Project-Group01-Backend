@@ -2,7 +2,7 @@
 
 namespace Application.DTOs.Identity;
 
-public class CreateIdentityDto
+public class CreateUserRequest
 {
     [Required]
     [MaxLength(50)]
@@ -16,7 +16,7 @@ public class CreateIdentityDto
     public string Email { get; set; } = String.Empty;
     [Required]
     [MaxLength(50)]
-    public string Username { get; set; } = String.Empty;
+    public string UserName { get; set; } = String.Empty;
     [Required]
     [MaxLength(50)]
     [MinLength(8)]

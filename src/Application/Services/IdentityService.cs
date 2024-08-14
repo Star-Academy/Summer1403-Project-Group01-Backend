@@ -2,80 +2,91 @@ using Application.DTOs;
 using Application.DTOs.Identity;
 using Application.Interfaces;
 using Domain.Entities;
-using Microsoft.AspNetCore.Identity;
+using Web.Interfaces;
 
 namespace Application.Services;
 
-public class IdentityService
+public class IdentityService : IIdentityService
 {
     private readonly IUserManager _userManager;
     private readonly IRoleManager _roleManager;
     private readonly IJwtGenerator _jwtGenerator;
     public IdentityService(IUserManager userManager,
         IRoleManager roleManager,
-        IJwtGenerator jwtGenerator
-        )
+        IJwtGenerator jwtGenerator)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _jwtGenerator = jwtGenerator;
     }
 
-    public async Task<Result<AppUser>> SignUp(CreateIdentityDto createIdentityDto)
+    public async Task<Result<CreateUserResponse>> SignUpUser(CreateUserRequest createUserRequest)
     {
-        if (!await _roleManager.RoleExistsAsync(createIdentityDto.Role))
+        if (!await _roleManager.RoleExistsAsync(createUserRequest.Role))
         {
-            return Result<AppUser>.Fail("role does not exist");
+            return Result<CreateUserResponse>.Fail("role does not exist");
         }
         
         var appUser = new AppUser
         {
-            FirstName = createIdentityDto.FirstName,
-            LastName = createIdentityDto.LastName,
-            Email = createIdentityDto.Email,
-            UserName = createIdentityDto.Username
+            FirstName = createUserRequest.FirstName,
+            LastName = createUserRequest.LastName,
+            Email = createUserRequest.Email,
+            UserName = createUserRequest.UserName
         };
         
-        var appUserResult = await _userManager.CreateAsync(appUser, createIdentityDto.Password);
+        var appUserResult = await _userManager.CreateAsync(appUser, createUserRequest.Password);
         if (!appUserResult.Succeeded)
         {
-            return Result<AppUser>.Fail("Failed to create user");
+            return Result<CreateUserResponse>.Fail(appUserResult.Errors.ToString());
         }
         
-        var roleResult = await _userManager.AddToRoleAsync(appUser, createIdentityDto.Role);
+        var roleResult = await _userManager.AddToRoleAsync(appUser, createUserRequest.Role);
         if (!roleResult.Succeeded)
         {
-            return Result<AppUser>.Fail("role does not exist");
+            return Result<CreateUserResponse>.Fail(roleResult.Errors.ToString());
         }
 
-        return Result<AppUser>.Ok(appUser);
+        return Result<CreateUserResponse>.Ok(new CreateUserResponse
+        {
+            FirstName = appUser.FirstName,
+            LastName = appUser.LastName,
+            Email = appUser.Email,
+            UserName = appUser.UserName,
+            Role = createUserRequest.Role
+        });
     }
 
-    public async Task<Result<AppUser>> Login(LoginDto loginDto)
+    public async Task<Result<LoginUserResponse>> Login(LoginUserRequest loginUserRequest)
     {
-        AppUser? user;
+        AppUser? appUser;
 
-        if (!string.IsNullOrEmpty(loginDto.UserName))
+        if (!string.IsNullOrEmpty(loginUserRequest.UserName))
         {
-            user = await _userManager.FindByNameAsync(loginDto.UserName);
+            appUser = await _userManager.FindByNameAsync(loginUserRequest.UserName);
         }
-        else if (!string.IsNullOrEmpty(loginDto.Email))
+        else if (!string.IsNullOrEmpty(loginUserRequest.Email))
         {
-            user = await _userManager.FindByEmailAsync(loginDto.Email);
+            appUser = await _userManager.FindByEmailAsync(loginUserRequest.Email);
         }
         else
         {
-            return Unauthorized("You should enter email or username!");
+            return Result<LoginUserResponse>.Fail("You should enter email or username!");
         }
 
-        if (user is null) return Unauthorized("Invalid username/email!");
+        if (appUser is null) return Result<LoginUserResponse>.Fail("Invalid username/email!");
 
-        var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+        var succeed = await _userManager.CheckPasswordAsync(appUser, loginUserRequest.Password);
 
-        if (!result.Succeeded) return Unauthorized("Username/Email not found and/or password incorrect");
+        if (!succeed) return Result<LoginUserResponse>.Fail("Username/Email not found and/or password incorrect");
         
-        var roles = await _userManager.GetRolesAsync(user);
+        var role = await _userManager.GetRoleAsync(appUser);
 
+        return Result<LoginUserResponse>.Ok(new LoginUserResponse
+        {
+            UserName = appUser.UserName,
+            Token = _jwtGenerator.GenerateToken(appUser, role)
+        });
     }
 
 }

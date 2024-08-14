@@ -1,8 +1,8 @@
 using Domain.Entities;
 
-namespace Application.Interfaces;
+namespace Web.Interfaces;
 
 public interface IJwtGenerator
 {
-    string GenerateToken(AppUser user, IList<string> roles);
+    string GenerateToken(AppUser user, string role);
 }

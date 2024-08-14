@@ -18,13 +18,13 @@ public class JwtGeneratorService : IJwtGenerator
             System.Text.Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"])
         );
     }
-    public string GenerateToken(AppUser user, IList<string> roles)
+    public string GenerateToken(AppUser user, string role)
     {
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Email),
             new Claim(Claims.UserId, user.Id),
-            new Claim(Claims.Role, roles.Single())
+            new Claim(Claims.Role, role)
         };
         
         var credentials = new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha512Signature);
