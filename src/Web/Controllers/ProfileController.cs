@@ -1,9 +1,15 @@
-﻿using Infrastructure.Entities;
+﻿using Application.DTOs;
+using Application.DTOs.Identity;
+using Application.Interfaces;
+using Application.Interfaces.Services;
+using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Web.DTOs.Profile;
+using Web.Helper;
 using Web.Identity;
+using Web.Mappers;
 
 namespace Web.Controllers;
 
@@ -11,51 +17,45 @@ namespace Web.Controllers;
 [Route("[controller]/[action]")]
 public class ProfileController : ControllerBase
 {
-    private readonly UserManager<AppUser> _userManager;
-    private readonly SignInManager<AppUser> _signInManager;
+    private readonly IProfileService _profileService;
 
-    public ProfileController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+    public ProfileController(IProfileService profileService)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
+        _profileService = profileService;
     }
 
     [HttpPut]
     [Authorize]
     public async Task<IActionResult> EditProfileInfo([FromBody] EditProfileInfoDto editProfileInfoDto)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        var userId = User.Claims.First(x => x.Type == Claims.UserId).Value;
 
-        var userId = User.Claims.First(x => x.Type == "UserId").Value;
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
-            return Unauthorized("User not found!");
+        Result result = await _profileService.EditProfileInfo(editProfileInfoDto.ToEditProfileInfoRequest(userId));
 
-        var passwordCheckResult = await _signInManager.CheckPasswordSignInAsync(user, editProfileInfoDto.OldPassword, false);
-        if (!passwordCheckResult.Succeeded)
-            return BadRequest("Incorrect old password!");
-
-        if (user.UserName != editProfileInfoDto.UserName)
+        if (result.Succeed)
         {
-            var existingUser = await _userManager.FindByNameAsync(editProfileInfoDto.UserName);
-            if (existingUser != null)
-                return BadRequest("Username is already reserved by another user!");
+            return Ok("Profile info updated successfully!");
         }
         
-        user.UserName = editProfileInfoDto.UserName;
-        user.FirstName = editProfileInfoDto.FirstName;
-        user.LastName = editProfileInfoDto.LastName;
+        return BadRequest(Errors.New(nameof(EditProfileInfo), result.Message));
+    }
+    
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> GetProfileInfo()
+    {
+        var userId = User.Claims.First(x => x.Type == Claims.UserId).Value;
 
-        var updateResult = await _userManager.UpdateAsync(user);
-        if (!updateResult.Succeeded)
-            return BadRequest(updateResult.Errors);
+        var result = await _profileService.GetProfileInfo(new GetProfileInfoRequest{UserId = userId});
 
-        var passwordChangeResult = await _userManager.ChangePasswordAsync(user, editProfileInfoDto.OldPassword, editProfileInfoDto.NewPassword);
-        if (!passwordChangeResult.Succeeded)
-            return BadRequest(passwordChangeResult.Errors);
+        if (!result.Succeed)
+        {
+            return NotFound(Errors.New(nameof(GetProfileInfo), "User not found!"));
+        }
+        
+        var user = result.Value!;
 
-        return Ok("Profile info updated successfully!");
+        return Ok(user.ToProfileInfoDto());
     }
     
 }

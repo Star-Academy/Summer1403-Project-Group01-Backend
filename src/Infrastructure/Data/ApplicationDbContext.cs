@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Domain.Constants;
-using Infrastructure.Entities;
+﻿using Domain.Constants;
+using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

@@ -1,0 +1,19 @@
+﻿using Application.DTOs.Identity;
+using Domain.Entities;
+
+namespace Application.Mappers;
+
+public static class ProfileMapper
+{
+    public static GetProfileInfoResponse ToGetProfileInfoResponse(this AppUser user, string role)
+    {
+        return new GetProfileInfoResponse
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            UserName = user.UserName,
+            Role = role
+        };
+    }
+}
