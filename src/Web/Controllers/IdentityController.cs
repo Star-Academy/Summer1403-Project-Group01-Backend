@@ -3,6 +3,7 @@ using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.DTOs.Identity;
+using Web.Helper;
 using Web.Identity;
 using Web.Mappers;
 
@@ -27,7 +28,7 @@ public class IdentityController : ControllerBase
 
         if (!result.Succeed)
         {
-            return BadRequest(result.Message);
+            return BadRequest(Errors.New(nameof(Signup), result.Message));
         }
 
         var response = result.Value!;
@@ -42,7 +43,7 @@ public class IdentityController : ControllerBase
         
         if (!result.Succeed)
         {
-            return Unauthorized(result.Message);
+            return Unauthorized(Errors.New(nameof(Login), result.Message));
         }
         
         var response = result.Value!;

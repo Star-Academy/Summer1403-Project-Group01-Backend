@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Web.DTOs.Profile;
+using Web.Helper;
 using Web.Identity;
 using Web.Mappers;
 
@@ -34,10 +35,8 @@ public class ProfileController : ControllerBase
         {
             return Ok("Profile info updated successfully!");
         }
-        else
-        {
-            return BadRequest(result.Message);
-        }
+        
+        return BadRequest(Errors.New(nameof(EditProfileInfo), result.Message));
     }
     
 }

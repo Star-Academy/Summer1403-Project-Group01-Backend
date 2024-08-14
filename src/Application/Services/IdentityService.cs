@@ -1,5 +1,6 @@
 using Application.DTOs;
 using Application.DTOs.Identity;
+using Application.ExtensionMethods;
 using Application.Interfaces;
 using Application.Interfaces.Services;
 using Domain.Entities;
@@ -39,13 +40,13 @@ public class IdentityService : IIdentityService
         var appUserResult = await _userManager.CreateAsync(appUser, createUserRequest.Password);
         if (!appUserResult.Succeeded)
         {
-            return Result<CreateUserResponse>.Fail(appUserResult.Errors.ToString());
+            return Result<CreateUserResponse>.Fail(appUserResult.Errors.FirstMessage());
         }
         
         var roleResult = await _userManager.AddToRoleAsync(appUser, createUserRequest.Role);
         if (!roleResult.Succeeded)
         {
-            return Result<CreateUserResponse>.Fail(roleResult.Errors.ToString());
+            return Result<CreateUserResponse>.Fail(roleResult.Errors.FirstMessage());
         }
 
         return Result<CreateUserResponse>.Ok(new CreateUserResponse
@@ -85,7 +86,7 @@ public class IdentityService : IIdentityService
 
         return Result<LoginUserResponse>.Ok(new LoginUserResponse
         {
-            UserName = appUser.UserName,
+            UserName = appUser.UserName!,
             Token = _jwtGenerator.GenerateToken(appUser, role)
         });
     }

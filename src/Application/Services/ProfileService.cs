@@ -1,5 +1,6 @@
 using Application.DTOs;
 using Application.DTOs.Identity;
+using Application.ExtensionMethods;
 using Application.Interfaces;
 using Application.Interfaces.Services;
 
@@ -37,11 +38,11 @@ public class ProfileService : IProfileService
 
         var updateResult = await _userManager.UpdateAsync(user);
         if (!updateResult.Succeeded)
-            return Result.Fail(updateResult.Errors.ToString());
+            return Result.Fail(updateResult.Errors.FirstMessage());
 
         var passwordChangeResult = await _userManager.ChangePasswordAsync(user, infoRequest.OldPassword, infoRequest.NewPassword);
         if (!passwordChangeResult.Succeeded)
-            return Result.Fail(passwordChangeResult.Errors.ToString());
+            return Result.Fail(passwordChangeResult.Errors.FirstMessage());
         
         return Result.Ok();
     }
