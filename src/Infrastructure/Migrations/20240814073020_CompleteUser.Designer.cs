@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240813084744_NormalizedName")]
-    partial class NormalizedName
+    [Migration("20240814073020_CompleteUser")]
+    partial class CompleteUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,6 +43,16 @@ namespace Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -117,19 +127,19 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c03dacd0-7454-42e4-b617-eeb9e3863c0d",
+                            Id = "2108a42f-ccf7-4824-baf9-fec90f53f79f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "6399bc6d-8c5a-4d79-9045-820446775acd",
+                            Id = "6f4f50ee-ec2b-4844-a7bd-98a56d8755e4",
                             Name = "DataAdmin",
                             NormalizedName = "DATAADMIN"
                         },
                         new
                         {
-                            Id = "1db5e3c3-d967-4403-b64c-f3dab04f3b9c",
+                            Id = "cd35b7f2-76ef-4a13-9265-cf267b1dbbdb",
                             Name = "DataAnalyst",
                             NormalizedName = "DATAANALYST"
                         });
