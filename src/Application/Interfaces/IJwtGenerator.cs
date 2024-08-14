@@ -1,6 +1,6 @@
-using Infrastructure.Entities;
+using Domain.Entities;
 
-namespace Web.Interfaces;
+namespace Application.Interfaces;
 
 public interface IJwtGenerator
 {

@@ -1,6 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Infrastructure.Entities;
+using Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
 using Web.Identity;
 using Web.Interfaces;

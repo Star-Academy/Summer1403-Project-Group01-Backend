@@ -1,5 +1,5 @@
 ﻿using Domain.Constants;
-using Infrastructure.Entities;
+using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +17,7 @@ public class IdentityController : ControllerBase
     private readonly IJwtGenerator _jwtGeneratorService;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly RoleManager<IdentityRole> _roleManager;
-
+    
     public IdentityController(UserManager<AppUser> userManager,
         IJwtGenerator jwtGeneratorService,
         SignInManager<AppUser> signInManager, 
