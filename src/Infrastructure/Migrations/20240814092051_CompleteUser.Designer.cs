@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240814073020_CompleteUser")]
+    [Migration("20240814092051_CompleteUser")]
     partial class CompleteUser
     {
         /// <inheritdoc />
@@ -127,19 +127,19 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2108a42f-ccf7-4824-baf9-fec90f53f79f",
+                            Id = "502db14d-ec3d-42f2-a56c-c14ad1217dda",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "6f4f50ee-ec2b-4844-a7bd-98a56d8755e4",
+                            Id = "1d283a73-9ec4-4897-a709-2f21f1347cd6",
                             Name = "DataAdmin",
                             NormalizedName = "DATAADMIN"
                         },
                         new
                         {
-                            Id = "cd35b7f2-76ef-4a13-9265-cf267b1dbbdb",
+                            Id = "15b3c37c-d76a-4b52-a53f-5ec7e65bedcc",
                             Name = "DataAnalyst",
                             NormalizedName = "DATAANALYST"
                         });
