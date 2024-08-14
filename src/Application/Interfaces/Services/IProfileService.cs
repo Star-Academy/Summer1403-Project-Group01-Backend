@@ -5,5 +5,5 @@ namespace Application.Interfaces.Services;
 
 public interface IProfileService
 {
-    Task<Result> EditProfileInfo(EditProfileInfoRequest infoRequest);
+    Task<Result<EditProfileInfoResponse>> EditProfileInfo(EditProfileInfoRequest infoRequest);
 }

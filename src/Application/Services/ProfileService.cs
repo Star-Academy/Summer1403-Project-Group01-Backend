@@ -15,21 +15,21 @@ public class ProfileService : IProfileService
         _userManager = userManager;
     }
 
-    public async Task<Result> EditProfileInfo(EditProfileInfoRequest infoRequest)
+    public async Task<Result<EditProfileInfoResponse>> EditProfileInfo(EditProfileInfoRequest infoRequest)
     {
         var user = await _userManager.FindByIdAsync(infoRequest.UserId);
         if (user == null)
-            return Result.Fail("User not found!");
+            return Result<EditProfileInfoResponse>.Fail("User not found!");
 
         var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, infoRequest.OldPassword);
         if (!isPasswordCorrect)
-            return Result.Fail("Incorrect old password!");
+            return Result<EditProfileInfoResponse>.Fail("Incorrect old password!");
 
         if (user.UserName != infoRequest.UserName)
         {
             var existingUser = await _userManager.FindByNameAsync(infoRequest.UserName);
             if (existingUser != null)
-                return Result.Fail("Username is already reserved by another user!");
+                return Result<EditProfileInfoResponse>.Fail("Username is already reserved by another user!");
         }
         
         user.UserName = infoRequest.UserName;
@@ -38,12 +38,18 @@ public class ProfileService : IProfileService
 
         var updateResult = await _userManager.UpdateAsync(user);
         if (!updateResult.Succeeded)
-            return Result.Fail(updateResult.Errors.FirstMessage());
+            return Result<EditProfileInfoResponse>.Fail(updateResult.Errors.FirstMessage());
 
         var passwordChangeResult = await _userManager.ChangePasswordAsync(user, infoRequest.OldPassword, infoRequest.NewPassword);
         if (!passwordChangeResult.Succeeded)
-            return Result.Fail(passwordChangeResult.Errors.FirstMessage());
+            return Result<EditProfileInfoResponse>.Fail(passwordChangeResult.Errors.FirstMessage());
         
-        return Result.Ok();
+        return Result<EditProfileInfoResponse>.Ok(new EditProfileInfoResponse()
+        {
+            UserName = user.UserName,
+            Email = user.Email,
+            FirstName = user.FirstName,
+            LastName = user.LastName
+        });
     }
 }
