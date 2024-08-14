@@ -7,7 +7,7 @@
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AppRoles : Migration
+    public partial class CompleteUser : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,21 +15,26 @@ namespace Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "10ed68de-3930-48bd-98e0-bc80b59ee93a");
+                keyValue: "006c654c-771f-4591-bb9a-e7bb3443afa4");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "813f20f6-6916-4930-980b-694b396d6a8c");
+                keyValue: "4e30912b-d822-4d34-b6a0-45d7f081e7b0");
+
+            migrationBuilder.DeleteData(
+                table: "AspNetRoles",
+                keyColumn: "Id",
+                keyValue: "cde285b6-01c1-4e35-8cb5-65870c533091");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6a084367-d2b5-4014-bbcd-7f0a8d14a7de", null, "DataAnalyst", null },
-                    { "91b16f58-93ec-4ab4-b83a-2cb20580c540", null, "DataAdmin", null },
-                    { "940eea0a-aff9-497e-b067-d163f7d3ac79", null, "Admin", null }
+                    { "2108a42f-ccf7-4824-baf9-fec90f53f79f", null, "Admin", "ADMIN" },
+                    { "6f4f50ee-ec2b-4844-a7bd-98a56d8755e4", null, "DataAdmin", "DATAADMIN" },
+                    { "cd35b7f2-76ef-4a13-9265-cf267b1dbbdb", null, "DataAnalyst", "DATAANALYST" }
                 });
         }
 
@@ -39,25 +44,26 @@ namespace Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "6a084367-d2b5-4014-bbcd-7f0a8d14a7de");
+                keyValue: "2108a42f-ccf7-4824-baf9-fec90f53f79f");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "91b16f58-93ec-4ab4-b83a-2cb20580c540");
+                keyValue: "6f4f50ee-ec2b-4844-a7bd-98a56d8755e4");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "940eea0a-aff9-497e-b067-d163f7d3ac79");
+                keyValue: "cd35b7f2-76ef-4a13-9265-cf267b1dbbdb");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "10ed68de-3930-48bd-98e0-bc80b59ee93a", null, "Admin", "ADMIN" },
-                    { "813f20f6-6916-4930-980b-694b396d6a8c", null, "User", "USER" }
+                    { "006c654c-771f-4591-bb9a-e7bb3443afa4", null, "Admin", "ADMIN" },
+                    { "4e30912b-d822-4d34-b6a0-45d7f081e7b0", null, "DataAdmin", "DATAADMIN" },
+                    { "cde285b6-01c1-4e35-8cb5-65870c533091", null, "DataAnalyst", "DATAANALYST" }
                 });
         }
     }

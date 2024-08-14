@@ -124,19 +124,19 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "006c654c-771f-4591-bb9a-e7bb3443afa4",
+                            Id = "2108a42f-ccf7-4824-baf9-fec90f53f79f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4e30912b-d822-4d34-b6a0-45d7f081e7b0",
+                            Id = "6f4f50ee-ec2b-4844-a7bd-98a56d8755e4",
                             Name = "DataAdmin",
                             NormalizedName = "DATAADMIN"
                         },
                         new
                         {
-                            Id = "cde285b6-01c1-4e35-8cb5-65870c533091",
+                            Id = "cd35b7f2-76ef-4a13-9265-cf267b1dbbdb",
                             Name = "DataAnalyst",
                             NormalizedName = "DATAANALYST"
                         });
