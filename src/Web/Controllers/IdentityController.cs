@@ -73,9 +73,6 @@ public class IdentityController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         AppUser? user;
 
         if (!string.IsNullOrEmpty(loginDto.UserName))

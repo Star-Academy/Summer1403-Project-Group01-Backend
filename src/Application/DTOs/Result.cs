@@ -2,10 +2,10 @@ namespace Application.DTOs;
 
 public class Result
 {
-    public string Message { get; protected set; } = String.Empty;
+    public string Message { get; protected set; } = string.Empty;
     public bool Succeed { get; protected set; }
 
-    public Result Ok()
+    public static Result Ok()
     {
         return new Result
         {
@@ -13,7 +13,7 @@ public class Result
         };
     }
 
-    public Result Fail(string message)
+    public static Result Fail(string message = "failed")
     {
         return new Result
         {
@@ -27,7 +27,7 @@ public class Result<T> : Result
 {
     public T? Value { get; private set; }
 
-    public Result<T> Ok(T value)
+    public static Result<T> Ok(T value)
     {
         return new Result<T>
         {
@@ -36,7 +36,7 @@ public class Result<T> : Result
         };
     }
 
-    public Result<T> Fail(string message)
+    public static Result<T> Fail(string message = "failed")
     {
         return new Result<T>
         {
