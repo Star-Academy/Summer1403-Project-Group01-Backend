@@ -7,8 +7,8 @@ namespace Application.Interfaces;
 public interface IUserManager
 { 
     Task<IdentityResult> CreateAsync(AppUser user, string password);
-    Task<IdentityResult> AddToRoleAsync(AppUser user, string role);
     Task<IdentityResult> SetRoleAsync(AppUser user, string role);
+    Task<IdentityResult> ChangeRoleAsync(AppUser user, string newRole);
     Task<AppUser?> FindByNameAsync(string userName);
     Task<AppUser?> FindByEmailAsync(string email);
     Task<AppUser?> FindByIdAsync(string userId);

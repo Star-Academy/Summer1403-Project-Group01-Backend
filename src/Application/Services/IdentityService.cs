@@ -1,5 +1,6 @@
 using Application.DTOs;
 using Application.DTOs.Identity;
+using Application.DTOs.Identity.ChangeRole;
 using Application.ExtensionMethods;
 using Application.Interfaces;
 using Application.Interfaces.Services;
@@ -38,7 +39,7 @@ public class IdentityService : IIdentityService
             return Result<CreateUserResponse>.Fail(appUserResult.Errors.FirstMessage());
         }
         
-        var roleResult = await _userManager.AddToRoleAsync(appUser, createUserRequest.Role);
+        var roleResult = await _userManager.SetRoleAsync(appUser, createUserRequest.Role);
         if (!roleResult.Succeeded)
         {
             return Result<CreateUserResponse>.Fail(roleResult.Errors.FirstMessage());
@@ -76,4 +77,18 @@ public class IdentityService : IIdentityService
         return Result<LoginUserResponse>.Ok(appUser.ToLoginUserResponse(role, token));
     }
 
+    public async Task<Result> ChangeRole(ChangeRoleRequest request)
+    {
+        if (!await _roleManager.RoleExistsAsync(request.Role))
+        {
+            return Result.Fail("role does not exist");
+        }
+        AppUser? appUser = await _userManager.FindByNameAsync(request.UserName);
+
+        if (appUser is null) return Result<LoginUserResponse>.Fail("Invalid username");
+
+        var result = await _userManager.ChangeRoleAsync(appUser, request.Role);
+        
+        return result.Succeeded ? Result.Ok() : Result.Fail(result.Errors.FirstMessage());
+    }
 }

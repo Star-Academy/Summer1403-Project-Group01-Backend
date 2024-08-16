@@ -18,15 +18,28 @@ public class UserManagerService : IUserManager
         return await _userManager.CreateAsync(user, password);
     }
 
-    public async Task<IdentityResult> AddToRoleAsync(AppUser user, string role)
-    {
-        return await _userManager.AddToRoleAsync(user, role);
-    }
-
     public async Task<IdentityResult> SetRoleAsync(AppUser user, string role)
     {
         // TODO check if adding multiple roles
         return await _userManager.AddToRoleAsync(user, role);
+    }
+    
+    public async Task<IdentityResult> ChangeRoleAsync(AppUser user, string newRole)
+    {
+        // TODO check if removing multiple roles
+        var currentRole = await GetRoleAsync(user);
+        if (currentRole == newRole)
+        {
+            return IdentityResult.Success;
+        }
+        
+        var removeRoleResult = await _userManager.RemoveFromRoleAsync(user, currentRole);
+        if (!removeRoleResult.Succeeded)
+        {
+            return removeRoleResult;
+        }
+
+        return await _userManager.AddToRoleAsync(user, newRole);
     }
 
     public async Task<AppUser?> FindByNameAsync(string userName)

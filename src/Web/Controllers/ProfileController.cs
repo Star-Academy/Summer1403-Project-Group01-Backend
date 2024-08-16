@@ -1,10 +1,7 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Identity;
-using Application.Interfaces;
 using Application.Interfaces.Services;
-using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Web.DTOs.Profile;
 using Web.Helper;
@@ -32,12 +29,12 @@ public class ProfileController : ControllerBase
 
         Result result = await _profileService.EditProfileInfo(editProfileInfoDto.ToEditProfileInfoRequest(userId));
 
-        if (result.Succeed)
+        if (!result.Succeed)
         {
-            return Ok("Profile info updated successfully!");
+            return BadRequest(Errors.New(nameof(EditProfileInfo), result.Message));
         }
         
-        return BadRequest(Errors.New(nameof(EditProfileInfo), result.Message));
+        return Ok("Profile info updated successfully!");
     }
     
     [HttpGet]
@@ -56,6 +53,22 @@ public class ProfileController : ControllerBase
         var user = result.Value!;
 
         return Ok(user.ToProfileInfoDto());
+    }
+
+    [HttpPut]
+    [Authorize]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
+    {
+        var userId = User.Claims.First(x => x.Type == Claims.UserId).Value;
+
+        var result = await _profileService.ChangePassword(changePasswordDto.ToChangePasswordRequest(userId));
+        
+        if (!result.Succeed)
+        {
+            return BadRequest(Errors.New(nameof(ChangePassword), result.Message));
+        }
+        
+        return Ok("Password changed successfully!");
     }
     
 }

@@ -50,4 +50,19 @@ public class IdentityController : ControllerBase
 
         return Ok(response.ToUserLoggedInDto());
     }
+    
+    [HttpPut]
+    [Authorize]
+    [RequiresClaim(Claims.Role, AppRoles.Admin)]
+    public async Task<IActionResult> ChangeRole([FromBody] ChangeRoleDto changeRoleDto)
+    {
+        var result = await _identityService.ChangeRole(changeRoleDto.ToChangeRoleRequest());
+
+        if (!result.Succeed)
+        {
+            return BadRequest(Errors.New(nameof(ChangeRole), result.Message));
+        }
+
+        return Ok("Role changed successfully!");
+    }
 }
