@@ -79,6 +79,10 @@ public class IdentityService : IIdentityService
 
     public async Task<Result> ChangeRole(ChangeRoleRequest request)
     {
+        if (!await _roleManager.RoleExistsAsync(request.Role))
+        {
+            return Result.Fail("role does not exist");
+        }
         AppUser? appUser = await _userManager.FindByNameAsync(request.UserName);
 
         if (appUser is null) return Result<LoginUserResponse>.Fail("Invalid username");
