@@ -16,4 +16,14 @@ public static class ProfileMapper
             Role = role
         };
     }
+    public static EditProfileInfoResponse ToEditProfileInfoResponse(this AppUser user)
+    {
+        return new EditProfileInfoResponse
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            UserName = user.UserName
+        };
+    }
 }

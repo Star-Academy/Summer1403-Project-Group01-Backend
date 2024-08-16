@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Identity;
+using Application.DTOs.Profile.ChangePassword;
 using Web.DTOs.Profile;
 
 namespace Web.Mappers;
@@ -14,8 +15,6 @@ public static class ProfileMapper
             UserName = editProfileInfoDto.UserName,
             FirstName = editProfileInfoDto.FirstName,
             LastName = editProfileInfoDto.LastName,
-            OldPassword = editProfileInfoDto.OldPassword,
-            NewPassword = editProfileInfoDto.NewPassword
         };
     }
     
@@ -28,6 +27,16 @@ public static class ProfileMapper
             Email = getProfileInfoResponse.Email,
             UserName = getProfileInfoResponse.UserName,
             Role = getProfileInfoResponse.Role
+        };
+    }
+
+    public static ChangePasswordRequest ToChangePasswordRequest(this ChangePasswordDto changePasswordDto, string userId)
+    {
+        return new ChangePasswordRequest
+        {
+            UserId = userId,
+            CurrentPassword = changePasswordDto.CurrentPassword,
+            NewPassword = changePasswordDto.NewPassword
         };
     }
 }
