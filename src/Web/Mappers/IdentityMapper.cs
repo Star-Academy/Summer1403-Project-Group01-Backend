@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.Identity;
+using Application.DTOs.Identity.ChangeRole;
 using Web.DTOs.Identity;
-using Web.DTOs.Profile;
 
 namespace Web.Mappers;
 
@@ -54,5 +54,12 @@ public static class IdentityMapper
         };
     }
 
-    
+    public static ChangeRoleRequest ToChangeRoleRequest(this ChangeRoleDto changeRoleDto)
+    {
+        return new ChangeRoleRequest
+        {
+            UserName = changeRoleDto.UserName,
+            Role = changeRoleDto.Role
+        };
+    }
 }
