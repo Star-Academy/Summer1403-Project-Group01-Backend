@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces;
-using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Services;
