@@ -2,14 +2,16 @@
 using Application.DTOs.TransactionCsv;
 using Application.Interfaces;
 using Application.Interfaces.Services;
+using Application.Mappers;
 using Application.Services.SharedService;
 using Domain.Entities;
+using Web.DTOs.Transaction;
 
 namespace Application.Services;
 
 public class TransactionService : ITransactionService
 {
-    public readonly ITransactionRepository _transactionRepository;
+    private readonly ITransactionRepository _transactionRepository;
 
     public TransactionService(ITransactionRepository transactionRepository)
     {
@@ -31,5 +33,24 @@ public class TransactionService : ITransactionService
         }).ToList();
         
         await _transactionRepository.CreateBulkAsync(transactions);
+    }
+
+    public async Task<Result<GetAllTransactionsResponse>> GetAllTransactions()
+    {
+        try
+        {
+            var transactions = await _transactionRepository.GetAllTransactions();
+
+            if (transactions.Count == 0)
+            {
+                return Result<GetAllTransactionsResponse>.Fail("No transactions found");
+            }
+            var response = transactions.ToGetAllTransactionsResponse();
+            return Result<GetAllTransactionsResponse>.Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return Result<GetAllTransactionsResponse>.Fail($"An error occurred: {ex.Message}");
+        }
     }
 }
