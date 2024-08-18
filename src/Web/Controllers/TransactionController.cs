@@ -1,6 +1,8 @@
 ﻿using Application.Interfaces.Services;
-using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Helper;
+using Web.Mappers;
 
 namespace Web.Controllers;
 
@@ -31,5 +33,19 @@ public class TransactionController : ControllerBase
         await _transactionService.AddTransactionsFromCsvAsync(filePath);
 
         return Ok("Transactions imported successfully.");
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> GetAllTransactions()
+    {
+        var allTransactions = await _transactionService.GetAllTransactions();
+        if (!allTransactions.Succeed)
+        {
+            return BadRequest(Errors.New(nameof(GetAllTransactions), allTransactions.Message));
+        }
+
+        var response = allTransactions.Value!;
+        return Ok(response.ToGotAllTransactionsDto());
     }
 }

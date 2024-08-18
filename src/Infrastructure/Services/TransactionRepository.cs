@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services;
 
@@ -16,5 +17,10 @@ public class TransactionRepository : ITransactionRepository
     {
         await _dbContext.Transactions.AddRangeAsync(transactions);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<List<Transaction>> GetAllTransactions()
+    {
+        return await _dbContext.Transactions.ToListAsync();
     }
 }
