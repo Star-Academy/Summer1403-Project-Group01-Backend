@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240817193825_Accounts-Transactions")]
+    partial class AccountsTransactions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,11 +27,11 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Account", b =>
                 {
-                    b.Property<long>("AccountId")
+                    b.Property<int>("AccountId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("AccountId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AccountId"));
 
                     b.Property<string>("AccountType")
                         .IsRequired()
@@ -46,8 +49,8 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("CardId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("CardId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Iban")
                         .IsRequired()
@@ -146,11 +149,11 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Transaction", b =>
                 {
-                    b.Property<long>("TransactionId")
+                    b.Property<int>("TransactionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("TransactionId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TransactionId"));
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
@@ -158,11 +161,11 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<long>("DestinationAccountId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("DestinationAccountId")
+                        .HasColumnType("integer");
 
-                    b.Property<long>("SourceAccountId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("SourceAccountId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -205,19 +208,19 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bef465d8-3d0e-469f-8b45-5f9be9c40f66",
+                            Id = "0a8ca877-f408-4d10-806f-1714e41b0186",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "2d28da36-33b9-4ac1-b08f-50b4dd6855d2",
+                            Id = "fa9ffeed-788f-40cd-a86b-3e5ad7a03e0b",
                             Name = "DataAdmin",
                             NormalizedName = "DATAADMIN"
                         },
                         new
                         {
-                            Id = "021da0cb-1048-4551-9858-90c98ee66289",
+                            Id = "913a4192-89c6-4d8e-873c-52d9695f8d59",
                             Name = "DataAnalyst",
                             NormalizedName = "DATAANALYST"
                         });
