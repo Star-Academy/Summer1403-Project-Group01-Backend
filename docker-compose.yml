@@ -27,7 +27,8 @@ services:
                dotnet ef database update --project src/Infrastructure/Infrastructure.csproj --startup-project src/Web/Web.csproj"
 
   web:
-    image: mohammadsadeghmontazeri/starback:latest
+    build: .
+    dockerfile: backend.Dockerfile
     depends_on:
       migrate:
         condition: service_completed_successfully
