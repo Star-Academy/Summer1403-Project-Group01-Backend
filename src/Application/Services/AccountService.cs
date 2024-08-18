@@ -35,4 +35,9 @@ public class AccountService : IAccountService
         
         await _accountRepository.CreateBulkAsync(accounts);
     }
+
+    public async Task<Account?> GetAccountByIdAsync(long accountId)
+    {
+        return await _accountRepository.GetByIdAsync(accountId);
+    }
 }

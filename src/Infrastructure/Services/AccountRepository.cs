@@ -18,4 +18,9 @@ public class AccountRepository : IAccountRepository
         await _dbContext.Accounts.AddRangeAsync(accounts);
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<Account?> GetByIdAsync(long accountId)
+    {
+        return await _dbContext.Accounts.FindAsync(accountId);
+    }
 }

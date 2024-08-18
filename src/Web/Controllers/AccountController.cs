@@ -31,4 +31,16 @@ public class AccountController : ControllerBase
 
         return Ok("Accounts imported successfully.");
     }
+    
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetAccountById(int id)
+    {
+        var account = await _accountService.GetAccountByIdAsync(id);
+        if (account == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(account);
+    }
 }
