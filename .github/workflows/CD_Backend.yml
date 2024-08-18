@@ -38,7 +38,7 @@ jobs:
           push: true
           tags: mohammadsadeghmontazeri/starback:latest
 
-       - name: build and push docker migrate to registry
+      - name: build and push docker migrate to registry
         uses: docker/build-push-action@v5
         with:
           context: .
