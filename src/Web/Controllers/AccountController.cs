@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
+using Web.Mappers;
 
 namespace Web.Controllers;
 
@@ -32,15 +33,29 @@ public class AccountController : ControllerBase
         return Ok("Accounts imported successfully.");
     }
     
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetAccountById(int id)
+    [HttpGet("{accountId}")]
+    public async Task<IActionResult> GetAccountById(long accountId)
     {
-        var account = await _accountService.GetAccountByIdAsync(id);
+        var account = await _accountService.GetAccountByIdAsync(accountId);
         if (account == null)
         {
             return NotFound();
         }
 
-        return Ok(account);
+        return Ok(account.ToAccountDto());
+    }
+
+    [HttpGet("{accountId}")]
+    public async Task<IActionResult> GetTransactionsByUserId(long accountId)
+    {
+        var result = await _accountService.GetTransactionsByUserId(accountId);
+        if (!result.Succeed)
+        {
+            return NotFound("User do not exist");
+        }
+
+        var transactions = result.Value;
+        
+        return Ok(transactions!.Select(t => t.ToTransactionDto()));
     }
 }

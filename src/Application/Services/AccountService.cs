@@ -1,4 +1,5 @@
-﻿using Application.DTOs.AccountCsv;
+﻿using Application.DTOs;
+using Application.DTOs.AccountCsv;
 using Application.Interfaces;
 using Application.Interfaces.Services;
 using Application.Services.SharedService;
@@ -39,5 +40,18 @@ public class AccountService : IAccountService
     public async Task<Account?> GetAccountByIdAsync(long accountId)
     {
         return await _accountRepository.GetByIdAsync(accountId);
+    }
+    
+    public async Task<Result<List<Transaction>>> GetTransactionsByUserId(long accountId)
+    {
+        var account = await _accountRepository.GetByIdAsync(accountId);
+        
+        if (account == null)
+        {
+            return Result<List<Transaction>>.Fail("Account not found");
+        }
+        
+        var transactions = await _accountRepository.GetTransactionsByAccountId(accountId);
+        return Result<List<Transaction>>.Ok(transactions);
     }
 }
