@@ -28,6 +28,7 @@ services:
 
   web:
     build: .
+    dockerfile: backend.Dockerfile
     depends_on:
       migrate:
         condition: service_completed_successfully

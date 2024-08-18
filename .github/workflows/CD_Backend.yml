@@ -30,12 +30,21 @@ jobs:
           username: ${{secrets.DOCKERHUB_USERNAME}}
           password: ${{secrets.DOCKERHUB_TOKEN}}
 
-      - name: build and push docker image to registry
+      - name: build and push docker backend to registry
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: backend.Dockerfile
           push: true
           tags: mohammadsadeghmontazeri/starback:latest
+
+      - name: build and push docker migrate to registry
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: migrate.Dockerfile
+          push: true
+          tags: mohammadsadeghmontazeri/migratestar:latest
 
       - name: Create Release
         id: create_release
