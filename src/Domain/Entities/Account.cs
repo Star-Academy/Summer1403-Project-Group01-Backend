@@ -4,8 +4,8 @@ namespace Domain.Entities;
 [Table("Accounts")]
 public class Account
 {
-    public int AccountId { get; set; }
-    public int CardId { get; set; }
+    public long AccountId { get; set; }
+    public long CardId { get; set; }
     public string Iban { get; set; } = String.Empty;
     public string AccountType { get; set; } = String.Empty;
     public string BranchTelephone { get; set; } = String.Empty;

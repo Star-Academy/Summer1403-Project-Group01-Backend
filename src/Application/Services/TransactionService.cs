@@ -22,8 +22,8 @@ public class TransactionService : ITransactionService
         
         var transactions = transactionCsvModels.Select(csvModel => new Transaction
         {
-            SourceAccountId = csvModel.SourceAccount,
-            DestinationAccountId = csvModel.DestinationAccount,
+            SourceAccountId = csvModel.SourceAcount,
+            DestinationAccountId = csvModel.DestiantionAccount,
             Amount = csvModel.Amount,
             Date = csvModel.Date,
             Type = csvModel.Type
