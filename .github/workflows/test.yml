@@ -27,6 +27,7 @@ jobs:
       - name: build and push docker image to registry
         uses: docker/build-push-action@v5
         with:
-          context: migrate.Dockerfile
+          context: .
+          file: migrate.Dockerfile
           push: true
           tags: mohammadsadeghmontazeri/migratestar:latest
