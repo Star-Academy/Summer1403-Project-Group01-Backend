@@ -1,11 +1,10 @@
 using Application.DTOs;
-using Application.DTOs.TransactionCsv;
+using Application.DTOs.Transaction;
 using Application.Interfaces;
 using Application.Interfaces.Services;
 using Application.Mappers;
 using Application.Services.SharedService;
 using Domain.Entities;
-using Application.DTOs.TransactionCsv;
 using Application.Interfaces.Repositories;
 
 namespace Application.Services;
@@ -36,7 +35,7 @@ public class TransactionService : ITransactionService
         await _transactionRepository.CreateBulkAsync(transactions);
     }
 
-    public async Task<Result<GetAllTransactionsResponse>> GetAllTransactions()
+    public async Task<Result<GetAllTransactionsResponse>> GetAllTransactionsAsync()
     {
         try
         {

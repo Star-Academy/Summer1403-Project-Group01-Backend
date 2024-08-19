@@ -36,10 +36,10 @@ public class TransactionController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
+    // [Authorize]
     public async Task<IActionResult> GetAllTransactions()
     {
-        var allTransactions = await _transactionService.GetAllTransactions();
+        var allTransactions = await _transactionService.GetAllTransactionsAsync();
         if (!allTransactions.Succeed)
         {
             return BadRequest(Errors.New(nameof(GetAllTransactions), allTransactions.Message));

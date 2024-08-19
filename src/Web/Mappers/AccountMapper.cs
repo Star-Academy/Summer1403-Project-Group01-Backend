@@ -27,16 +27,16 @@ public static class AccountMapper
     {
         return response.Accounts.Select(account => new AccountDto
         {
-            AccountId = account.AccountId,
-            CardId = account.CardId,
-            Iban = account.Iban,
+            AccountId = account.AccountID,
+            CardId = account.CardID,
+            Iban = account.IBAN,
             AccountType = account.AccountType,
             BranchTelephone = account.BranchTelephone,
-            BranchAddress = account.BranchAddress,
+            BranchAddress = account.BranchAdress,
             BranchName = account.BranchName,
             OwnerName = account.OwnerName,
             OwnerLastName = account.OwnerLastName,
-            OwnerId = account.OwnerId
+            OwnerId = account.OwnerID
         }).ToList();
     }
 }

@@ -24,16 +24,16 @@ public class AccountService : IAccountService
 
         var accounts = accountCsvModels.Select(csvModel => new Account
         {
-            AccountId = csvModel.AccountId,
-            CardId = csvModel.CardId,
-            Iban = csvModel.Iban,
+            AccountId = csvModel.AccountID,
+            CardId = csvModel.CardID,
+            Iban = csvModel.IBAN,
             AccountType = csvModel.AccountType,
             BranchTelephone = csvModel.BranchTelephone,
-            BranchAddress = csvModel.BranchAddress,
+            BranchAddress = csvModel.BranchAdress,
             BranchName = csvModel.BranchName,
             OwnerName = csvModel.OwnerName,
             OwnerLastName = csvModel.OwnerLastName,
-            OwnerId = csvModel.OwnerId
+            OwnerId = csvModel.OwnerID
         }).ToList();
         
         await _accountRepository.CreateBulkAsync(accounts);
@@ -57,7 +57,7 @@ public class AccountService : IAccountService
         return Result<List<Transaction>>.Ok(transactions);
     }
 
-    public async Task<Result<GetAllAccountsResponse>> GetAllAccounts()
+    public async Task<Result<GetAllAccountsResponse>> GetAllAccountsAsync()
     {
         try
         {
