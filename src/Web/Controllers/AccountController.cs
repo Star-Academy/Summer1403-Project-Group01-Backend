@@ -16,7 +16,7 @@ public class AccountController : ControllerBase
     {
         _accountService = accountService;
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> ImportAccounts([FromForm] IFormFile file)
     {
@@ -34,7 +34,7 @@ public class AccountController : ControllerBase
 
         return Ok("Accounts imported successfully.");
     }
-    
+
     [HttpGet("{accountId}")]
     public async Task<IActionResult> GetAccountById(long accountId)
     {
@@ -57,10 +57,10 @@ public class AccountController : ControllerBase
         }
 
         var transactions = result.Value;
-        
+
         return Ok(transactions!.Select(t => t.ToTransactionDto()));
     }
-    
+
     [HttpGet]
     [Authorize]
     public async Task<IActionResult> GetAllAccounts()
