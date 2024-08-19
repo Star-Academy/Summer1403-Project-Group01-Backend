@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -37,5 +37,10 @@ public class AccountRepository : IAccountRepository
         }
 
         return account.SourceTransactions.ToList();
+    }
+
+    public async Task<List<Account>> GetAllAccounts()
+    {
+        return await _dbContext.Accounts.ToListAsync();
     }
 }

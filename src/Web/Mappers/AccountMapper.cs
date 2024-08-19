@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+using Application.DTOs.AccountCsv;
+using Domain.Entities;
 using Web.DTOs.Account;
 
 namespace Web.Mappers;
@@ -20,5 +21,22 @@ public static class AccountMapper
             OwnerLastName = account.OwnerLastName,
             OwnerId = account.OwnerId
         };
+    }
+    
+    public static List<AccountDto> ToGotAllAccountsDto(this GetAllAccountsResponse response)
+    {
+        return response.Accounts.Select(account => new AccountDto
+        {
+            AccountId = account.AccountID,
+            CardId = account.CardID,
+            Iban = account.IBAN,
+            AccountType = account.AccountType,
+            BranchTelephone = account.BranchTelephone,
+            BranchAddress = account.BranchAdress,
+            BranchName = account.BranchName,
+            OwnerName = account.OwnerName,
+            OwnerLastName = account.OwnerLastName,
+            OwnerId = account.OwnerID
+        }).ToList();
     }
 }

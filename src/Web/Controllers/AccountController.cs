@@ -1,5 +1,7 @@
-﻿using Application.Interfaces.Services;
+using Application.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Helper;
 using Web.Mappers;
 
 namespace Web.Controllers;
@@ -14,7 +16,7 @@ public class AccountController : ControllerBase
     {
         _accountService = accountService;
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> ImportAccounts([FromForm] IFormFile file)
     {
@@ -32,7 +34,7 @@ public class AccountController : ControllerBase
 
         return Ok("Accounts imported successfully.");
     }
-    
+
     [HttpGet("{accountId}")]
     public async Task<IActionResult> GetAccountById(long accountId)
     {
@@ -55,7 +57,21 @@ public class AccountController : ControllerBase
         }
 
         var transactions = result.Value;
-        
+
         return Ok(transactions!.Select(t => t.ToTransactionDto()));
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> GetAllAccounts()
+    {
+        var allAccounts = await _accountService.GetAllAccounts();
+        if (!allAccounts.Succeed)
+        {
+            return BadRequest(Errors.New(nameof(GetAllAccounts), allAccounts.Message));
+        }
+
+        var response = allAccounts.Value!;
+        return Ok(response.ToGotAllAccountsDto());
     }
 }

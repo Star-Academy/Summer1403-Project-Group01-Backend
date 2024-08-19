@@ -1,24 +1,22 @@
-﻿using Web.DTOs.Transaction;
+using Application.DTOs.TransactionCsv;
 using Domain.Entities;
 
-namespace Application.Mappers
+namespace Application.Mappers;
+public static class TransactionMapper
 {
-    public static class TransactionMapper
+    public static GetAllTransactionsResponse ToGetAllTransactionsResponse(this List<Transaction> transactions)
     {
-        public static GetAllTransactionsResponse ToGetAllTransactionsResponse(this List<Transaction> transactions)
+        return new GetAllTransactionsResponse
         {
-            return new GetAllTransactionsResponse
+            Transactions = transactions.Select(transaction => new TransactionCsvModel
             {
-                Transactions = transactions.Select(transaction => new GetAllTransactionsResponse.TransactionDto
-                {
-                    TransactionId = transaction.TransactionId,
-                    SourceAccountId = transaction.SourceAccountId,
-                    DestinationAccountId = transaction.DestinationAccountId,
-                    Amount = transaction.Amount,
-                    Date = transaction.Date,
-                    Type = transaction.Type
-                }).ToList()
-            };
-        }
+                TransactionID = transaction.TransactionId,
+                SourceAcount = transaction.SourceAccountId,
+                DestiantionAccount = transaction.DestinationAccountId,
+                Amount = transaction.Amount,
+                Date = transaction.Date,
+                Type = transaction.Type
+            }).ToList()
+        };
     }
 }

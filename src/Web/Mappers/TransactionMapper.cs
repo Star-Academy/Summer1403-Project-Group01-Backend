@@ -1,3 +1,4 @@
+using Application.DTOs.TransactionCsv;
 using Domain.Entities;
 using Web.DTOs.Transaction;
 
@@ -14,20 +15,20 @@ public static class TransactionMapper
             DestinationAccountId = transaction.DestinationAccountId,
             Amount = transaction.Amount,
             Date = transaction.Date,
-            Type = transaction.Type
+            Type = transaction.Type 
         };
     }
 
-    public static List<GetAllTransactionsResponse.TransactionDto> ToGotAllTransactionsDto(this GetAllTransactionsResponse response)
+    public static List<TransactionDto> ToGotAllTransactionsDto(this GetAllTransactionsResponse response)
+    {
+        return response.Transactions.Select(transaction => new TransactionDto
         {
-            return response.Transactions.Select(transaction => new GetAllTransactionsResponse.TransactionDto
-            {
-                TransactionId = transaction.TransactionId,
-                SourceAccountId = transaction.SourceAccountId,
-                DestinationAccountId = transaction.DestinationAccountId,
-                Amount = transaction.Amount,
-                Date = transaction.Date,
-                Type = transaction.Type
-            }).ToList();
-        }
+            TransactionId = transaction.TransactionID,
+            SourceAccountId = transaction.SourceAcount,
+            DestinationAccountId = transaction.DestiantionAccount,
+            Amount = transaction.Amount,
+            Date = transaction.Date,
+            Type = transaction.Type
+        }).ToList();
+    }
 }
