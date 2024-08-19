@@ -1,6 +1,7 @@
 using Application.DTOs;
-using Application.DTOs.AccountCsv;
+using Application.DTOs.Account;
 using Application.Interfaces;
+using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.Mappers;
 using Application.Services.SharedService;
@@ -23,16 +24,16 @@ public class AccountService : IAccountService
 
         var accounts = accountCsvModels.Select(csvModel => new Account
         {
-            AccountId = csvModel.AccountID,
-            CardId = csvModel.CardID,
-            Iban = csvModel.IBAN,
+            AccountId = csvModel.AccountId,
+            CardId = csvModel.CardId,
+            Iban = csvModel.Iban,
             AccountType = csvModel.AccountType,
             BranchTelephone = csvModel.BranchTelephone,
-            BranchAddress = csvModel.BranchAdress,
+            BranchAddress = csvModel.BranchAddress,
             BranchName = csvModel.BranchName,
             OwnerName = csvModel.OwnerName,
             OwnerLastName = csvModel.OwnerLastName,
-            OwnerId = csvModel.OwnerID
+            OwnerId = csvModel.OwnerId
         }).ToList();
         
         await _accountRepository.CreateBulkAsync(accounts);

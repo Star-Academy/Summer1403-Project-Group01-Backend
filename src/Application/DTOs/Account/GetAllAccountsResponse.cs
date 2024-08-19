@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.AccountCsv;
+﻿namespace Application.DTOs.Account;
 
 public class GetAllAccountsResponse
 {

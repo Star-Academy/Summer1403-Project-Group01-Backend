@@ -1,16 +1,16 @@
 using System.Text;
 using Application.Interfaces;
+using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.Services;
 using Domain.Entities;
 using Infrastructure.Data;
-using Infrastructure.Services;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Web.Interfaces;
 using Web.Services;
 using Web.Startup;
 
@@ -52,8 +52,8 @@ builder.Services.AddAuthentication(x =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IJwtGenerator, JwtGeneratorService>();
-builder.Services.AddScoped<IRoleManager, RoleManagerService>();
-builder.Services.AddScoped<IUserManager, UserManagerService>();
+builder.Services.AddScoped<IRoleManagerRepository, RoleManagerRepositoryRepository>();
+builder.Services.AddScoped<IUserManagerRepository, UserManagerRepositoryRepository>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
