@@ -62,10 +62,10 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
+    // [Authorize]
     public async Task<IActionResult> GetAllAccounts()
     {
-        var allAccounts = await _accountService.GetAllAccounts();
+        var allAccounts = await _accountService.GetAllAccountsAsync();
         if (!allAccounts.Succeed)
         {
             return BadRequest(Errors.New(nameof(GetAllAccounts), allAccounts.Message));

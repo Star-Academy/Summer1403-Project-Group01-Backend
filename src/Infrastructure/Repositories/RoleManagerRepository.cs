@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Repositories;
 
-public class RoleManagerRepositoryRepository : IRoleManagerRepository
+public class RoleManagerRepository : IRoleManagerRepository
 {
     private readonly RoleManager<IdentityRole> _roleManager;
-    public RoleManagerRepositoryRepository(RoleManager<IdentityRole> roleManager)
+    public RoleManagerRepository(RoleManager<IdentityRole> roleManager)
     {
         _roleManager = roleManager;
     }

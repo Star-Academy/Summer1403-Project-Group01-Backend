@@ -52,8 +52,8 @@ builder.Services.AddAuthentication(x =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IJwtGenerator, JwtGeneratorService>();
-builder.Services.AddScoped<IRoleManagerRepository, RoleManagerRepositoryRepository>();
-builder.Services.AddScoped<IUserManagerRepository, UserManagerRepositoryRepository>();
+builder.Services.AddScoped<IRoleManagerRepository, RoleManagerRepository>();
+builder.Services.AddScoped<IUserManagerRepository, UserManagerRepository>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();

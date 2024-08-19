@@ -11,16 +11,16 @@ public static class AccountMapper
         {
             Accounts = accounts.Select(account => new AccountCsvModel
             {
-                AccountId = account.AccountId,
-                CardId = account.CardId,
-                Iban = account.Iban,
+                AccountID = account.AccountId,
+                CardID = account.CardId,
+                IBAN = account.Iban,
                 AccountType = account.AccountType,
                 BranchTelephone = account.BranchTelephone,
-                BranchAddress = account.BranchAddress,
+                BranchAdress = account.BranchAddress,
                 BranchName = account.BranchName,
                 OwnerName = account.OwnerName,
                 OwnerLastName = account.OwnerLastName,
-                OwnerId = account.OwnerId
+                OwnerID = account.OwnerId
             }).ToList()
         };
     }

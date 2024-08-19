@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Repositories;
 
-public class UserManagerRepositoryRepository : IUserManagerRepository
+public class UserManagerRepository : IUserManagerRepository
 {
     private readonly UserManager<AppUser> _userManager;
 
-    public UserManagerRepositoryRepository(UserManager<AppUser> userManager)
+    public UserManagerRepository(UserManager<AppUser> userManager)
     {
         _userManager = userManager;
     }

@@ -1,4 +1,4 @@
-using Application.DTOs.TransactionCsv;
+using Application.DTOs.Transaction;
 using Domain.Entities;
 
 namespace Application.Mappers;

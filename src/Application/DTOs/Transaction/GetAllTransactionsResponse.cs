@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.TransactionCsv;
+﻿namespace Application.DTOs.Transaction;
 
 public class GetAllTransactionsResponse
 {

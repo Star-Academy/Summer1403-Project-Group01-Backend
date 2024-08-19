@@ -11,5 +11,5 @@ public class AccountDto
     public string BranchName { get; set; } = String.Empty;
     public string OwnerName { get; set; } = String.Empty;
     public string OwnerLastName { get; set; } = String.Empty;
-    public string OwnerId { get; set; } = String.Empty;
+    public long OwnerId { get; set; }
 }
