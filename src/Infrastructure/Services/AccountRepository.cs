@@ -38,4 +38,9 @@ public class AccountRepository : IAccountRepository
 
         return account.SourceTransactions.ToList();
     }
+
+    public async Task<List<Account>> GetAllAccounts()
+    {
+        return await _dbContext.Accounts.ToListAsync();
+    }
 }

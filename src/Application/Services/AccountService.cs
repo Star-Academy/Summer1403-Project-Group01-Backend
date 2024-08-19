@@ -2,6 +2,7 @@
 using Application.DTOs.AccountCsv;
 using Application.Interfaces;
 using Application.Interfaces.Services;
+using Application.Mappers;
 using Application.Services.SharedService;
 using Domain.Entities;
 
@@ -53,5 +54,24 @@ public class AccountService : IAccountService
         
         var transactions = await _accountRepository.GetTransactionsByAccountId(accountId);
         return Result<List<Transaction>>.Ok(transactions);
+    }
+
+    public async Task<Result<GetAllAccountsResponse>> GetAllAccounts()
+    {
+        try
+        {
+            var accounts = await _accountRepository.GetAllAccounts();
+
+            if (accounts.Count == 0)
+            {
+                return Result<GetAllAccountsResponse>.Fail("No Accounts found");
+            }
+            var response = accounts.ToGetAllAccountsResponse();
+            return Result<GetAllAccountsResponse>.Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return Result<GetAllAccountsResponse>.Fail($"An error occurred: {ex.Message}");
+        }
     }
 }

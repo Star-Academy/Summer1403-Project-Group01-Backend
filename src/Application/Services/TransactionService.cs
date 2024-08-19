@@ -5,7 +5,7 @@ using Application.Interfaces.Services;
 using Application.Mappers;
 using Application.Services.SharedService;
 using Domain.Entities;
-using Web.DTOs.Transaction;
+using Application.DTOs.TransactionCsv;
 
 namespace Application.Services;
 

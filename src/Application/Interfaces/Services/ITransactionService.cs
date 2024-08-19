@@ -1,5 +1,5 @@
 ﻿using Application.DTOs;
-using Web.DTOs.Transaction;
+using Application.DTOs.TransactionCsv;
 
 namespace Application.Interfaces.Services;
 
