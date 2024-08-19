@@ -1,4 +1,4 @@
-using Application.DTOs.AccountCsv;
+using Application.DTOs.Account;
 using Domain.Entities;
 using Web.DTOs.Account;
 
@@ -27,16 +27,16 @@ public static class AccountMapper
     {
         return response.Accounts.Select(account => new AccountDto
         {
-            AccountId = account.AccountID,
-            CardId = account.CardID,
-            Iban = account.IBAN,
+            AccountId = account.AccountId,
+            CardId = account.CardId,
+            Iban = account.Iban,
             AccountType = account.AccountType,
             BranchTelephone = account.BranchTelephone,
-            BranchAddress = account.BranchAdress,
+            BranchAddress = account.BranchAddress,
             BranchName = account.BranchName,
             OwnerName = account.OwnerName,
             OwnerLastName = account.OwnerLastName,
-            OwnerId = account.OwnerID
+            OwnerId = account.OwnerId
         }).ToList();
     }
 }

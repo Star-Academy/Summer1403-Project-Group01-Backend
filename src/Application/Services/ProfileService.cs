@@ -3,6 +3,7 @@ using Application.DTOs.Identity;
 using Application.DTOs.Profile.ChangePassword;
 using Application.ExtensionMethods;
 using Application.Interfaces;
+using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.Mappers;
 
@@ -10,23 +11,23 @@ namespace Application.Services;
 
 public class ProfileService : IProfileService
 {
-    private readonly IUserManager _userManager;
+    private readonly IUserManagerRepository _userManagerRepository;
 
-    public ProfileService(IUserManager userManager)
+    public ProfileService(IUserManagerRepository userManagerRepository)
     {
-        _userManager = userManager;
+        _userManagerRepository = userManagerRepository;
     }
 
     public async Task<Result<EditProfileInfoResponse>> EditProfileInfo(EditProfileInfoRequest infoRequest)
     {
-        var user = await _userManager.FindByIdAsync(infoRequest.UserId);
+        var user = await _userManagerRepository.FindByIdAsync(infoRequest.UserId);
         if (user == null)
             return Result<EditProfileInfoResponse>.Fail("User not found!");
         
         
         if (user.UserName != infoRequest.UserName)
         {
-            var existingUser = await _userManager.FindByNameAsync(infoRequest.UserName);
+            var existingUser = await _userManagerRepository.FindByNameAsync(infoRequest.UserName);
             if (existingUser != null)
                 return Result<EditProfileInfoResponse>.Fail("Username is already reserved by another user!");
         }
@@ -35,7 +36,7 @@ public class ProfileService : IProfileService
         user.FirstName = infoRequest.FirstName;
         user.LastName = infoRequest.LastName;
 
-        var updateResult = await _userManager.UpdateAsync(user);
+        var updateResult = await _userManagerRepository.UpdateAsync(user);
         if (!updateResult.Succeeded)
             return Result<EditProfileInfoResponse>.Fail(updateResult.Errors.FirstMessage());
         
@@ -45,27 +46,27 @@ public class ProfileService : IProfileService
 
     public async Task<Result<GetProfileInfoResponse>> GetProfileInfo(GetProfileInfoRequest getProfileInfoRequest)
     {
-        var user = await _userManager.FindByIdAsync(getProfileInfoRequest.UserId);
+        var user = await _userManagerRepository.FindByIdAsync(getProfileInfoRequest.UserId);
         
         if (user == null)
             return Result<GetProfileInfoResponse>.Fail("User not found!");
 
-        var role = await _userManager.GetRoleAsync(user);
+        var role = await _userManagerRepository.GetRoleAsync(user);
         
         return Result<GetProfileInfoResponse>.Ok(user.ToGetProfileInfoResponse(role));
     }
 
     public async Task<Result> ChangePassword(ChangePasswordRequest request)
     {
-        var user = await _userManager.FindByIdAsync(request.UserId);
+        var user = await _userManagerRepository.FindByIdAsync(request.UserId);
         if (user == null)
             return Result.Fail("User not found!");
 
-        var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, request.CurrentPassword);
+        var isPasswordCorrect = await _userManagerRepository.CheckPasswordAsync(user, request.CurrentPassword);
         if (!isPasswordCorrect)
             return Result.Fail("Incorrect current password!");
 
-        var passwordChangeResult = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+        var passwordChangeResult = await _userManagerRepository.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
         if (!passwordChangeResult.Succeeded)
             return Result.Fail(passwordChangeResult.Errors.FirstMessage());
 

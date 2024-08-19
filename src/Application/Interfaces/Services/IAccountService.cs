@@ -1,5 +1,5 @@
 using Application.DTOs;
-using Application.DTOs.AccountCsv;
+using Application.DTOs.Account;
 using Domain.Entities;
 
 namespace Application.Interfaces.Services;

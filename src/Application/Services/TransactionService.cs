@@ -6,6 +6,7 @@ using Application.Mappers;
 using Application.Services.SharedService;
 using Domain.Entities;
 using Application.DTOs.TransactionCsv;
+using Application.Interfaces.Repositories;
 
 namespace Application.Services;
 

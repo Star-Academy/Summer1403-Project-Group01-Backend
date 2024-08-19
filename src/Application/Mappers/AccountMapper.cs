@@ -1,4 +1,4 @@
-﻿using Application.DTOs.AccountCsv;
+﻿using Application.DTOs.Account;
 using Domain.Entities;
 
 namespace Application.Mappers;
@@ -11,16 +11,16 @@ public static class AccountMapper
         {
             Accounts = accounts.Select(account => new AccountCsvModel
             {
-                AccountID = account.AccountId,
-                CardID = account.CardId,
-                IBAN = account.Iban,
+                AccountId = account.AccountId,
+                CardId = account.CardId,
+                Iban = account.Iban,
                 AccountType = account.AccountType,
                 BranchTelephone = account.BranchTelephone,
-                BranchAdress = account.BranchAddress,
+                BranchAddress = account.BranchAddress,
                 BranchName = account.BranchName,
                 OwnerName = account.OwnerName,
                 OwnerLastName = account.OwnerLastName,
-                OwnerID = account.OwnerId
+                OwnerId = account.OwnerId
             }).ToList()
         };
     }
