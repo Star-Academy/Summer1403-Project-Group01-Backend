@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.Identity;
+﻿namespace Application.DTOs.Identity.CreateUser;
 
 public class CreateUserResponse
 {

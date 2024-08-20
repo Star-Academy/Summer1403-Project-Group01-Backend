@@ -1,6 +1,5 @@
 using Application.DTOs;
 using Application.DTOs.Transaction;
-using Application.Interfaces;
 using Application.Interfaces.Services;
 using Application.Mappers;
 using Application.Services.SharedService;

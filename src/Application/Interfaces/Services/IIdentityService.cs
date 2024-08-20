@@ -1,8 +1,8 @@
 ﻿using Application.DTOs;
-using Application.DTOs.Identity;
 using Application.DTOs.Identity.ChangeRole;
+using Application.DTOs.Identity.CreateUser;
 using Application.DTOs.Identity.GetUser;
-using Domain.Entities;
+using Application.DTOs.Identity.LoginUser;
 
 namespace Application.Interfaces.Services;
 

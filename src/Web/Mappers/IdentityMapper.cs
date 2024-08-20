@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Identity;
 using Application.DTOs.Identity.ChangeRole;
-using Domain.Entities;
+using Application.DTOs.Identity.CreateUser;
+using Application.DTOs.Identity.LoginUser;
 using Web.DTOs.Identity;
 
 namespace Web.Mappers;

@@ -1,6 +1,7 @@
 using Application.DTOs;
-using Application.DTOs.Identity;
 using Application.DTOs.Profile.ChangePassword;
+using Application.DTOs.Profile.EditProfile;
+using Application.DTOs.Profile.GetProfileInfo;
 
 namespace Application.Interfaces.Services;
 

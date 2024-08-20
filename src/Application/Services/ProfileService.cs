@@ -1,8 +1,8 @@
 using Application.DTOs;
-using Application.DTOs.Identity;
 using Application.DTOs.Profile.ChangePassword;
+using Application.DTOs.Profile.EditProfile;
+using Application.DTOs.Profile.GetProfileInfo;
 using Application.ExtensionMethods;
-using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.Mappers;

@@ -1,5 +1,6 @@
-﻿using Application.DTOs.Identity;
+﻿using Application.DTOs.Identity.CreateUser;
 using Application.DTOs.Identity.GetUser;
+using Application.DTOs.Identity.LoginUser;
 using Domain.Entities;
 
 namespace Application.Mappers;

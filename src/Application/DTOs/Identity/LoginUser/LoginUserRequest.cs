@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Application.DTOs.Identity;
+﻿namespace Application.DTOs.Identity.LoginUser;
 
 public class LoginUserRequest
 {

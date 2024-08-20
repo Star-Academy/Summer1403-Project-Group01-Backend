@@ -1,5 +1,6 @@
-﻿using Application.DTOs.Identity;
-using Application.DTOs.Profile.ChangePassword;
+﻿using Application.DTOs.Profile.ChangePassword;
+using Application.DTOs.Profile.EditProfile;
+using Application.DTOs.Profile.GetProfileInfo;
 using Web.DTOs.Profile;
 
 namespace Web.Mappers;

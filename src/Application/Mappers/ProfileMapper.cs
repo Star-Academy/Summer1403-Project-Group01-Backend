@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Identity;
+﻿using Application.DTOs.Profile.EditProfile;
+using Application.DTOs.Profile.GetProfileInfo;
 using Domain.Entities;
 
 namespace Application.Mappers;

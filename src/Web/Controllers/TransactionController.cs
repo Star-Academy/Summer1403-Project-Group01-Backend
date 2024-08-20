@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Helper;
 using Web.Mappers;

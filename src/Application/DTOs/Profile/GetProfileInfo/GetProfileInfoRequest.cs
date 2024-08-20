@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.Identity;
+﻿namespace Application.DTOs.Profile.GetProfileInfo;
 
 public class GetProfileInfoRequest
 {
