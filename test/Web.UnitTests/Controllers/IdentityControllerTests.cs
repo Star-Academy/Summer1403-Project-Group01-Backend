@@ -158,4 +158,35 @@ public class IdentityControllerTests
         Assert.Equal("MobinBarfi", responseValue.UserName);
         Assert.Equal("Admin", responseValue.Role);
     }
+    
+    // Login Tests
+    [Fact]
+    public async Task Login_WhenLoginSucceeds_ReturnsOkResult()
+    {
+        // Arrange
+        var loginDto = new LoginDto
+        {
+            UserName = "MobinBarfi",
+            Password = "Abc@1234"
+        };
+
+        var mockResponse = new LoginUserResponse
+        {
+            UserName = "MobinBarfi",
+            Token = "FakeToken"
+        };
+
+        _identityServiceMock
+            .Login(Arg.Any<LoginUserRequest>())
+            .Returns(Result<LoginUserResponse>.Ok(mockResponse));
+
+        // Act
+        var result = await _controller.Login(loginDto);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var response = Assert.IsType<UserLoggedInDto>(okResult.Value);
+        Assert.Equal("MobinBarfi", response.UserName);
+        Assert.Equal("FakeToken", response.Token);
+    }
 }
