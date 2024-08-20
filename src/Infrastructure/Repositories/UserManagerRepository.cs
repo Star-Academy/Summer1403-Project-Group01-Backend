@@ -2,6 +2,7 @@
 using Application.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
@@ -78,5 +79,10 @@ public class UserManagerRepository : IUserManagerRepository
     {
         // TODO there should be a sign in manager service
         return await _userManager.CheckPasswordAsync(user, password);
+    }
+
+    public async Task<List<AppUser>> GetUsersAsync()
+    {
+        return await _userManager.Users.ToListAsync();
     }
 }

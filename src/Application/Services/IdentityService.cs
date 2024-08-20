@@ -1,6 +1,7 @@
 using Application.DTOs;
 using Application.DTOs.Identity;
 using Application.DTOs.Identity.ChangeRole;
+using Application.DTOs.Identity.GetUser;
 using Application.ExtensionMethods;
 using Application.Interfaces;
 using Application.Interfaces.Repositories;
@@ -90,5 +91,20 @@ public class IdentityService : IIdentityService
         var result = await _userManagerRepository.ChangeRoleAsync(appUser, request.Role);
         
         return result.Succeeded ? Result.Ok() : Result.Fail(result.Errors.FirstMessage());
+    }
+
+    public async Task<List<GetUserResponse>> GetUsersAsync()
+    {
+        var users = await _userManagerRepository.GetUsersAsync();
+        var userWithRoles = new List<GetUserResponse>();
+
+        foreach (var user in users)
+        {
+            var role = await _userManagerRepository.GetRoleAsync(user);
+            var userResponse = user.ToGetUserResponse(role);
+            userWithRoles.Add(userResponse);
+        }
+
+        return userWithRoles;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Identity;
+using Application.DTOs.Identity.GetUser;
 using Domain.Entities;
 
 namespace Application.Mappers;
@@ -38,6 +39,18 @@ public static class IdentityMapper
             UserName = appUser.UserName,
             Role = role,
             Token = token
+        };
+    }
+    
+    public static GetUserResponse ToGetUserResponse(this AppUser appUser, string role)
+    {
+        return new GetUserResponse
+        {
+            FirstName = appUser.FirstName,
+            LastName = appUser.LastName,
+            Email = appUser.Email,
+            UserName = appUser.UserName,
+            Role = role
         };
     }
 }

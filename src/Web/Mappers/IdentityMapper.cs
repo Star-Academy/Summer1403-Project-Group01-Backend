@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Identity;
 using Application.DTOs.Identity.ChangeRole;
+using Domain.Entities;
 using Web.DTOs.Identity;
 
 namespace Web.Mappers;

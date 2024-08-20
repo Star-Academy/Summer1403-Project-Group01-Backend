@@ -65,4 +65,14 @@ public class IdentityController : ControllerBase
 
         return Ok("Role changed successfully!");
     }
+
+    [HttpGet]
+    [Authorize]
+    [RequiresClaim(Claims.Role, AppRoles.Admin)]
+    public async Task<IActionResult> GetUsersAsync()
+    {
+        var appUsersWithRoles = await _identityService.GetUsersAsync();
+
+        return Ok(appUsersWithRoles);
+    }
 }
