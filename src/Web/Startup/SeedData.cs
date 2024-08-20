@@ -8,19 +8,16 @@ public static class SeedData
     public static async Task Initialize(IServiceProvider serviceProvider, IConfigurationManager config)
     {
         var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
-        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
         var id = config["RootUser:Id"]!;
         var roleName = config["RootUser:RoleName"]!;
         var userName = config["RootUser:UserName"]!;
         var email = config["RootUser:Email"];
         var password = config["RootUser:Password"]!;
-
-        // Check if the root user already exists
+        
         var rootUser = await userManager.FindByIdAsync(id);
         if (rootUser == null)
         {
-            // Create the root user
             rootUser = new AppUser
             {
                 Id = id,
