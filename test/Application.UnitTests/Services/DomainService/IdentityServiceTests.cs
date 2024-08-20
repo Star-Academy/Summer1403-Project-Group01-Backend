@@ -245,4 +245,69 @@ public class IdentityServiceTests
         Assert.Equal(loginUserResponse.Email, loginResponse.Email);
         Assert.Equal(loginUserResponse.Token, loginResponse.Token);
     }
+    
+    // ChangeRole Tests
+    [Fact]
+    public async Task ChangeRole_WhenRoleDoesNotExist_ReturnsFailResult()
+    {
+        // Arrange
+        var changeRoleRequest = new ChangeRoleRequest
+        {
+            UserName = "MobinBarfi",
+            Role = "NonExistentRole"
+        };
+
+        _roleManagerRepository.RoleExistsAsync(changeRoleRequest.Role).Returns(Task.FromResult(false));
+
+        // Act
+        var result = await _identityService.ChangeRole(changeRoleRequest);
+
+        // Assert
+        Assert.False(result.Succeed);
+        Assert.Equal("role does not exist", result.Message);
+    }
+    
+    [Fact]
+    public async Task ChangeRole_WhenUserDoesNotExist_ReturnsFailResult()
+    {
+        // Arrange
+        var changeRoleRequest = new ChangeRoleRequest
+        {
+            UserName = "NonExistentUser",
+            Role = "Admin"
+        };
+
+        _roleManagerRepository.RoleExistsAsync(changeRoleRequest.Role).Returns(Task.FromResult(true));
+        _userManagerRepository.FindByNameAsync(changeRoleRequest.UserName).Returns(Task.FromResult<AppUser?>(null));
+
+        // Act
+        var result = await _identityService.ChangeRole(changeRoleRequest);
+
+        // Assert
+        Assert.False(result.Succeed);
+        Assert.Equal("Invalid username", result.Message);
+    }
+
+    [Fact]
+    public async Task ChangeRole_WhenOperationSucceeds_ReturnsSuccessResult()
+    {
+        // Arrange
+        var changeRoleRequest = new ChangeRoleRequest
+        {
+            UserName = "MobinBarfi",
+            Role = "Admin"
+        };
+
+        var appUser = new AppUser();
+
+        _roleManagerRepository.RoleExistsAsync(changeRoleRequest.Role).Returns(Task.FromResult(true));
+        _userManagerRepository.FindByNameAsync(changeRoleRequest.UserName).Returns(Task.FromResult(appUser));
+        _userManagerRepository.ChangeRoleAsync(appUser, changeRoleRequest.Role).Returns(Task.FromResult(IdentityResult.Success));
+
+        // Act
+        var result = await _identityService.ChangeRole(changeRoleRequest);
+
+        // Assert
+        Assert.True(result.Succeed);
+    }
 }
