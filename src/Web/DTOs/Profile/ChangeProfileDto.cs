@@ -5,9 +5,9 @@ namespace Web.DTOs.Profile;
 public class EditProfileInfoDto
 {
     [Required]
-    public string UserName { get; set; } = string.Empty;
+    public string? UserName { get; set; }
     [Required]
-    public string FirstName { get; set; } = string.Empty;
+    public string? FirstName { get; set; }
     [Required]
-    public string LastName { get; set; } = string.Empty;
+    public string? LastName { get; set; }
 }

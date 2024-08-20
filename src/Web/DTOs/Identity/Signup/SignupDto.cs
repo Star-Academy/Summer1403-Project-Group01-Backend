@@ -6,22 +6,22 @@ public class SignupDto
 {
     [Required]
     [MaxLength(50)]
-    public string FirstName { get; set; } = String.Empty;
+    public string? FirstName { get; set; }
     [Required]
     [MaxLength(50)]
-    public string LastName { get; set; } = String.Empty;
+    public string? LastName { get; set; }
     [Required]
     [MaxLength(50)]
     [EmailAddress]
-    public string Email { get; set; } = String.Empty;
+    public string? Email { get; set; }
     [Required]
     [MaxLength(50)]
-    public string UserName { get; set; } = String.Empty;
+    public string? UserName { get; set; }
     [Required]
     [MaxLength(50)]
     [MinLength(8)]
-    public string Password { get; set; } = String.Empty;
+    public string? Password { get; set; }
     [Required]
     [MaxLength(50)]
-    public string Role { get; set; } = String.Empty;
+    public string? Role { get; set; }
 }
