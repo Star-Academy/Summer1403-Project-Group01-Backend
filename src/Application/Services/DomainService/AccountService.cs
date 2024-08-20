@@ -1,13 +1,12 @@
 using Application.DTOs;
 using Application.DTOs.Account;
-using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.Mappers;
 using Application.Services.SharedService;
 using Domain.Entities;
 
-namespace Application.Services;
+namespace Application.Services.DomainService;
 
 public class AccountService : IAccountService
 {
@@ -22,19 +21,9 @@ public class AccountService : IAccountService
     {
         var accountCsvModels = CsvReaderService.ReadFromCsv<AccountCsvModel>(filePath);
 
-        var accounts = accountCsvModels.Select(csvModel => new Account
-        {
-            AccountId = csvModel.AccountID,
-            CardId = csvModel.CardID,
-            Iban = csvModel.IBAN,
-            AccountType = csvModel.AccountType,
-            BranchTelephone = csvModel.BranchTelephone,
-            BranchAddress = csvModel.BranchAdress,
-            BranchName = csvModel.BranchName,
-            OwnerName = csvModel.OwnerName,
-            OwnerLastName = csvModel.OwnerLastName,
-            OwnerId = csvModel.OwnerID
-        }).ToList();
+        var accounts = accountCsvModels
+            .Select(csvModel => csvModel.ToAccount())
+            .ToList();
         
         await _accountRepository.CreateBulkAsync(accounts);
     }

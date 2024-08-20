@@ -6,7 +6,7 @@ using Application.Services.SharedService;
 using Domain.Entities;
 using Application.Interfaces.Repositories;
 
-namespace Application.Services;
+namespace Application.Services.DomainService;
 
 public class TransactionService : ITransactionService
 {

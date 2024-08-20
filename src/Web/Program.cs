@@ -2,7 +2,7 @@ using System.Text;
 using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
-using Application.Services;
+using Application.Services.DomainService;
 using Domain.Entities;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
