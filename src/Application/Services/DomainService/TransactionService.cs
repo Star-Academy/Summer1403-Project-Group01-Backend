@@ -21,15 +21,10 @@ public class TransactionService : ITransactionService
     {
         var transactionCsvModels = CsvReaderService.ReadFromCsv<TransactionCsvModel>(filePath);
         
-        var transactions = transactionCsvModels.Select(csvModel => new Transaction
-        {
-            TransactionId = csvModel.TransactionID,
-            SourceAccountId = csvModel.SourceAcount,
-            DestinationAccountId = csvModel.DestiantionAccount,
-            Amount = csvModel.Amount,
-            Date = csvModel.Date,
-            Type = csvModel.Type
-        }).ToList();
+        var transactions = transactionCsvModels
+            .Select(csvModel => csvModel.ToTransaction())
+            .ToList();
+        
         try
         {
             await _transactionRepository.CreateBulkAsync(transactions);
