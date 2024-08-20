@@ -48,4 +48,11 @@ public class TransactionService : ITransactionService
             return Result<List<Transaction>>.Fail($"An error occurred: {ex.Message}");
         }
     }
+
+    public async Task<List<Transaction>> GetTransactionsByAccountIdAsync(long accountId)
+    {
+        var source = await _transactionRepository.GetBySourceAccountId(accountId);
+        var destination = await _transactionRepository.GetByDestinationAccountId(accountId);
+        return source.Concat(destination).ToList();
+    }
 }

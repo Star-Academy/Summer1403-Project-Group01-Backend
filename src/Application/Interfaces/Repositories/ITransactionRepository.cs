@@ -6,4 +6,6 @@ public interface ITransactionRepository
 {
     Task CreateBulkAsync(List<Transaction> transactions);
     Task<List<Transaction>> GetAllTransactions();
+    Task<List<Transaction>> GetBySourceAccountId(long accountId);
+    Task<List<Transaction>> GetByDestinationAccountId(long accountId);
 }

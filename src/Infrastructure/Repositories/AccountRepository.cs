@@ -25,20 +25,6 @@ public class AccountRepository : IAccountRepository
         return await _dbContext.Accounts.FindAsync(accountId);
     }
 
-    public async Task<List<Transaction>> GetTransactionsByAccountId(long accountId)
-    {
-        var account = await _dbContext.Accounts
-            .Include(a => a.SourceTransactions)
-            .FirstOrDefaultAsync(a => a.AccountId == accountId);
-        
-        if (account == null)
-        {
-            return new List<Transaction>();
-        }
-
-        return account.SourceTransactions.ToList();
-    }
-
     public async Task<List<Account>> GetAllAccounts()
     {
         return await _dbContext.Accounts.ToListAsync();

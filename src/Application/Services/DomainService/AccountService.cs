@@ -39,19 +39,6 @@ public class AccountService : IAccountService
     {
         return await _accountRepository.GetByIdAsync(accountId);
     }
-    
-    public async Task<Result<List<Transaction>>> GetTransactionsByUserId(long accountId)
-    {
-        var account = await _accountRepository.GetByIdAsync(accountId);
-        
-        if (account == null)
-        {
-            return Result<List<Transaction>>.Fail("Account not found");
-        }
-        
-        var transactions = await _accountRepository.GetTransactionsByAccountId(accountId);
-        return Result<List<Transaction>>.Ok(transactions);
-    }
 
     public async Task<Result<List<Account>>> GetAllAccountsAsync()
     {

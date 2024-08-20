@@ -62,24 +62,6 @@ public class AccountController : ControllerBase
         return Ok(account.ToAccountDto());
     }
 
-    [HttpGet("{accountId}")]
-    [Authorize]
-    [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin, AppRoles.DataAnalyst)]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(404)]
-    public async Task<IActionResult> GetTransactionsByUserId(long accountId)
-    {
-        var result = await _accountService.GetTransactionsByUserId(accountId);
-        if (!result.Succeed)
-        {
-            return NotFound("User do not exist");
-        }
-
-        var transactions = result.Value;
-
-        return Ok(transactions!.Select(t => t.ToTransactionDto()));
-    }
-
     [HttpGet]
     [Authorize]
     [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin, AppRoles.DataAnalyst)]

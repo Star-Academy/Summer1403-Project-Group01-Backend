@@ -66,4 +66,16 @@ public class TransactionController : ControllerBase
         var response = allTransactions.Value!;
         return Ok(response.ToGotAllTransactionsDto());
     }
+    
+    [HttpGet("{accountId}")]
+    [Authorize]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin, AppRoles.DataAnalyst)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    public async Task<IActionResult> GetTransactionsByAccountId(long accountId)
+    {
+        var transactions = await _transactionService.GetTransactionsByAccountIdAsync(accountId);
+        return Ok(transactions);
+    }
 }

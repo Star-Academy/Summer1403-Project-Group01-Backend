@@ -7,6 +7,5 @@ public interface IAccountService
 {
     Task<Result> AddAccountsFromCsvAsync(string filePath);
     Task<Account?> GetAccountByIdAsync(long accountId);
-    Task<Result<List<Transaction>>> GetTransactionsByUserId(long accountId);
     Task<Result<List<Account>>> GetAllAccountsAsync();
 }
