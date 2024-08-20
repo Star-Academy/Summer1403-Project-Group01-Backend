@@ -310,4 +310,43 @@ public class IdentityServiceTests
         // Assert
         Assert.True(result.Succeed);
     }
+    
+    // GetUsers Tests
+    [Fact]
+    public async Task GetUsersAsync_ReturnsUserListWithRoles()
+    {
+        // Arrange
+        var users = new List<AppUser>
+        {
+            new AppUser { UserName = "User1", Email = "user1@example.com" },
+            new AppUser { UserName = "User2", Email = "user2@example.com" }
+        };
+
+        var roles = new List<string> { "Admin", "User" };
+
+        var userResponses = new List<GetUserResponse>
+        {
+            new GetUserResponse { UserName = "User1", Email = "user1@example.com", Role = "Admin" },
+            new GetUserResponse { UserName = "User2", Email = "user2@example.com", Role = "User" }
+        };
+
+        // Mock the repository methods
+        _userManagerRepository.GetUsersAsync()
+            .Returns(Task.FromResult(users));
+        
+        _userManagerRepository.GetRoleAsync(users[0])
+            .Returns(Task.FromResult(roles[0]));
+
+        _userManagerRepository.GetRoleAsync(users[1])
+            .Returns(Task.FromResult(roles[1]));
+
+        // Act
+        var result = await _identityService.GetUsersAsync();
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count);
+        Assert.Contains(result, r => r.UserName == "User1" && r.Role == "Admin");
+        Assert.Contains(result, r => r.UserName == "User2" && r.Role == "User");
+    }
 }
