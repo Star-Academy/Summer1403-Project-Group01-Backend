@@ -51,11 +51,6 @@ public class AccountService : IAccountService
         try
         {
             var accounts = await _accountRepository.GetAllAccounts();
-
-            if (accounts.Count == 0)
-            {
-                return Result<GetAllAccountsResponse>.Fail("No Accounts found");
-            }
             var response = accounts.ToGetAllAccountsResponse();
             return Result<GetAllAccountsResponse>.Ok(response);
         }

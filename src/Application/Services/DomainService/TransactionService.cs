@@ -39,11 +39,6 @@ public class TransactionService : ITransactionService
         try
         {
             var transactions = await _transactionRepository.GetAllTransactions();
-
-            if (transactions.Count == 0)
-            {
-                return Result<GetAllTransactionsResponse>.Fail("No transactions found");
-            }
             var response = transactions.ToGetAllTransactionsResponse();
             return Result<GetAllTransactionsResponse>.Ok(response);
         }
