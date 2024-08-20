@@ -1,15 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
+using Web.Models;
 
 namespace Web.Helper;
 
 public static class Errors
 {
-    public static Object New(string title, string message)
+    public static ErrorResponse New(string title, string message)
     {
-        return new 
+        return new ErrorResponse
         {
-            title = title,
-            message = new List<string> { message }
+            Title = title,
+            Message = new List<string> { message }
         };
     }
 }
