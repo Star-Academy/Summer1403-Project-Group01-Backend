@@ -2,6 +2,8 @@
 using Application.DTOs;
 using Application.DTOs.Identity;
 using Application.DTOs.Identity.ChangeRole;
+using Application.DTOs.Identity.CreateUser;
+using Application.DTOs.Identity.LoginUser;
 using Application.Interfaces.Services;
 using Domain.Constants;
 using Domain.Entities;
