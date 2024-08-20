@@ -23,20 +23,20 @@ public static class AccountMapper
         };
     }
     
-    public static List<AccountDto> ToGotAllAccountsDto(this GetAllAccountsResponse response)
+    public static List<AccountDto> ToGotAllAccountsDto(this List<Account> accounts)
     {
-        return response.Accounts.Select(account => new AccountDto
+        return accounts.Select(account => new AccountDto
         {
-            AccountId = account.AccountID,
-            CardId = account.CardID,
-            Iban = account.IBAN,
+            AccountId = account.AccountId,
+            CardId = account.CardId,
+            Iban = account.Iban,
             AccountType = account.AccountType,
             BranchTelephone = account.BranchTelephone,
-            BranchAddress = account.BranchAdress,
+            BranchAddress = account.BranchAddress,
             BranchName = account.BranchName,
             OwnerName = account.OwnerName,
             OwnerLastName = account.OwnerLastName,
-            OwnerId = account.OwnerID
+            OwnerId = account.OwnerId
         }).ToList();
     }
 }

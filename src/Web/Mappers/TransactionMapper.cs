@@ -1,4 +1,3 @@
-using Application.DTOs.Transaction;
 using Domain.Entities;
 using Web.DTOs.Transaction;
 
@@ -19,13 +18,13 @@ public static class TransactionMapper
         };
     }
 
-    public static List<TransactionDto> ToGotAllTransactionsDto(this GetAllTransactionsResponse response)
+    public static List<TransactionDto> ToGotAllTransactionsDto(this List<Transaction> transactions)
     {
-        return response.Transactions.Select(transaction => new TransactionDto
+        return transactions.Select(transaction => new TransactionDto
         {
-            TransactionId = transaction.TransactionID,
-            SourceAccountId = transaction.SourceAcount,
-            DestinationAccountId = transaction.DestiantionAccount,
+            TransactionId = transaction.TransactionId,
+            SourceAccountId = transaction.SourceAccountId,
+            DestinationAccountId = transaction.DestinationAccountId,
             Amount = transaction.Amount,
             Date = transaction.Date,
             Type = transaction.Type

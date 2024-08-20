@@ -53,17 +53,16 @@ public class AccountService : IAccountService
         return Result<List<Transaction>>.Ok(transactions);
     }
 
-    public async Task<Result<GetAllAccountsResponse>> GetAllAccountsAsync()
+    public async Task<Result<List<Account>>> GetAllAccountsAsync()
     {
         try
         {
             var accounts = await _accountRepository.GetAllAccounts();
-            var response = accounts.ToGetAllAccountsResponse();
-            return Result<GetAllAccountsResponse>.Ok(response);
+            return Result<List<Account>>.Ok(accounts);
         }
         catch (Exception ex)
         {
-            return Result<GetAllAccountsResponse>.Fail($"An error occurred: {ex.Message}");
+            return Result<List<Account>>.Fail($"An error occurred: {ex.Message}");
         }
     }
 }

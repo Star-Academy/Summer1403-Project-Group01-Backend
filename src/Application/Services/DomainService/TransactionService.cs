@@ -36,17 +36,16 @@ public class TransactionService : ITransactionService
         }
     }
 
-    public async Task<Result<GetAllTransactionsResponse>> GetAllTransactionsAsync()
+    public async Task<Result<List<Transaction>>> GetAllTransactionsAsync()
     {
         try
         {
             var transactions = await _transactionRepository.GetAllTransactions();
-            var response = transactions.ToGetAllTransactionsResponse();
-            return Result<GetAllTransactionsResponse>.Ok(response);
+            return Result<List<Transaction>>.Ok(transactions);
         }
         catch (Exception ex)
         {
-            return Result<GetAllTransactionsResponse>.Fail($"An error occurred: {ex.Message}");
+            return Result<List<Transaction>>.Fail($"An error occurred: {ex.Message}");
         }
     }
 }
