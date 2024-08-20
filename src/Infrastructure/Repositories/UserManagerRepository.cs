@@ -21,13 +21,15 @@ public class UserManagerRepository : IUserManagerRepository
 
     public async Task<IdentityResult> SetRoleAsync(AppUser user, string role)
     {
-        // TODO check if adding multiple roles
+        if(_userManager.GetRolesAsync(user).Result.Count > 0)
+        {
+            return IdentityResult.Failed(new IdentityError { Description = "User already has a role" });
+        }
         return await _userManager.AddToRoleAsync(user, role);
     }
     
     public async Task<IdentityResult> ChangeRoleAsync(AppUser user, string newRole)
     {
-        // TODO check if removing multiple roles
         var currentRole = await GetRoleAsync(user);
         if (currentRole == newRole)
         {
@@ -70,13 +72,11 @@ public class UserManagerRepository : IUserManagerRepository
 
     public async Task<string> GetRoleAsync(AppUser user)
     {
-        // TODO can return null here.
         return (await _userManager.GetRolesAsync(user)).Single();
     }
 
     public async Task<bool> CheckPasswordAsync(AppUser user, string password)
     {
-        // TODO there should be a sign in manager service
         return await _userManager.CheckPasswordAsync(user, password);
     }
 
