@@ -154,5 +154,95 @@ public class IdentityServiceTests
         Assert.Equal(expectedResponse.Role, actualResponse.Role);
     }
     
+    // Login Tests
+    [Fact]
+    public async Task Login_WhenUsernameNotFound_ReturnsFailResult()
+    {
+        // Arrange
+        var loginUserRequest = new LoginUserRequest
+        {
+            UserName = "NonExistentUser",
+            Password = "Abc@123"
+        };
 
+        _userManagerRepository.FindByNameAsync(loginUserRequest.UserName).Returns(Task.FromResult<AppUser?>(null));
+
+        // Act
+        var result = await _identityService.Login(loginUserRequest);
+
+        // Assert
+        Assert.False(result.Succeed);
+        Assert.Equal("Invalid username/email!", result.Message);
+    }
+    
+    [Fact]
+    public async Task Login_WhenPasswordIncorrect_ReturnsFailResult()
+    {
+        // Arrange
+        var loginUserRequest = new LoginUserRequest
+        {
+            UserName = "MobinBarfi",
+            Password = "WrongPassword"
+        };
+
+        var appUser = new AppUser();
+        _userManagerRepository.FindByNameAsync(loginUserRequest.UserName).Returns(Task.FromResult(appUser));
+        _userManagerRepository.CheckPasswordAsync(appUser, loginUserRequest.Password).Returns(Task.FromResult(false));
+
+        // Act
+        var result = await _identityService.Login(loginUserRequest);
+
+        // Assert
+        Assert.False(result.Succeed);
+        Assert.Equal("Username/Email not found and/or password incorrect", result.Message);
+    }
+
+    [Fact]
+    public async Task Login_WhenLoginSucceeds_ReturnsSuccessResult()
+    {
+        // Arrange
+        var loginDto = new LoginDto
+        {
+            UserName = "MobinBarfi",
+            Password = "Abc@123"
+        };
+
+        var loginRequest = loginDto.ToLoginUserRequest();
+        var appUser = new AppUser
+        {
+            UserName = loginDto.UserName,
+            Email = "mobinbr99@gmail.com"
+        };
+        var role = "Admin";
+        var token = "valid.jwt.token";
+
+        var loginUserResponse = new LoginUserResponse
+        {
+            UserName = appUser.UserName,
+            Email = appUser.Email,
+            Token = token
+        };
+
+        // Set up the mock behavior
+        _userManagerRepository.FindByNameAsync(loginRequest.UserName)
+            .Returns(Task.FromResult(appUser));
+        _userManagerRepository.CheckPasswordAsync(appUser, loginRequest.Password)
+            .Returns(Task.FromResult(true));
+        _userManagerRepository.GetRoleAsync(appUser)
+            .Returns(Task.FromResult(role));
+        _jwtGenerator.GenerateToken(appUser, role)
+            .Returns(token);
+
+        // Act
+        var result = await _identityService.Login(loginRequest);
+
+        // Assert
+        Assert.True(result.Succeed);
+        var loginResponse = result.Value;
+
+        Assert.NotNull(loginResponse);
+        Assert.Equal(loginUserResponse.UserName, loginResponse.UserName);
+        Assert.Equal(loginUserResponse.Email, loginResponse.Email);
+        Assert.Equal(loginUserResponse.Token, loginResponse.Token);
+    }
 }
