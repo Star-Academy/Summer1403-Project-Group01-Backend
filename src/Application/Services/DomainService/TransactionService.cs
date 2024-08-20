@@ -17,7 +17,7 @@ public class TransactionService : ITransactionService
         _transactionRepository = transactionRepository;
     }
 
-    public async Task AddTransactionsFromCsvAsync(string filePath)
+    public async Task<Result> AddTransactionsFromCsvAsync(string filePath)
     {
         var transactionCsvModels = CsvReaderService.ReadFromCsv<TransactionCsvModel>(filePath);
         
@@ -30,8 +30,15 @@ public class TransactionService : ITransactionService
             Date = csvModel.Date,
             Type = csvModel.Type
         }).ToList();
-        
-        await _transactionRepository.CreateBulkAsync(transactions);
+        try
+        {
+            await _transactionRepository.CreateBulkAsync(transactions);
+            return Result.Ok();
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail($"An error occurred: {ex.Message}");
+        }
     }
 
     public async Task<Result<GetAllTransactionsResponse>> GetAllTransactionsAsync()

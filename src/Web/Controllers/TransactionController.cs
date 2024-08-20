@@ -1,6 +1,9 @@
 ﻿using Application.Interfaces.Services;
+using Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Helper;
+using Web.Identity;
 using Web.Mappers;
 
 namespace Web.Controllers;
@@ -9,7 +12,7 @@ namespace Web.Controllers;
 [Route("[controller]/[action]")]
 public class TransactionController : ControllerBase
 {
-    public readonly ITransactionService _transactionService;
+    private readonly ITransactionService _transactionService;
 
     public TransactionController(ITransactionService transactionService)
     {
@@ -17,6 +20,12 @@ public class TransactionController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     public async Task<IActionResult> ImportTransactions([FromForm] IFormFile file)
     {
         if (file.Length == 0)
@@ -29,13 +38,23 @@ public class TransactionController : ControllerBase
             await file.CopyToAsync(stream);
         }
 
-        await _transactionService.AddTransactionsFromCsvAsync(filePath);
-
-        return Ok("Transactions imported successfully.");
+        var result = await _transactionService.AddTransactionsFromCsvAsync(filePath);
+        
+        if (!result.Succeed)
+        {
+            return BadRequest(result.Message);
+        }
+        
+        return Ok();
     }
 
     [HttpGet]
-    // [Authorize]
+    [Authorize]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin, AppRoles.DataAnalyst)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     public async Task<IActionResult> GetAllTransactions()
     {
         var allTransactions = await _transactionService.GetAllTransactionsAsync();

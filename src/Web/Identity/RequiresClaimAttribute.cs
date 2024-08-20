@@ -4,19 +4,24 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace Web.Identity;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class RequiresClaimAttribute : Attribute, IAuthorizationFilter
+public class RequiresAnyRoleAttribute : Attribute, IAuthorizationFilter
 {
     private readonly string _claimName;
-    private readonly string _claimValue;
+    private readonly string[] _roles;
 
-    public RequiresClaimAttribute(string claimName, string claimValue)
+    public RequiresAnyRoleAttribute(string claimName, params string[] roles)
     {
         _claimName = claimName;
-        _claimValue = claimValue;
+        _roles = roles;
     }
+
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        if (!context.HttpContext.User.HasClaim(_claimName, _claimValue))
+        var user = context.HttpContext.User;
+        
+        var hasRequiredRole = _roles.Any(role => user.HasClaim(_claimName, role));
+
+        if (!hasRequiredRole)
         {
             context.Result = new ForbidResult();
         }

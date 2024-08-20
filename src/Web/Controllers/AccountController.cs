@@ -1,6 +1,10 @@
 using Application.Interfaces.Services;
+using Domain.Constants;
+using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Helper;
+using Web.Identity;
 using Web.Mappers;
 
 namespace Web.Controllers;
@@ -17,6 +21,10 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
     public async Task<IActionResult> ImportAccounts([FromForm] IFormFile file)
     {
         if (file.Length == 0)
@@ -29,12 +37,20 @@ public class AccountController : ControllerBase
             await file.CopyToAsync(stream);
         }
 
-        await _accountService.AddAccountsFromCsvAsync(filePath);
-
-        return Ok("Accounts imported successfully.");
+        var result = await _accountService.AddAccountsFromCsvAsync(filePath);
+        if (!result.Succeed)
+        {
+            return BadRequest(result.Message);
+        }
+        
+        return Ok();
     }
 
     [HttpGet("{accountId}")]
+    [Authorize]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin, AppRoles.DataAnalyst)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
     public async Task<IActionResult> GetAccountById(long accountId)
     {
         var account = await _accountService.GetAccountByIdAsync(accountId);
@@ -47,6 +63,10 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet("{accountId}")]
+    [Authorize]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin, AppRoles.DataAnalyst)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
     public async Task<IActionResult> GetTransactionsByUserId(long accountId)
     {
         var result = await _accountService.GetTransactionsByUserId(accountId);
@@ -61,7 +81,10 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet]
-    // [Authorize]
+    [Authorize]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin, AppRoles.DataAnalyst)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
     public async Task<IActionResult> GetAllAccounts()
     {
         var allAccounts = await _accountService.GetAllAccountsAsync();

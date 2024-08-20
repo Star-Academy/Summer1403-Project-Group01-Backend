@@ -23,6 +23,10 @@ public class ProfileController : ControllerBase
 
     [HttpPut]
     [Authorize]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     public async Task<IActionResult> EditProfileInfo([FromBody] EditProfileInfoDto editProfileInfoDto)
     {
         var userId = User.Claims.First(x => x.Type == Claims.UserId).Value;
@@ -39,6 +43,10 @@ public class ProfileController : ControllerBase
     
     [HttpGet]
     [Authorize]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     public async Task<IActionResult> GetProfileInfo()
     {
         var userId = User.Claims.First(x => x.Type == Claims.UserId).Value;
@@ -57,6 +65,10 @@ public class ProfileController : ControllerBase
 
     [HttpPut]
     [Authorize]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
     {
         var userId = User.Claims.First(x => x.Type == Claims.UserId).Value;

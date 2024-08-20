@@ -21,7 +21,11 @@ public class IdentityController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    [RequiresClaim(Claims.Role, AppRoles.Admin)]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     public async Task<IActionResult> Signup([FromBody] SignupDto signupDto)
     {
         var result = await _identityService.SignUpUser(signupDto.ToCreateUserRequest());
@@ -37,6 +41,8 @@ public class IdentityController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(401)]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
         var result = await _identityService.Login(loginDto.ToLoginUserRequest());
@@ -53,7 +59,11 @@ public class IdentityController : ControllerBase
     
     [HttpPut]
     [Authorize]
-    [RequiresClaim(Claims.Role, AppRoles.Admin)]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     public async Task<IActionResult> ChangeRole([FromBody] ChangeRoleDto changeRoleDto)
     {
         var result = await _identityService.ChangeRole(changeRoleDto.ToChangeRoleRequest());
@@ -68,7 +78,10 @@ public class IdentityController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    [RequiresClaim(Claims.Role, AppRoles.Admin)]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     public async Task<IActionResult> GetUsersAsync()
     {
         var appUsersWithRoles = await _identityService.GetUsersAsync();

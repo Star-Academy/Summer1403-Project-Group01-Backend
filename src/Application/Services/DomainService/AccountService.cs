@@ -17,15 +17,22 @@ public class AccountService : IAccountService
         _accountRepository = accountRepository;
     }
 
-    public async Task AddAccountsFromCsvAsync(string filePath)
+    public async Task<Result> AddAccountsFromCsvAsync(string filePath)
     {
         var accountCsvModels = CsvReaderService.ReadFromCsv<AccountCsvModel>(filePath);
 
         var accounts = accountCsvModels
             .Select(csvModel => csvModel.ToAccount())
             .ToList();
-        
-        await _accountRepository.CreateBulkAsync(accounts);
+        try
+        {
+            await _accountRepository.CreateBulkAsync(accounts);
+            return Result.Ok();
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail($"An error occurred: {ex.Message}");
+        }
     }
 
     public async Task<Account?> GetAccountByIdAsync(long accountId)
