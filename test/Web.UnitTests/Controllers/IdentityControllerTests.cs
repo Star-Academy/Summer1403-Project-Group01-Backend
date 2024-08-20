@@ -189,4 +189,56 @@ public class IdentityControllerTests
         Assert.Equal("MobinBarfi", response.UserName);
         Assert.Equal("FakeToken", response.Token);
     }
+    
+    // ChangeRole Tests
+    [Fact]
+    public async Task ChangeRole_WhenRoleDoesNotExist_ReturnsBadRequest()
+    {
+        // Arrange
+        var changeRoleDto = new ChangeRoleDto
+        {
+            UserName = "MobinBarfi",
+            Role = "NonExistentRole"
+        };
+        
+        _identityServiceMock
+            .ChangeRole(Arg.Any<ChangeRoleRequest>())
+            .Returns(Result.Fail("role does not exist"));
+
+        // Act
+        var result = await _controller.ChangeRole(changeRoleDto);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        var errorResponse = Assert.IsType<ErrorResponse>(badRequestResult.Value);
+
+        Assert.Equal(400, badRequestResult.StatusCode);
+        Assert.Equal("ChangeRole", errorResponse.Title);
+        Assert.NotNull(errorResponse.Message);
+        Assert.Contains("role does not exist", errorResponse.Message);
+    }
+
+    [Fact]
+    public async Task ChangeRole_WhenOperationSucceeds_ReturnsOk()
+    {
+        // Arrange
+        var changeRoleDto = new ChangeRoleDto
+        {
+            UserName = "MobinBarfi",
+            Role = "Admin"
+        };
+
+        _identityServiceMock
+            .ChangeRole(Arg.Any<ChangeRoleRequest>())
+            .Returns(Result.Ok());
+
+        // Act
+        var result = await _controller.ChangeRole(changeRoleDto);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+
+        Assert.Equal(200, okResult.StatusCode);
+        Assert.Equal("Role changed successfully!", okResult.Value);
+    }
 }
