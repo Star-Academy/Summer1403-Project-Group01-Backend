@@ -28,11 +28,13 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test_results.xml" --results-directory "./TestResults"
+        run: dotnet test --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" || true
 
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
         with:
-          name: test-results
-          path: ./TestResults
-        if: ${{ always() }}
+          name: DotNET Tests
+          path: "**/test-results.trx"
+          reporter: dotnet-trx
+          fail-on-error: true
