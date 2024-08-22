@@ -18,15 +18,15 @@ public class IdentityServiceTests
 {
     private readonly IUserManagerRepository _userManagerRepository;
     private readonly IRoleManagerRepository _roleManagerRepository;
-    private readonly IJwtGenerator _jwtGenerator;
+    private readonly ITokenService _tokenService;
     private readonly IdentityService _identityService;
 
     public IdentityServiceTests()
     {
         _userManagerRepository = Substitute.For<IUserManagerRepository>();
         _roleManagerRepository = Substitute.For<IRoleManagerRepository>();
-        _jwtGenerator = Substitute.For<IJwtGenerator>();
-        _identityService = new IdentityService(_userManagerRepository, _roleManagerRepository, _jwtGenerator);
+        _tokenService = Substitute.For<ITokenService>();
+        _identityService = new IdentityService(_userManagerRepository, _roleManagerRepository, _tokenService);
     }
 
     // Signup Tests
@@ -230,7 +230,7 @@ public class IdentityServiceTests
             .Returns(Task.FromResult(true));
         _userManagerRepository.GetRoleAsync(appUser)
             .Returns(Task.FromResult(role));
-        _jwtGenerator.GenerateToken(appUser, role)
+        _tokenService.GenerateToken(appUser, role)
             .Returns(token);
 
         // Act

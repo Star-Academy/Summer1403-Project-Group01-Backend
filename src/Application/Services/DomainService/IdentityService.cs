@@ -16,14 +16,14 @@ public class IdentityService : IIdentityService
 {
     private readonly IUserManagerRepository _userManagerRepository;
     private readonly IRoleManagerRepository _roleManagerRepository;
-    private readonly IJwtGenerator _jwtGenerator;
+    private readonly ITokenService _tokenService;
     public IdentityService(IUserManagerRepository userManagerRepository,
         IRoleManagerRepository roleManagerRepository,
-        IJwtGenerator jwtGenerator)
+        ITokenService tokenService)
     {
         _userManagerRepository = userManagerRepository;
         _roleManagerRepository = roleManagerRepository;
-        _jwtGenerator = jwtGenerator;
+        _tokenService = tokenService;
     }
 
     public async Task<Result<CreateUserResponse>> SignUpUser(CreateUserRequest createUserRequest)
@@ -74,7 +74,7 @@ public class IdentityService : IIdentityService
         if (!succeed) return Result<LoginUserResponse>.Fail("Username/Email not found and/or password incorrect");
         
         var role = await _userManagerRepository.GetRoleAsync(appUser);
-        var token = _jwtGenerator.GenerateToken(appUser, role);
+        var token = _tokenService.GenerateToken(appUser, role);
 
         return Result<LoginUserResponse>.Ok(appUser.ToLoginUserResponse(role, token));
     }
@@ -107,5 +107,11 @@ public class IdentityService : IIdentityService
         }
 
         return userWithRoles;
+    }
+
+    public async Task<Result> Logout(string token)
+    {
+        await _tokenService.AddInvalidatedTokenAsync(token);
+        return Result.Ok();
     }
 }

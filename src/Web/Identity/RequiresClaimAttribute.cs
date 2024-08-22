@@ -19,6 +19,12 @@ public class RequiresAnyRoleAttribute : Attribute, IAuthorizationFilter
     {
         var user = context.HttpContext.User;
         
+        if (user.Identity is { IsAuthenticated: false })
+        {
+            context.Result = new UnauthorizedResult();
+            return;
+        }
+        
         var hasRequiredRole = _roles.Any(role => user.HasClaim(_claimName, role));
 
         if (!hasRequiredRole)
