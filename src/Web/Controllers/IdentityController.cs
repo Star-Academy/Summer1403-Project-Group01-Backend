@@ -88,4 +88,18 @@ public class IdentityController : ControllerBase
 
         return Ok(appUsersWithRoles);
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Logout()
+    {
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var result = await _identityService.Logout(token);
+        if (!result.Succeed)
+        {
+            return BadRequest(Errors.New(nameof(Logout), result.Message));
+        }
+
+        return Ok("Logged out successfully!");
+    }
 }

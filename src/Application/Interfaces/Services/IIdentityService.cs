@@ -12,4 +12,5 @@ public interface IIdentityService
     Task<Result<LoginUserResponse>> Login(LoginUserRequest loginDto);
     Task<Result> ChangeRole(ChangeRoleRequest changeRoleRequest);
     Task<List<GetUserResponse>> GetUsersAsync();
+    Task<Result> Logout(string token);
 }

@@ -11,7 +11,7 @@ public static partial class ServiceExtensions
 {
     public static void AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<IJwtGenerator, JwtGeneratorService>();
+        services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IRoleManagerRepository, RoleManagerRepository>();
         services.AddScoped<IUserManagerRepository, UserManagerRepository>();
         services.AddScoped<IIdentityService, IdentityService>();
