@@ -7,10 +7,8 @@ public class NodeAttribute
 {
     [Key] 
     public long Id { get; set; }
-
-    public string Label { get; set; } = string.Empty;
-    
+    [MaxLength(255)]
+    public string Label { get; set; } = null!;
     public long NodeTypeId { get; set; }
-    
     public NodeType? NodeType { get; set; }
 }

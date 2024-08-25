@@ -20,5 +20,11 @@ public static partial class ServiceExtensions
         services.AddScoped<ITransactionService, TransactionService>();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<INodeRepository, NodeRepository>();
+        services.AddScoped<INodeService, NodeService>();
+        services.AddScoped<INodeTypeRepository, NodeTypeRepository>();
+        services.AddScoped<INodeTypeService, NodeTypeService>();
+        services.AddScoped<INodeAttributeRepository, NodeAttributeRepository>();
+        services.AddScoped<INodeAttributeService, NodeAttributeService>();
     }
 }

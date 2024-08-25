@@ -11,6 +11,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbConte
 {
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<Node> Nodes { get; set; }
+    public DbSet<NodeType> NodeTypes { get; set; }
+    public DbSet<NodeAttribute> NodeAttributes { get; set; }
+    public DbSet<NodeAttributeValue> NodeAttributeValues { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -33,6 +38,30 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbConte
             .HasOne(t => t.DestinationAccount)
             .WithMany(a => a.DestinationTransactions)
             .HasForeignKey(t => t.DestinationAccountId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Node>()
+            .HasOne(n => n.Type)
+            .WithMany(t => t.Nodes)
+            .HasForeignKey(n => n.TypeId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<NodeAttribute>()
+            .HasOne(attr => attr.NodeType)
+            .WithMany(t => t.Attributes)
+            .HasForeignKey(attr => attr.NodeTypeId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<NodeAttributeValue>()
+            .HasOne(val => val.Node)
+            .WithMany(n => n.AttributeValues)
+            .HasForeignKey(val => val.NodeId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<NodeAttributeValue>()
+            .HasOne(val => val.NodeAttribute)
+            .WithMany()
+            .HasForeignKey(val => val.NodeAttributeId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
