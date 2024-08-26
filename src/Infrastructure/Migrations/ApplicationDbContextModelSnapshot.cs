@@ -150,6 +150,186 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.Edge", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("DestinationValue")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SourceValue")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TypeId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DestinationValue");
+
+                    b.HasIndex("SourceValue");
+
+                    b.HasIndex("TypeId");
+
+                    b.ToTable("Edges");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EdgeAttribute", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("EdgeTypeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EdgeTypeId");
+
+                    b.ToTable("EdgeAttributes");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EdgeAttributeValue", b =>
+                {
+                    b.Property<long>("EdgeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("EdgeAttributeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("EdgeId", "EdgeAttributeId");
+
+                    b.HasIndex("EdgeAttributeId");
+
+                    b.ToTable("EdgeAttributeValues");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EdgeType", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("DestinationNodeAttributeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("SourceNodeAttributeId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DestinationNodeAttributeId");
+
+                    b.HasIndex("SourceNodeAttributeId");
+
+                    b.ToTable("EdgeTypes");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Node", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("TypeId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TypeId");
+
+                    b.ToTable("Nodes");
+                });
+
+            modelBuilder.Entity("Domain.Entities.NodeAttribute", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("NodeTypeId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NodeTypeId");
+
+                    b.ToTable("NodeAttribute");
+                });
+
+            modelBuilder.Entity("Domain.Entities.NodeAttributeValue", b =>
+                {
+                    b.Property<long>("NodeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("NodeId"));
+
+                    b.Property<long>("NodeAttributeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("NodeId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("NodeId");
+
+                    b.HasIndex("NodeAttributeId");
+
+                    b.HasIndex("NodeId1");
+
+                    b.ToTable("NodeAttributeValue");
+                });
+
+            modelBuilder.Entity("Domain.Entities.NodeType", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NodeType");
+                });
+
             modelBuilder.Entity("Domain.Entities.Transaction", b =>
                 {
                     b.Property<long>("TransactionId")
@@ -212,19 +392,19 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5a15c66d-6214-4dbb-a00d-10a4f7ca4cf8",
+                            Id = "1e432022-2e6a-43f7-abc9-e178e6438756",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "46a9f2ed-8738-448a-9ca9-3afa00eee4ff",
+                            Id = "092f423e-8016-45cf-af2c-bcbf65b7c012",
                             Name = "DataAdmin",
                             NormalizedName = "DATAADMIN"
                         },
                         new
                         {
-                            Id = "48732a60-c9aa-4aec-9ef3-b880ab162088",
+                            Id = "3afa9c92-0802-4ecf-a7e9-e053796a4c01",
                             Name = "DataAnalyst",
                             NormalizedName = "DATAANALYST"
                         });
@@ -336,6 +516,119 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.Edge", b =>
+                {
+                    b.HasOne("Domain.Entities.Node", "DestinationNode")
+                        .WithMany()
+                        .HasForeignKey("DestinationValue");
+
+                    b.HasOne("Domain.Entities.Node", "SourceNode")
+                        .WithMany()
+                        .HasForeignKey("SourceValue");
+
+                    b.HasOne("Domain.Entities.EdgeType", "Type")
+                        .WithMany()
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DestinationNode");
+
+                    b.Navigation("SourceNode");
+
+                    b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EdgeAttribute", b =>
+                {
+                    b.HasOne("Domain.Entities.EdgeType", "EdgeType")
+                        .WithMany()
+                        .HasForeignKey("EdgeTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EdgeType");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EdgeAttributeValue", b =>
+                {
+                    b.HasOne("Domain.Entities.EdgeAttribute", "EdgeAttribute")
+                        .WithMany("EdgeAttributeValues")
+                        .HasForeignKey("EdgeAttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Edge", "Edge")
+                        .WithMany("AttributeValues")
+                        .HasForeignKey("EdgeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Edge");
+
+                    b.Navigation("EdgeAttribute");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EdgeType", b =>
+                {
+                    b.HasOne("Domain.Entities.NodeAttribute", "DestinationNodeAttribute")
+                        .WithMany()
+                        .HasForeignKey("DestinationNodeAttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.NodeAttribute", "SourceNodeAttribute")
+                        .WithMany()
+                        .HasForeignKey("SourceNodeAttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DestinationNodeAttribute");
+
+                    b.Navigation("SourceNodeAttribute");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Node", b =>
+                {
+                    b.HasOne("Domain.Entities.NodeType", "Type")
+                        .WithMany()
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("Domain.Entities.NodeAttribute", b =>
+                {
+                    b.HasOne("Domain.Entities.NodeType", "NodeType")
+                        .WithMany()
+                        .HasForeignKey("NodeTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NodeType");
+                });
+
+            modelBuilder.Entity("Domain.Entities.NodeAttributeValue", b =>
+                {
+                    b.HasOne("Domain.Entities.NodeAttribute", "NodeAttribute")
+                        .WithMany()
+                        .HasForeignKey("NodeAttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Node", "Node")
+                        .WithMany("AttributeValues")
+                        .HasForeignKey("NodeId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Node");
+
+                    b.Navigation("NodeAttribute");
+                });
+
             modelBuilder.Entity("Domain.Entities.Transaction", b =>
                 {
                     b.HasOne("Domain.Entities.Account", "DestinationAccount")
@@ -411,6 +704,21 @@ namespace Infrastructure.Migrations
                     b.Navigation("DestinationTransactions");
 
                     b.Navigation("SourceTransactions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Edge", b =>
+                {
+                    b.Navigation("AttributeValues");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EdgeAttribute", b =>
+                {
+                    b.Navigation("EdgeAttributeValues");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Node", b =>
+                {
+                    b.Navigation("AttributeValues");
                 });
 #pragma warning restore 612, 618
         }
