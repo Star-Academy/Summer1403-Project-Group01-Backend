@@ -11,5 +11,6 @@ public class EdgeAttribute
     
     public long EdgeTypeId { get; set; }
     
-    public EdgeType? EdgeTypee { get; set; }
+    public EdgeType? EdgeType { get; set; }
+    public List<EdgeAttributeValue>? EdgeAttributeValues { get; set; }
 }

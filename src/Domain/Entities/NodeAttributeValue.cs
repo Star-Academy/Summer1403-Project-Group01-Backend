@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Domain.Entities;
 
 public class NodeAttributeValue
 {
+    [Key]
     public long NodeId { get; set; }
     
     public Node? Node { get; set; }

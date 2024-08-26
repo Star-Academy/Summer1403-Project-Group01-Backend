@@ -7,9 +7,9 @@ public class Edge
     [Key]
     public long Id { get; set; }
 
-    public string SourceValue { get; set; } = string.Empty;
+    public long SourceValue { get; set; }
 
-    public string DestinationValue { get; set; } = string.Empty;
+    public long DestinationValue { get; set; }
     
     public Node? SourceNode { get; set; }
     
