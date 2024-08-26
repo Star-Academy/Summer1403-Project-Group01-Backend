@@ -20,5 +20,8 @@ public static partial class ServiceExtensions
         services.AddScoped<ITransactionService, TransactionService>();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<IEdgeRepository, EdgeRepository>();
+        services.AddScoped<IEdgeService, EdgeService>();
+        services.AddScoped<IEdgeAttributeRepository, EdgeAttributeRepository>();
     }
 }
