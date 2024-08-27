@@ -36,7 +36,7 @@ jobs:
           context: .
           file: backend.Dockerfile
           push: true
-          tags: mohammadsadeghmontazeri/starback:latest
+          tags: mohammadsadeghmontazeri/starback:${{ steps.tag_version.outputs.new_tag }}
 
       - name: build and push docker migrate to registry
         uses: docker/build-push-action@v5
@@ -44,7 +44,7 @@ jobs:
           context: .
           file: migrate.Dockerfile
           push: true
-          tags: mohammadsadeghmontazeri/migratestar:latest
+          tags: mohammadsadeghmontazeri/migratestar:${{ steps.tag_version.outputs.new_tag }}
 
       - name: Create Release
         id: create_release

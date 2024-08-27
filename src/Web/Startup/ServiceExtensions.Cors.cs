@@ -10,7 +10,10 @@ namespace Web.Startup
             {
                 options.AddPolicy("AllowSpecificOrigins", corsPolicyBuilder =>
                 {
-                    corsPolicyBuilder.WithOrigins("http://localhost:4200")
+                    corsPolicyBuilder.WithOrigins(
+                        "http://localhost:4200",
+                        "http://external.abriment.com:30081"
+                        )
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
