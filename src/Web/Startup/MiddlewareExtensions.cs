@@ -1,6 +1,4 @@
-﻿using Web.Middleware;
-
-namespace Web.Startup;
+﻿namespace Web.Startup;
 
 public static class MiddlewareExtensions
 {
@@ -14,8 +12,6 @@ public static class MiddlewareExtensions
 
         app.UseHttpsRedirection();
         app.UseCors("AllowSpecificOrigins");
-        
-        app.UseMiddleware<TokenValidationMiddleware>();
         
         app.UseAuthentication();
         app.UseAuthorization();

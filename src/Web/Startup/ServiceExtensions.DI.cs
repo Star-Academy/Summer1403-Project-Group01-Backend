@@ -14,7 +14,7 @@ public static partial class ServiceExtensions
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IRoleManagerRepository, RoleManagerRepository>();
         services.AddScoped<IUserManagerRepository, UserManagerRepository>();
-        services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<ITransactionService, TransactionService>();

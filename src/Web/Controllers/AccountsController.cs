@@ -10,22 +10,22 @@ using Web.Mappers;
 namespace Web.Controllers;
 
 [ApiController]
-[Route("[controller]/[action]")]
-public class AccountController : ControllerBase
+[Route("accounts")]
+public class AccountsController : ControllerBase
 {
     private readonly IAccountService _accountService;
 
-    public AccountController(IAccountService accountService)
+    public AccountsController(IAccountService accountService)
     {
         _accountService = accountService;
     }
 
-    [HttpPost]
+    [HttpPost("upload")]
     [Authorize]
     [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> ImportAccounts([FromForm] IFormFile file)
+    public async Task<IActionResult> UploadAccounts([FromForm] IFormFile file)
     {
         if (file.Length == 0)
             return BadRequest("No file uploaded.");

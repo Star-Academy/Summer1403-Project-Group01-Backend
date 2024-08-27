@@ -14,19 +14,19 @@ using Web.Mappers;
 
 namespace test.Application.UnitTests.Services.DomainService;
 
-public class IdentityServiceTests
+public class UserServiceTests
 {
     private readonly IUserManagerRepository _userManagerRepository;
     private readonly IRoleManagerRepository _roleManagerRepository;
     private readonly ITokenService _tokenService;
-    private readonly IdentityService _identityService;
+    private readonly UserService _userService;
 
-    public IdentityServiceTests()
+    public UserServiceTests()
     {
         _userManagerRepository = Substitute.For<IUserManagerRepository>();
         _roleManagerRepository = Substitute.For<IRoleManagerRepository>();
         _tokenService = Substitute.For<ITokenService>();
-        _identityService = new IdentityService(_userManagerRepository, _roleManagerRepository, _tokenService);
+        _userService = new UserService(_userManagerRepository, _roleManagerRepository, _tokenService);
     }
 
     // Signup Tests
@@ -45,7 +45,7 @@ public class IdentityServiceTests
         _roleManagerRepository.RoleExistsAsync(createUserRequest.Role).Returns(Task.FromResult(false));
 
         // Act
-        var result = await _identityService.SignUpUser(createUserRequest);
+        var result = await _userService.SignUpUser(createUserRequest);
 
         // Assert
         Assert.False(result.Succeed);
@@ -70,7 +70,7 @@ public class IdentityServiceTests
             .Returns(Task.FromResult(IdentityResult.Failed(new IdentityError { Description = "User creation failed" })));
 
         // Act
-        var result = await _identityService.SignUpUser(createUserRequest);
+        var result = await _userService.SignUpUser(createUserRequest);
 
         // Assert
         Assert.False(result.Succeed);
@@ -98,7 +98,7 @@ public class IdentityServiceTests
             .Returns(Task.FromResult(IdentityResult.Failed(new IdentityError { Description = "Role assignment failed" })));
 
         // Act
-        var result = await _identityService.SignUpUser(createUserRequest);
+        var result = await _userService.SignUpUser(createUserRequest);
 
         // Assert
         Assert.False(result.Succeed);
@@ -139,7 +139,7 @@ public class IdentityServiceTests
         };
 
         // Act
-        var result = await _identityService.SignUpUser(createUserRequest);
+        var result = await _userService.SignUpUser(createUserRequest);
 
         // Assert
         Assert.True(result.Succeed);
@@ -168,7 +168,7 @@ public class IdentityServiceTests
         _userManagerRepository.FindByNameAsync(loginUserRequest.UserName).Returns(Task.FromResult<AppUser?>(null));
 
         // Act
-        var result = await _identityService.Login(loginUserRequest);
+        var result = await _userService.Login(loginUserRequest);
 
         // Assert
         Assert.False(result.Succeed);
@@ -190,7 +190,7 @@ public class IdentityServiceTests
         _userManagerRepository.CheckPasswordAsync(appUser, loginUserRequest.Password).Returns(Task.FromResult(false));
 
         // Act
-        var result = await _identityService.Login(loginUserRequest);
+        var result = await _userService.Login(loginUserRequest);
 
         // Assert
         Assert.False(result.Succeed);
@@ -234,7 +234,7 @@ public class IdentityServiceTests
             .Returns(token);
 
         // Act
-        var result = await _identityService.Login(loginRequest);
+        var result = await _userService.Login(loginRequest);
 
         // Assert
         Assert.True(result.Succeed);
@@ -260,7 +260,7 @@ public class IdentityServiceTests
         _roleManagerRepository.RoleExistsAsync(changeRoleRequest.Role).Returns(Task.FromResult(false));
 
         // Act
-        var result = await _identityService.ChangeRole(changeRoleRequest);
+        var result = await _userService.ChangeRole(changeRoleRequest);
 
         // Assert
         Assert.False(result.Succeed);
@@ -281,7 +281,7 @@ public class IdentityServiceTests
         _userManagerRepository.FindByNameAsync(changeRoleRequest.UserName).Returns(Task.FromResult<AppUser?>(null));
 
         // Act
-        var result = await _identityService.ChangeRole(changeRoleRequest);
+        var result = await _userService.ChangeRole(changeRoleRequest);
 
         // Assert
         Assert.False(result.Succeed);
@@ -305,7 +305,7 @@ public class IdentityServiceTests
         _userManagerRepository.ChangeRoleAsync(appUser, changeRoleRequest.Role).Returns(Task.FromResult(IdentityResult.Success));
 
         // Act
-        var result = await _identityService.ChangeRole(changeRoleRequest);
+        var result = await _userService.ChangeRole(changeRoleRequest);
 
         // Assert
         Assert.True(result.Succeed);
@@ -341,7 +341,7 @@ public class IdentityServiceTests
             .Returns(Task.FromResult(roles[1]));
 
         // Act
-        var result = await _identityService.GetUsersAsync();
+        var result = await _userService.GetUsersAsync();
 
         // Assert
         Assert.NotNull(result);
