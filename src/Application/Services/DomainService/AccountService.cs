@@ -26,7 +26,10 @@ public class AccountService : IAccountService
             .ToList();
         try
         {
-            await _accountRepository.CreateBulkAsync(accounts);
+            var existingAccountIds = await _accountRepository.GetAllIdsAsync();
+            var newAccounts = accounts.Where(a => !existingAccountIds.Contains(a.AccountId)).ToList();
+
+            await _accountRepository.CreateBulkAsync(newAccounts);
             return Result.Ok();
         }
         catch (Exception ex)

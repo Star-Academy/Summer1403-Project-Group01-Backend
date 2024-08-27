@@ -27,7 +27,10 @@ public class TransactionService : ITransactionService
         
         try
         {
-            await _transactionRepository.CreateBulkAsync(transactions);
+            var existingTransactionsIds = await _transactionRepository.GetAllIdsAsync();
+            var newTransactions = transactions.Where(t => !existingTransactionsIds.Contains(t.TransactionId)).ToList();
+            
+            await _transactionRepository.CreateBulkAsync(newTransactions);
             return Result.Ok();
         }
         catch (Exception ex)

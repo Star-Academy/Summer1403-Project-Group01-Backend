@@ -37,4 +37,11 @@ public class TransactionRepository : ITransactionRepository
             .Where(transaction => transaction.DestinationAccountId == accountId)
             .ToListAsync();
     }
+
+    public async Task<List<long>> GetAllIdsAsync()
+    {
+        return await _dbContext.Transactions
+            .Select(a => a.TransactionId)
+            .ToListAsync();
+    }
 }
