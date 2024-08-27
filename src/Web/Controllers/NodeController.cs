@@ -13,11 +13,13 @@ namespace Web.Controllers;
 [Route("[controller]/[action]")]
 public class NodeController : ControllerBase
 {
-    private INodeLoader _nodeLoader;
+    private readonly INodeLoader _nodeLoader;
+    private readonly ILogger<NodeController> _logger;
 
-    public NodeController(INodeLoader nodeLoader)
+    public NodeController(INodeLoader nodeLoader, ILogger<NodeController> logger)
     {
         _nodeLoader = nodeLoader;
+        _logger = logger;
     }
 
     [HttpPost]
@@ -25,16 +27,20 @@ public class NodeController : ControllerBase
     [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> Import([FromForm] IFormFile file, [FromBody] ImportNodesDto importNodesDto)
+    public async Task<IActionResult> Import([FromForm] ImportNodesDto importNodesDto)
     {
-        if (file.Length == 0)
+        if (importNodesDto.File.Length == 0)
             return BadRequest(Errors.New(nameof(Import), "No file found."));
 
         var filePath = Path.GetTempFileName();
+        
+        _logger.LogInformation("Received NodeType: {NodeType}", importNodesDto.NodeType);
+        _logger.LogInformation("Received Aliases: {Aliases}", string.Join(", ", importNodesDto.Aliases.Select(kv => $"{kv.Key}: {kv.Value}")));
+
 
         await using (var stream = System.IO.File.Create(filePath))
         {
-            await file.CopyToAsync(stream);
+            await importNodesDto.File.CopyToAsync(stream);
         }
 
         var result = await _nodeLoader.LoadFromFile(new LoadNodesFromFileRequest

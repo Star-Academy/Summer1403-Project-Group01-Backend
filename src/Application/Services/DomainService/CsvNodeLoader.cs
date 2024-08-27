@@ -5,6 +5,7 @@ using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using CsvHelper;
 using Domain.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Services.DomainService;
 
@@ -13,12 +14,14 @@ public class CsvNodeLoader : INodeLoader
     private readonly INodeRepository _nodeRepository;
     private readonly INodeAttributeRepository _nodeAttributeRepository;
     private readonly INodeTypeRepository _nodeTypeRepository;
+    private readonly ILogger<CsvNodeLoader> _logger;
     
-    public CsvNodeLoader(INodeRepository nodeRepository, INodeAttributeRepository nodeAttributeRepository, INodeTypeRepository nodeTypeRepository)
+    public CsvNodeLoader(INodeRepository nodeRepository, INodeAttributeRepository nodeAttributeRepository, INodeTypeRepository nodeTypeRepository, ILogger<CsvNodeLoader> logger)
     {
         _nodeRepository = nodeRepository;
         _nodeAttributeRepository = nodeAttributeRepository;
         _nodeTypeRepository = nodeTypeRepository;
+        _logger = logger;
     }
 
     public async Task<Result> LoadFromFile(LoadNodesFromFileRequest data)
@@ -48,10 +51,14 @@ public class CsvNodeLoader : INodeLoader
         }
 
         var nodes = new List<Node>();
+        long loadedNodesCount = 0;
         while (await csv.ReadAsync())
         {
             nodes.Add(GetNextNode(csv, headers!, data.Aliases, nodeType, validAttributes));
+            loadedNodesCount++;
         }
+        
+        _logger.LogInformation($"{loadedNodesCount} Nodes Loaded.");
 
         await _nodeRepository.AddRangeAsync(nodes);
         
@@ -72,6 +79,8 @@ public class CsvNodeLoader : INodeLoader
             {
                 continue;
             }
+
+            node.TypeId = nodeType.Id;
             
             node.AttributeValues.Add(new NodeAttributeValue
             {

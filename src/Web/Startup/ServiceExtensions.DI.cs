@@ -26,5 +26,6 @@ public static partial class ServiceExtensions
         services.AddScoped<INodeTypeService, NodeTypeService>();
         services.AddScoped<INodeAttributeRepository, NodeAttributeRepository>();
         services.AddScoped<INodeAttributeService, NodeAttributeService>();
+        services.AddScoped<INodeLoader, CsvNodeLoader>();
     }
 }

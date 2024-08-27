@@ -9,5 +9,5 @@ public class Node
     public long Id { get; set; }
     public long TypeId { get; set; }
     public NodeType? Type { get; set; }
-    public List<NodeAttributeValue> AttributeValues { get; set; } = null!;
+    public List<NodeAttributeValue> AttributeValues { get; set; } = [];
 }

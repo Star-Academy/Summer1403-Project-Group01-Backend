@@ -16,7 +16,9 @@ public class NodeAttributeRepository : INodeAttributeRepository
 
     public async Task<List<NodeAttribute>> GetAllAsync()
     {
-        return await _dbContext.NodeAttributes.ToListAsync();
+        return await _dbContext.NodeAttributes
+            .Include(attribute => attribute.NodeType)
+            .ToListAsync();
     }
 
     public async Task<List<NodeAttribute>> GetAllByNodeTypeAsync(string nodeType)
