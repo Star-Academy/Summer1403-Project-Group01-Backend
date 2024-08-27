@@ -76,6 +76,14 @@ public class TransactionController : ControllerBase
     public async Task<IActionResult> GetTransactionsByAccountId(long accountId)
     {
         var transactions = await _transactionService.GetTransactionsByAccountIdAsync(accountId);
-        return Ok(transactions.ToGotAllTransactionsDto());
+
+        if (!transactions.Succeed)
+        {
+            return BadRequest(Errors.New(nameof(GetAllTransactions), transactions.Message));
+        }
+
+        var response = transactions.Value!;
+        
+        return Ok(response);
     }
 }
