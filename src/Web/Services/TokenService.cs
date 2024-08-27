@@ -12,7 +12,6 @@ public class TokenService : ITokenService
 {
     private readonly IConfiguration _configuration;
     private readonly SymmetricSecurityKey _symmetricSecurityKey;
-    private static readonly ConcurrentDictionary<string, DateTime> _invalidatedTokens = new();
 
     public TokenService(IConfiguration configuration)
     {
@@ -45,16 +44,5 @@ public class TokenService : ITokenService
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
-    }
-
-    public Task<bool> IsTokenInvalidatedAsync(string token)
-    {
-        return Task.FromResult(_invalidatedTokens.ContainsKey(token));
-    }
-
-    public Task AddInvalidatedTokenAsync(string token)
-    {
-        _invalidatedTokens[token] = DateTime.UtcNow;
-        return Task.CompletedTask;
     }
 }

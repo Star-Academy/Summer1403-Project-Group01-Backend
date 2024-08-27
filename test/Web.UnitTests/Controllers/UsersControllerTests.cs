@@ -18,15 +18,15 @@ using Xunit.Abstractions;
 
 namespace test.Web.UnitTests.Controllers;
 
-public class IdentityControllerTests
+public class UsersControllerTests
 {
-    private readonly IIdentityService _identityServiceMock;
-    private readonly IdentityController _controller;
+    private readonly IUserService _userServiceMock;
+    private readonly UsersController _controller;
 
-    public IdentityControllerTests()
+    public UsersControllerTests()
     {
-        _identityServiceMock = Substitute.For<IIdentityService>();
-        _controller = new IdentityController(_identityServiceMock);
+        _userServiceMock = Substitute.For<IUserService>();
+        _controller = new UsersController(_userServiceMock);
     }
     
     // Signup Tests
@@ -45,7 +45,7 @@ public class IdentityControllerTests
             Role = "DataAnalyst"
         };
 
-        _identityServiceMock.SignUpUser(Arg.Any<CreateUserRequest>()).Returns(Result<CreateUserResponse>.Ok(new CreateUserResponse()));
+        _userServiceMock.SignUpUser(Arg.Any<CreateUserRequest>()).Returns(Result<CreateUserResponse>.Ok(new CreateUserResponse()));
         
         _controller.ControllerContext = new ControllerContext
         {
@@ -79,7 +79,7 @@ public class IdentityControllerTests
             Role = "NonExistentRole"
         };
 
-        _identityServiceMock
+        _userServiceMock
             .SignUpUser(Arg.Any<CreateUserRequest>())
             .Returns(Result<CreateUserResponse>.Fail("role does not exist"));
 
@@ -131,7 +131,7 @@ public class IdentityControllerTests
             Role = "Admin"
         };
 
-        _identityServiceMock
+        _userServiceMock
             .SignUpUser(Arg.Any<CreateUserRequest>())
             .Returns(Result<CreateUserResponse>.Ok(createUserResponse));
 
@@ -178,7 +178,7 @@ public class IdentityControllerTests
             Token = "FakeToken"
         };
 
-        _identityServiceMock
+        _userServiceMock
             .Login(Arg.Any<LoginUserRequest>())
             .Returns(Result<LoginUserResponse>.Ok(mockResponse));
 
@@ -203,7 +203,7 @@ public class IdentityControllerTests
             Role = "NonExistentRole"
         };
         
-        _identityServiceMock
+        _userServiceMock
             .ChangeRole(Arg.Any<ChangeRoleRequest>())
             .Returns(Result.Fail("role does not exist"));
 
@@ -230,7 +230,7 @@ public class IdentityControllerTests
             Role = "Admin"
         };
 
-        _identityServiceMock
+        _userServiceMock
             .ChangeRole(Arg.Any<ChangeRoleRequest>())
             .Returns(Result.Ok());
 

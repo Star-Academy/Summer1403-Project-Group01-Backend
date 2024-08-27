@@ -49,10 +49,46 @@ public class TransactionService : ITransactionService
         }
     }
 
-    public async Task<List<Transaction>> GetTransactionsByAccountIdAsync(long accountId)
+    public async Task<Result<List<GetTransactionsByAccountIdResponse>>> GetTransactionsByAccountIdAsync(long accountId)
     {
-        var source = await _transactionRepository.GetBySourceAccountId(accountId);
-        var destination = await _transactionRepository.GetByDestinationAccountId(accountId);
-        return source.Concat(destination).ToList();
+        try
+        {
+            var result = new List<GetTransactionsByAccountIdResponse>();
+
+            var transactionsSourceAccountId = await _transactionRepository.GetBySourceAccountId(accountId);
+
+            var transactionsDestinationAccountId = await _transactionRepository.GetByDestinationAccountId(accountId);
+
+            var allTransactions = transactionsSourceAccountId.Concat(transactionsDestinationAccountId).ToList();
+
+            var groupedTransactions = allTransactions
+                .GroupBy(t => t.SourceAccountId == accountId ? t.DestinationAccountId : t.SourceAccountId)
+                .ToList();
+
+            foreach (var group in groupedTransactions)
+            {
+                var response = new GetTransactionsByAccountIdResponse
+                {
+                    AccountId = group.Key,
+                    TransactionWithSources = group.Select(t => new TransactionCsvModel
+                    {
+                        TransactionID = t.TransactionId,
+                        SourceAcount = t.SourceAccountId,
+                        DestiantionAccount = t.DestinationAccountId,
+                        Amount = t.Amount,
+                        Date = t.Date,
+                        Type = t.Type,
+                    }).ToList()
+                };
+
+                result.Add(response);
+            }
+
+            return Result<List<GetTransactionsByAccountIdResponse>>.Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return Result<List<GetTransactionsByAccountIdResponse>>.Fail($"An error occurred: {ex.Message}");
+        }
     }
 }

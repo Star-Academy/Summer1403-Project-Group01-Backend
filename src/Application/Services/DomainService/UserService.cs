@@ -12,12 +12,12 @@ using Domain.Entities;
 
 namespace Application.Services.DomainService;
 
-public class IdentityService : IIdentityService
+public class UserService : IUserService
 {
     private readonly IUserManagerRepository _userManagerRepository;
     private readonly IRoleManagerRepository _roleManagerRepository;
     private readonly ITokenService _tokenService;
-    public IdentityService(IUserManagerRepository userManagerRepository,
+    public UserService(IUserManagerRepository userManagerRepository,
         IRoleManagerRepository roleManagerRepository,
         ITokenService tokenService)
     {
@@ -107,11 +107,5 @@ public class IdentityService : IIdentityService
         }
 
         return userWithRoles;
-    }
-
-    public async Task<Result> Logout(string token)
-    {
-        await _tokenService.AddInvalidatedTokenAsync(token);
-        return Result.Ok();
     }
 }

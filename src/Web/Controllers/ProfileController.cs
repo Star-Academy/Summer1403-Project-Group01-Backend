@@ -11,7 +11,7 @@ using Web.Mappers;
 namespace Web.Controllers;
 
 [ApiController]
-[Route("[controller]/[action]")]
+[Route("profile")]
 public class ProfileController : ControllerBase
 {
     private readonly IProfileService _profileService;
@@ -21,7 +21,7 @@ public class ProfileController : ControllerBase
         _profileService = profileService;
     }
 
-    [HttpPut]
+    [HttpPut("edit-info")]
     [Authorize]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -63,7 +63,7 @@ public class ProfileController : ControllerBase
         return Ok(user.ToProfileInfoDto());
     }
 
-    [HttpPut]
+    [HttpPut("change-password")]
     [Authorize]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
