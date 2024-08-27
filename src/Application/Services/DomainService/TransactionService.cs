@@ -19,21 +19,22 @@ public class TransactionService : ITransactionService
 
     public async Task<Result> AddTransactionsFromCsvAsync(string filePath)
     {
-        var transactionCsvModels = CsvReaderService.ReadFromCsv<TransactionCsvModel>(filePath);
-        
-        var transactions = transactionCsvModels
-            .Select(csvModel => csvModel.ToTransaction())
-            .ToList();
-        
-        try
-        {
-            await _transactionRepository.CreateBulkAsync(transactions);
-            return Result.Ok();
-        }
-        catch (Exception ex)
-        {
-            return Result.Fail($"An error occurred: {ex.Message}");
-        }
+        // var transactionCsvModels = CsvReaderService.ReadFromCsv<TransactionCsvModel>(filePath);
+        //
+        // var transactions = transactionCsvModels
+        //     .Select(csvModel => csvModel.ToTransaction())
+        //     .ToList();
+        //
+        // try
+        // {
+        //     await _transactionRepository.CreateBulkAsync(transactions);
+        //     return Result.Ok();
+        // }
+        // catch (Exception ex)
+        // {
+        //     return Result.Fail($"An error occurred: {ex.Message}");
+        // }
+        throw new NotImplementedException();
     }
 
     public async Task<Result<List<Transaction>>> GetAllTransactionsAsync()

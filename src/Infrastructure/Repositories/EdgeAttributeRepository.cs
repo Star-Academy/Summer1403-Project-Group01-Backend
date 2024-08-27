@@ -16,4 +16,10 @@ public class EdgeAttributeRepository : IEdgeAttributeRepository
     {
         return await _dbContext.EdgeAttributes.ToListAsync();
     }
+
+    public async Task CreateBulkAsync(List<EdgeAttribute> newAttributes)
+    {
+        await _dbContext.EdgeAttributes.AddRangeAsync(newAttributes);
+        await _dbContext.SaveChangesAsync();
+    }
 }

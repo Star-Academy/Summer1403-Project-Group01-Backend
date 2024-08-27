@@ -6,5 +6,5 @@ public class EdgeCsvModel
     public long SourceValue { get; set; }
     public long DestinationValue { get; set; }
     public long TypeId { get; set; }
-    public string AttributesJson { get; set; } = "{}";
+    public string AttributesJson { get; set; } = string.Empty;
 }

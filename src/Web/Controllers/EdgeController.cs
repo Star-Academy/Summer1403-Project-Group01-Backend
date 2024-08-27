@@ -2,6 +2,7 @@
 using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.DTOs.Edge;
 using Web.Helper;
 using Web.Identity;
 using Web.Mappers;
@@ -26,25 +27,29 @@ public class EdgeController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public async Task<IActionResult> ImportEdges([FromForm] IFormFile file)
+    public async Task<IActionResult> ImportEdges([FromForm] ImportEdgesRequest request)
     {
-        if (file.Length == 0)
+        if (request.File.Length == 0)
             return BadRequest("No file uploaded.");
 
         var filePath = Path.GetTempFileName();
 
         await using (var stream = System.IO.File.Create(filePath))
         {
-            await file.CopyToAsync(stream);
+            await request.File.CopyToAsync(stream);
         }
 
-        var result = await _edgeService.AddEdgesFromCsvAsync(filePath);
-        
+        var result = await _edgeService.AddEdgesFromCsvAsync(filePath, 
+            request.SourceColumn, 
+            request.DestinationColumn, 
+            request.TypeLabelColumn, 
+            request.IdColumn);
+
         if (!result.Succeed)
         {
             return BadRequest(result.Message);
         }
-        
+
         return Ok();
     }
 

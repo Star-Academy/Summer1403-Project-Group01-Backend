@@ -19,20 +19,21 @@ public class AccountService : IAccountService
 
     public async Task<Result> AddAccountsFromCsvAsync(string filePath)
     {
-        var accountCsvModels = CsvReaderService.ReadFromCsv<AccountCsvModel>(filePath);
-
-        var accounts = accountCsvModels
-            .Select(csvModel => csvModel.ToAccount())
-            .ToList();
-        try
-        {
-            await _accountRepository.CreateBulkAsync(accounts);
-            return Result.Ok();
-        }
-        catch (Exception ex)
-        {
-            return Result.Fail($"An error occurred: {ex.Message}");
-        }
+        // var accountCsvModels = CsvReaderService.ReadFromCsv(filePath);
+        //
+        // var accounts = accountCsvModels
+        //     .Select(csvModel => csvModel.ToAccount())
+        //     .ToList();
+        // try
+        // {
+        //     await _accountRepository.CreateBulkAsync(accounts);
+        //     return Result.Ok();
+        // }
+        // catch (Exception ex)
+        // {
+        //     return Result.Fail($"An error occurred: {ex.Message}");
+        // }
+        throw new NotImplementedException();
     }
 
     public async Task<Account?> GetAccountByIdAsync(long accountId)
