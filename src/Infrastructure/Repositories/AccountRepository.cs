@@ -29,4 +29,11 @@ public class AccountRepository : IAccountRepository
     {
         return await _dbContext.Accounts.ToListAsync();
     }
+
+    public async Task<List<long>> GetAllIdsAsync()
+    {
+        return await _dbContext.Accounts
+            .Select(a => a.AccountId)
+            .ToListAsync();
+    }
 }
