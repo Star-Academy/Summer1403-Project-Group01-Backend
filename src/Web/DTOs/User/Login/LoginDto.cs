@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices.JavaScript;
 
-namespace Web.DTOs.Identity;
+namespace Web.DTOs.User.Login;
 
 public class LoginDto
 {

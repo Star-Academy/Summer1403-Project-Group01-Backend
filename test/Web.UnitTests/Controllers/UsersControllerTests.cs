@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
 using Application.DTOs;
 using Application.DTOs.Identity;
-using Application.DTOs.Identity.ChangeRole;
 using Application.DTOs.Identity.CreateUser;
 using Application.DTOs.Identity.LoginUser;
+using Application.DTOs.User;
 using Application.Interfaces.Services;
 using Domain.Constants;
 using Domain.Entities;
@@ -11,7 +11,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using Web.Controllers;
-using Web.DTOs.Identity;
+using Web.DTOs.User;
+using Web.DTOs.User.Login;
+using Web.DTOs.User.Signup;
 using Web.Mappers;
 using Web.Models;
 using Xunit.Abstractions;
@@ -45,7 +47,7 @@ public class UsersControllerTests
             Role = "DataAnalyst"
         };
 
-        _userServiceMock.SignUpUser(Arg.Any<CreateUserRequest>()).Returns(Result<CreateUserResponse>.Ok(new CreateUserResponse()));
+        _userServiceMock.SignUp(Arg.Any<CreateUserRequest>()).Returns(Result<CreateUserResponse>.Ok(new CreateUserResponse()));
         
         _controller.ControllerContext = new ControllerContext
         {
@@ -80,7 +82,7 @@ public class UsersControllerTests
         };
 
         _userServiceMock
-            .SignUpUser(Arg.Any<CreateUserRequest>())
+            .SignUp(Arg.Any<CreateUserRequest>())
             .Returns(Result<CreateUserResponse>.Fail("role does not exist"));
 
         _controller.ControllerContext = new ControllerContext
@@ -132,7 +134,7 @@ public class UsersControllerTests
         };
 
         _userServiceMock
-            .SignUpUser(Arg.Any<CreateUserRequest>())
+            .SignUp(Arg.Any<CreateUserRequest>())
             .Returns(Result<CreateUserResponse>.Ok(createUserResponse));
 
         _controller.ControllerContext = new ControllerContext
@@ -153,7 +155,7 @@ public class UsersControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okResult.StatusCode);
 
-        var responseValue = Assert.IsType<UserSignedUpDto>(okResult.Value);
+        var responseValue = Assert.IsType<SignupResponseDto>(okResult.Value);
         Assert.Equal("Mobin", responseValue.FirstName);
         Assert.Equal("Barfi", responseValue.LastName);
         Assert.Equal("mobinbr99@gmail.com", responseValue.Email);
@@ -187,7 +189,7 @@ public class UsersControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var response = Assert.IsType<UserLoggedInDto>(okResult.Value);
+        var response = Assert.IsType<LoginResponseDto>(okResult.Value);
         Assert.Equal("MobinBarfi", response.UserName);
         Assert.Equal("FakeToken", response.Token);
     }

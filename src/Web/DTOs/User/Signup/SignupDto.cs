@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Web.DTOs.Identity;
+namespace Web.DTOs.User.Signup;
 
 public class SignupDto
 {

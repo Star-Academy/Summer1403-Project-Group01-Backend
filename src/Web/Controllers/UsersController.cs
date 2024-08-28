@@ -2,15 +2,17 @@
 using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Web.DTOs.Identity;
+using Web.AccessControl;
+using Web.DTOs.User;
+using Web.DTOs.User.Login;
+using Web.DTOs.User.Signup;
 using Web.Helper;
-using Web.Identity;
 using Web.Mappers;
 
 namespace Web.Controllers;
 
 [ApiController]
-[Route("identity")]
+[Route("users")]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -28,11 +30,13 @@ public class UsersController : ControllerBase
     [ProducesResponseType(403)]
     public async Task<IActionResult> Signup([FromBody] SignupDto signupDto)
     {
-        var result = await _userService.SignUpUser(signupDto.ToCreateUserRequest());
+        var result = await _userService.SignUp(signupDto.ToCreateUserRequest());
 
         if (!result.Succeed)
         {
-            return BadRequest(Errors.New(nameof(Signup), result.Message));
+            var errorResponse = Errors.New(nameof(Signup), result.Message);
+            return BadRequest(errorResponse);
+            // return StatusCode(500, Errors.New("Server Error", $"An unexpected error occurred: {ex.Message}"));
         }
 
         var response = result.Value!;
@@ -49,7 +53,8 @@ public class UsersController : ControllerBase
         
         if (!result.Succeed)
         {
-            return Unauthorized(Errors.New(nameof(Login), result.Message));
+            var errorResponse = Errors.New(nameof(Login), result.Message);
+            return Unauthorized(errorResponse);
         }
         
         var response = result.Value!;
@@ -70,7 +75,8 @@ public class UsersController : ControllerBase
 
         if (!result.Succeed)
         {
-            return BadRequest(Errors.New(nameof(ChangeRole), result.Message));
+            var errorResponse = Errors.New(nameof(ChangeRole), result.Message);
+            return BadRequest(errorResponse);
         }
 
         return Ok("Role changed successfully!");
@@ -82,10 +88,18 @@ public class UsersController : ControllerBase
     [ProducesResponseType(200)]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public async Task<IActionResult> GetUsersAsync()
+    public async Task<IActionResult> GetAllUsers()
     {
-        var appUsersWithRoles = await _userService.GetUsersAsync();
+        var usersWithRolesResult = await _userService.GetAllUsersAsync();
 
-        return Ok(appUsersWithRoles);
+        if (!usersWithRolesResult.Succeed)
+        {
+            var errorResponse = Errors.New(nameof(ChangeRole), usersWithRolesResult.Message);
+            return BadRequest(errorResponse);
+        }
+
+        var response = usersWithRolesResult.Value!;
+        
+        return Ok(response);
     }
 }

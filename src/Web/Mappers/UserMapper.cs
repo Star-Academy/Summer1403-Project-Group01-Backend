@@ -1,8 +1,10 @@
 ﻿using Application.DTOs.Identity;
-using Application.DTOs.Identity.ChangeRole;
 using Application.DTOs.Identity.CreateUser;
 using Application.DTOs.Identity.LoginUser;
-using Web.DTOs.Identity;
+using Application.DTOs.User;
+using Web.DTOs.User;
+using Web.DTOs.User.Login;
+using Web.DTOs.User.Signup;
 
 namespace Web.Mappers;
 
@@ -31,9 +33,9 @@ public static class UserMapper
         };
     }
     
-    public static UserSignedUpDto ToUserSignedUpDto(this CreateUserResponse createUserResponse)
+    public static SignupResponseDto ToUserSignedUpDto(this CreateUserResponse createUserResponse)
     {
-        return new UserSignedUpDto
+        return new SignupResponseDto
         {
             FirstName = createUserResponse.FirstName,
             LastName = createUserResponse.LastName,
@@ -43,9 +45,9 @@ public static class UserMapper
         };
     }
 
-    public static UserLoggedInDto ToUserLoggedInDto(this LoginUserResponse loginUserResponse)
+    public static LoginResponseDto ToUserLoggedInDto(this LoginUserResponse loginUserResponse)
     {
-        return new UserLoggedInDto
+        return new LoginResponseDto
         {
             FirstName = loginUserResponse.FirstName,
             LastName = loginUserResponse.LastName,
