@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Profile.ChangePassword;
+﻿using Application.DTOs.Profile;
 using Application.DTOs.Profile.EditProfile;
 using Application.DTOs.Profile.GetProfileInfo;
 using Application.Interfaces.Repositories;

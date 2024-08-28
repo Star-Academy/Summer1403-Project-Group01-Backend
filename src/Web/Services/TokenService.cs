@@ -4,7 +4,7 @@ using System.Security.Claims;
 using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
-using Web.Identity;
+using Web.AccessControl;
 
 namespace Web.Services;
 

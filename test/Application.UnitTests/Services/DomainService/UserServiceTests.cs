@@ -1,7 +1,6 @@
-﻿using Application.DTOs.Identity.ChangeRole;
-using Application.DTOs.Identity.CreateUser;
-using Application.DTOs.Identity.GetUser;
+﻿using Application.DTOs.Identity.CreateUser;
 using Application.DTOs.Identity.LoginUser;
+using Application.DTOs.User;
 using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Mappers;
@@ -9,7 +8,7 @@ using Application.Services.DomainService;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
-using Web.DTOs.Identity;
+using Web.DTOs.User.Login;
 using Web.Mappers;
 
 namespace test.Application.UnitTests.Services.DomainService;
@@ -45,7 +44,7 @@ public class UserServiceTests
         _roleManagerRepository.RoleExistsAsync(createUserRequest.Role).Returns(Task.FromResult(false));
 
         // Act
-        var result = await _userService.SignUpUser(createUserRequest);
+        var result = await _userService.SignUp(createUserRequest);
 
         // Assert
         Assert.False(result.Succeed);
@@ -70,7 +69,7 @@ public class UserServiceTests
             .Returns(Task.FromResult(IdentityResult.Failed(new IdentityError { Description = "User creation failed" })));
 
         // Act
-        var result = await _userService.SignUpUser(createUserRequest);
+        var result = await _userService.SignUp(createUserRequest);
 
         // Assert
         Assert.False(result.Succeed);
@@ -98,7 +97,7 @@ public class UserServiceTests
             .Returns(Task.FromResult(IdentityResult.Failed(new IdentityError { Description = "Role assignment failed" })));
 
         // Act
-        var result = await _userService.SignUpUser(createUserRequest);
+        var result = await _userService.SignUp(createUserRequest);
 
         // Assert
         Assert.False(result.Succeed);
@@ -139,7 +138,7 @@ public class UserServiceTests
         };
 
         // Act
-        var result = await _userService.SignUpUser(createUserRequest);
+        var result = await _userService.SignUp(createUserRequest);
 
         // Assert
         Assert.True(result.Succeed);
@@ -330,10 +329,9 @@ public class UserServiceTests
             new GetUserResponse { UserName = "User2", Email = "user2@example.com", Role = "User" }
         };
 
-        // Mock the repository methods
         _userManagerRepository.GetUsersAsync()
             .Returns(Task.FromResult(users));
-        
+
         _userManagerRepository.GetRoleAsync(users[0])
             .Returns(Task.FromResult(roles[0]));
 
@@ -341,12 +339,21 @@ public class UserServiceTests
             .Returns(Task.FromResult(roles[1]));
 
         // Act
-        var result = await _userService.GetUsersAsync();
+        var result = await _userService.GetAllUsersAsync();
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(2, result.Count);
-        Assert.Contains(result, r => r.UserName == "User1" && r.Role == "Admin");
-        Assert.Contains(result, r => r.UserName == "User2" && r.Role == "User");
+        Assert.True(result.Succeed, "Result should be successful");
+        Assert.NotNull(result.Value);
+        Assert.Equal(2, result.Value.Count);
+
+        var user1Response = result.Value.SingleOrDefault(r => r.UserName == "User1");
+        Assert.NotNull(user1Response);
+        Assert.Equal("Admin", user1Response.Role);
+
+        var user2Response = result.Value.SingleOrDefault(r => r.UserName == "User2");
+        Assert.NotNull(user2Response);
+        Assert.Equal("User", user2Response.Role);
     }
+
 }
