@@ -3,8 +3,8 @@ using Domain.Constants;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.AccessControl;
 using Web.Helper;
-using Web.Identity;
 using Web.Mappers;
 
 namespace Web.Controllers;
@@ -40,10 +40,11 @@ public class AccountsController : ControllerBase
         var result = await _accountService.AddAccountsFromCsvAsync(filePath);
         if (!result.Succeed)
         {
-            return BadRequest(result.Message);
+            var errorResponse = Errors.New(nameof(UploadAccounts), result.Message);
+            return BadRequest(errorResponse);
         }
         
-        return Ok();
+        return Ok("Accounts uploaded successfully!");
     }
 
     [HttpGet("{accountId}")]
@@ -54,12 +55,15 @@ public class AccountsController : ControllerBase
     public async Task<IActionResult> GetAccountById(long accountId)
     {
         var account = await _accountService.GetAccountByIdAsync(accountId);
-        if (account == null)
+        if (!account.Succeed)
         {
-            return NotFound();
+            var errorResponse = Errors.New(nameof(GetAccountById), account.Message);
+            return NotFound(errorResponse);
         }
 
-        return Ok(account.ToAccountDto());
+        var response = account.Value!;
+
+        return Ok(response.ToAccountDto());
     }
 
     [HttpGet]
@@ -72,7 +76,8 @@ public class AccountsController : ControllerBase
         var allAccounts = await _accountService.GetAllAccountsAsync();
         if (!allAccounts.Succeed)
         {
-            return BadRequest(Errors.New(nameof(GetAllAccounts), allAccounts.Message));
+            var errorResponse = Errors.New(nameof(GetAllAccounts), allAccounts.Message);
+            return BadRequest(errorResponse);
         }
 
         var response = allAccounts.Value!;

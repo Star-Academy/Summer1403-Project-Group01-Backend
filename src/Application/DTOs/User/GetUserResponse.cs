@@ -1,6 +1,6 @@
-﻿namespace Web.DTOs.Identity;
+﻿namespace Application.DTOs.User;
 
-public class UserSignedUpDto
+public class GetUserResponse
 {
     public string FirstName { get; set; } = String.Empty;
     public string LastName { get; set; } = String.Empty;

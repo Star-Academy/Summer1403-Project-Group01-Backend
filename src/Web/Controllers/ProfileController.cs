@@ -3,9 +3,9 @@ using Application.DTOs.Profile.GetProfileInfo;
 using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.AccessControl;
 using Web.DTOs.Profile;
 using Web.Helper;
-using Web.Identity;
 using Web.Mappers;
 
 namespace Web.Controllers;
@@ -35,7 +35,8 @@ public class ProfileController : ControllerBase
 
         if (!result.Succeed)
         {
-            return BadRequest(Errors.New(nameof(EditProfileInfo), result.Message));
+            var errorResponse = Errors.New(nameof(EditProfileInfo), result.Message);
+            return BadRequest(errorResponse);
         }
         
         return Ok("Profile info updated successfully!");
@@ -55,7 +56,8 @@ public class ProfileController : ControllerBase
 
         if (!result.Succeed)
         {
-            return NotFound(Errors.New(nameof(GetProfileInfo), "User not found!"));
+            var errorResponse = Errors.New(nameof(GetProfileInfo), result.Message);
+            return NotFound(errorResponse);
         }
         
         var user = result.Value!;
@@ -77,7 +79,8 @@ public class ProfileController : ControllerBase
         
         if (!result.Succeed)
         {
-            return BadRequest(Errors.New(nameof(ChangePassword), result.Message));
+            var errorResponse = Errors.New(nameof(ChangePassword), result.Message);
+            return BadRequest(errorResponse);
         }
         
         return Ok("Password changed successfully!");

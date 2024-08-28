@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.Identity.ChangeRole;
+﻿namespace Application.DTOs.User;
 
 public class ChangeRoleRequest
 {

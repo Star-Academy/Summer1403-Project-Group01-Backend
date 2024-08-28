@@ -2,8 +2,8 @@
 using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.AccessControl;
 using Web.Helper;
-using Web.Identity;
 using Web.Mappers;
 
 namespace Web.Controllers;
@@ -42,10 +42,11 @@ public class TransactionsController : ControllerBase
         
         if (!result.Succeed)
         {
-            return BadRequest(result.Message);
+            var errorResponse = Errors.New(nameof(UploadTransactions), result.Message);
+            return BadRequest(errorResponse);
         }
         
-        return Ok();
+        return Ok("Transactions uploaded successfully!");
     }
 
     [HttpGet()]
@@ -60,7 +61,8 @@ public class TransactionsController : ControllerBase
         var allTransactions = await _transactionService.GetAllTransactionsAsync();
         if (!allTransactions.Succeed)
         {
-            return BadRequest(Errors.New(nameof(GetAllTransactions), allTransactions.Message));
+            var errorResponse = Errors.New(nameof(GetAllTransactions), allTransactions.Message);
+            return BadRequest(errorResponse);
         }
 
         var response = allTransactions.Value!;
@@ -79,7 +81,8 @@ public class TransactionsController : ControllerBase
 
         if (!transactions.Succeed)
         {
-            return BadRequest(Errors.New(nameof(GetAllTransactions), transactions.Message));
+            var errorResponse = Errors.New(nameof(GetAllTransactions), transactions.Message);
+            return BadRequest(errorResponse);
         }
 
         var response = transactions.Value!;

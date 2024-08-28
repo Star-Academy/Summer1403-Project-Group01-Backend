@@ -19,13 +19,14 @@ public class AccountService : IAccountService
 
     public async Task<Result> AddAccountsFromCsvAsync(string filePath)
     {
-        var accountCsvModels = CsvReaderService.ReadFromCsv<AccountCsvModel>(filePath);
-
-        var accounts = accountCsvModels
-            .Select(csvModel => csvModel.ToAccount())
-            .ToList();
         try
         {
+            var accountCsvModels = CsvReaderService.ReadFromCsv<AccountCsvModel>(filePath);
+
+            var accounts = accountCsvModels
+                .Select(csvModel => csvModel.ToAccount())
+                .ToList();
+        
             var existingAccountIds = await _accountRepository.GetAllIdsAsync();
             var newAccounts = accounts.Where(a => !existingAccountIds.Contains(a.AccountId)).ToList();
 
@@ -34,13 +35,26 @@ public class AccountService : IAccountService
         }
         catch (Exception ex)
         {
-            return Result.Fail($"An error occurred: {ex.Message}");
+            return Result.Fail($"An unexpected error occurred: {ex.Message}");
         }
     }
 
-    public async Task<Account?> GetAccountByIdAsync(long accountId)
+    public async Task<Result<Account>> GetAccountByIdAsync(long accountId)
     {
-        return await _accountRepository.GetByIdAsync(accountId);
+        try
+        {
+            var account = await _accountRepository.GetByIdAsync(accountId);
+            if (account == null)
+            {
+                return Result<Account>.Fail("Account not found");
+            }
+        
+            return Result<Account>.Ok(account);
+        }
+        catch (Exception ex)
+        {
+            return Result<Account>.Fail($"An unexpected error occurred: {ex.Message}");
+        }
     }
 
     public async Task<Result<List<Account>>> GetAllAccountsAsync()
@@ -52,7 +66,7 @@ public class AccountService : IAccountService
         }
         catch (Exception ex)
         {
-            return Result<List<Account>>.Fail($"An error occurred: {ex.Message}");
+            return Result<List<Account>>.Fail($"An unexpected error occurred: {ex.Message}");
         }
     }
 }
