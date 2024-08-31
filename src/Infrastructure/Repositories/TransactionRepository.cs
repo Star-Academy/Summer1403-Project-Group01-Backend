@@ -19,9 +19,13 @@ public class TransactionRepository : ITransactionRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<List<Transaction>> GetAllTransactions()
+    public async Task<List<Transaction>> GetAllTransactions(int skip, int take)
     {
-        return await _dbContext.Transactions.ToListAsync();
+        return await _dbContext.Transactions
+            .OrderBy(t => t.TransactionId)
+            .Skip(skip)
+            .Take(take)
+            .ToListAsync();
     }
 
     public Task<List<Transaction>> GetBySourceAccountId(long accountId)
@@ -43,5 +47,10 @@ public class TransactionRepository : ITransactionRepository
         return await _dbContext.Transactions
             .Select(a => a.TransactionId)
             .ToListAsync();
+    }
+
+    public async Task<int> CountAllTransactionsAsync()
+    {
+        return await _dbContext.Transactions.CountAsync();
     }
 }

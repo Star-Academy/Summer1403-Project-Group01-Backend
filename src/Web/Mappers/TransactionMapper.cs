@@ -1,3 +1,4 @@
+using Application.DTOs;
 using Domain.Entities;
 using Web.DTOs.Transaction;
 
@@ -17,10 +18,10 @@ public static class TransactionMapper
             Type = transaction.Type 
         };
     }
-
-    public static List<TransactionDto> ToGotAllTransactionsDto(this List<Transaction> transactions)
+    
+    public static PaginatedList<TransactionDto> ToGotAllTransactionsDto(this PaginatedList<Transaction> transactions)
     {
-        return transactions.Select(transaction => new TransactionDto
+        var dtoItems = transactions.Items.Select(transaction => new TransactionDto
         {
             TransactionId = transaction.TransactionId,
             SourceAccountId = transaction.SourceAccountId,
@@ -29,5 +30,8 @@ public static class TransactionMapper
             Date = transaction.Date,
             Type = transaction.Type
         }).ToList();
+
+        return new PaginatedList<TransactionDto>(dtoItems, transactions.TotalCount, transactions.PageNumber, transactions.PageSize);
     }
+
 }

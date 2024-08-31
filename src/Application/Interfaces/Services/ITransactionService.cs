@@ -7,6 +7,6 @@ namespace Application.Interfaces.Services;
 public interface ITransactionService
 {
     Task<Result> AddTransactionsFromCsvAsync(string filePath);
-    Task<Result<List<Transaction>>> GetAllTransactionsAsync();
+    Task<Result<PaginatedList<Transaction>>> GetAllTransactionsAsync(int pageNumber, int pageSize);
     Task<Result<List<GetTransactionsByAccountIdResponse>>> GetTransactionsByAccountIdAsync(long accountId);
 }

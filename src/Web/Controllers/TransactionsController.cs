@@ -56,9 +56,9 @@ public class TransactionsController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public async Task<IActionResult> GetAllTransactions()
+    public async Task<IActionResult> GetAllTransactions(int pageNumber = 1, int pageSize = 30)
     {
-        var allTransactions = await _transactionService.GetAllTransactionsAsync();
+        var allTransactions = await _transactionService.GetAllTransactionsAsync(pageNumber, pageSize);
         if (!allTransactions.Succeed)
         {
             var errorResponse = Errors.New(nameof(GetAllTransactions), allTransactions.Message);

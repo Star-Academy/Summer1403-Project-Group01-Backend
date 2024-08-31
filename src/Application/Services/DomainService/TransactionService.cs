@@ -39,16 +39,21 @@ public class TransactionService : ITransactionService
         }
     }
 
-    public async Task<Result<List<Transaction>>> GetAllTransactionsAsync()
+    public async Task<Result<PaginatedList<Transaction>>> GetAllTransactionsAsync(int pageNumber, int pageSize)
     {
         try
         {
-            var transactions = await _transactionRepository.GetAllTransactions();
-            return Result<List<Transaction>>.Ok(transactions);
+            var skip = (pageNumber - 1) * pageSize;
+            var transactions = await _transactionRepository.GetAllTransactions(skip, pageSize);
+            var totalTransactions = await _transactionRepository.CountAllTransactionsAsync();
+
+            var paginatedTransactions = new PaginatedList<Transaction>(transactions, totalTransactions, pageNumber, pageSize);
+
+            return Result<PaginatedList<Transaction>>.Ok(paginatedTransactions);
         }
         catch (Exception ex)
         {
-            return Result<List<Transaction>>.Fail($"An error occurred: {ex.Message}");
+            return Result<PaginatedList<Transaction>>.Fail($"An error occurred: {ex.Message}");
         }
     }
 
