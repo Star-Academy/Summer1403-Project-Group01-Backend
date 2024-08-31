@@ -48,7 +48,7 @@ public class UserServiceTests
 
         // Assert
         Assert.False(result.Succeed);
-        Assert.Equal("role does not exist", result.Message);
+        Assert.Equal("Role does not exist.", result.Message);
     }
     
     [Fact]
