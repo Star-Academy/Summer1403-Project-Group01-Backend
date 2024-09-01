@@ -1,12 +1,13 @@
 ﻿using System.Globalization;
+using Application.Interfaces;
 using CsvHelper;
 using CsvHelper.Configuration;
 
 namespace Application.Services.SharedService;
 
-public static class CsvReaderService
+public class CsvReaderService : IFileReaderService
 {
-    public static List<T> ReadFromCsv<T>(string filePath)
+    public List<T> ReadFromFile<T>(string filePath)
     {
         using var reader = new StreamReader(filePath);
         using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)

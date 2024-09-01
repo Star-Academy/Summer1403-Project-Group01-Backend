@@ -1,5 +1,6 @@
 using Application.DTOs;
 using Application.DTOs.Account;
+using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.Mappers;
@@ -11,17 +12,19 @@ namespace Application.Services.DomainService;
 public class AccountService : IAccountService
 {
     private readonly IAccountRepository _accountRepository;
+    private readonly IFileReaderService _fileReaderService;
 
-    public AccountService(IAccountRepository accountRepository)
+    public AccountService(IAccountRepository accountRepository, IFileReaderService fileReaderService)
     {
         _accountRepository = accountRepository;
+        _fileReaderService = fileReaderService;
     }
 
     public async Task<Result> AddAccountsFromCsvAsync(string filePath)
     {
         try
         {
-            var accountCsvModels = CsvReaderService.ReadFromCsv<AccountCsvModel>(filePath);
+            var accountCsvModels = _fileReaderService.ReadFromFile<AccountCsvModel>(filePath);
 
             var accounts = accountCsvModels
                 .Select(csvModel => csvModel.ToAccount())
