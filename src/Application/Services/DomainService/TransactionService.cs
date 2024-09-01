@@ -22,14 +22,13 @@ public class TransactionService : ITransactionService
 
     public async Task<Result> AddTransactionsFromCsvAsync(string filePath)
     {
-        var transactionCsvModels = _fileReaderService.ReadFromFile<TransactionCsvModel>(filePath);
-        
-        var transactions = transactionCsvModels
-            .Select(csvModel => csvModel.ToTransaction())
-            .ToList();
-        
         try
         {
+            var transactionCsvModels = _fileReaderService.ReadFromFile<TransactionCsvModel>(filePath);
+            var transactions = transactionCsvModels
+                .Select(csvModel => csvModel.ToTransaction())
+                .ToList();
+            
             var existingTransactionsIds = await _transactionRepository.GetAllIdsAsync();
             var newTransactions = transactions.Where(t => !existingTransactionsIds.Contains(t.TransactionId)).ToList();
             
