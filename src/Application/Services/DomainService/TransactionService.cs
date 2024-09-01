@@ -1,5 +1,6 @@
 using Application.DTOs;
 using Application.DTOs.Transaction;
+using Application.Interfaces;
 using Application.Interfaces.Services;
 using Application.Mappers;
 using Application.Services.SharedService;
@@ -11,15 +12,17 @@ namespace Application.Services.DomainService;
 public class TransactionService : ITransactionService
 {
     private readonly ITransactionRepository _transactionRepository;
+    private readonly IFileReaderService _fileReaderService;
 
-    public TransactionService(ITransactionRepository transactionRepository)
+    public TransactionService(ITransactionRepository transactionRepository, IFileReaderService fileReaderService)
     {
         _transactionRepository = transactionRepository;
+        _fileReaderService = fileReaderService;
     }
 
     public async Task<Result> AddTransactionsFromCsvAsync(string filePath)
     {
-        var transactionCsvModels = CsvReaderService.ReadFromCsv<TransactionCsvModel>(filePath);
+        var transactionCsvModels = _fileReaderService.ReadFromFile<TransactionCsvModel>(filePath);
         
         var transactions = transactionCsvModels
             .Select(csvModel => csvModel.ToTransaction())

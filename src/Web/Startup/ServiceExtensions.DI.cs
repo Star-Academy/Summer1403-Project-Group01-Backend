@@ -2,6 +2,7 @@
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.Services.DomainService;
+using Application.Services.SharedService;
 using Infrastructure.Repositories;
 using Web.Services;
 
@@ -12,6 +13,7 @@ public static partial class ServiceExtensions
     public static void AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IFileReaderService, CsvReaderService>();
         services.AddScoped<IRoleManagerRepository, RoleManagerRepository>();
         services.AddScoped<IUserManagerRepository, UserManagerRepository>();
         services.AddScoped<IUserService, UserService>();
