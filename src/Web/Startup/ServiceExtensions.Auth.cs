@@ -6,8 +6,12 @@ namespace Web.Startup
 {
     public static partial class ServiceExtensions
     {
-        public static void ConfigureAppAuthenticationServices(this IServiceCollection services, IConfiguration config)
+        public static void ConfigureAppAuthenticationServices(this IServiceCollection services)
         {
+            var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
+            var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+            var key = Environment.GetEnvironmentVariable("JWT_KEY")!;
+            
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -17,10 +21,10 @@ namespace Web.Startup
             {
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidIssuer = config["JwtSettings:Issuer"],
-                    ValidAudience = config["JwtSettings:Audience"],
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!)),
+                        Encoding.UTF8.GetBytes(key)),
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,

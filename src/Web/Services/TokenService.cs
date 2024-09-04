@@ -10,14 +10,13 @@ namespace Web.Services;
 
 public class TokenService : ITokenService
 {
-    private readonly IConfiguration _configuration;
     private readonly SymmetricSecurityKey _symmetricSecurityKey;
 
-    public TokenService(IConfiguration configuration)
+    public TokenService()
     {
-        _configuration = configuration;
+        var key = Environment.GetEnvironmentVariable("JWT_KEY")!;
         _symmetricSecurityKey = new SymmetricSecurityKey(
-            System.Text.Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"])
+            System.Text.Encoding.UTF8.GetBytes(key)
         );
     }
 
@@ -37,8 +36,8 @@ public class TokenService : ITokenService
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.Now.AddHours(8),
             SigningCredentials = credentials,
-            Issuer = _configuration["JwtSettings:Issuer"],
-            Audience = _configuration["JwtSettings:Audience"]
+            Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+            Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE")
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();

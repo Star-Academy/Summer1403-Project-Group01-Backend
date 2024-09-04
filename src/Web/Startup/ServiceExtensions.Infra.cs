@@ -7,14 +7,18 @@ namespace Web.Startup;
 
 public static partial class ServiceExtensions
 {
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
     {
+        var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+        
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseNpgsql(config.GetConnectionString("DefaultConnection"));
+            options.UseNpgsql(connectionString);
         });
+        
         services.AddIdentity<AppUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
+        
         return services;
     }
 }

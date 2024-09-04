@@ -5,22 +5,20 @@ namespace Web.Startup;
 
 public static class SeedData
 {
-    public static async Task Initialize(IServiceProvider serviceProvider, IConfigurationManager config)
+    public static async Task Initialize(IServiceProvider serviceProvider)
     {
         var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
-
-        var id = config["RootUser:Id"]!;
-        var roleName = config["RootUser:RoleName"]!;
-        var userName = config["RootUser:UserName"]!;
-        var email = config["RootUser:Email"];
-        var password = config["RootUser:Password"]!;
         
-        var rootUser = await userManager.FindByIdAsync(id);
+        var roleName = Environment.GetEnvironmentVariable("ROOTUSER_ROLE")!;
+        var userName = Environment.GetEnvironmentVariable("ROOTUSER_USERNAME")!;
+        var email = Environment.GetEnvironmentVariable("ROOTUSER_EMAIL")!;
+        var password = Environment.GetEnvironmentVariable("ROOTUSER_PASSWORD")!;
+        
+        var rootUser = await userManager.FindByNameAsync(userName);
         if (rootUser == null)
         {
             rootUser = new AppUser
             {
-                Id = id,
                 UserName = userName,
                 Email = email,
                 EmailConfirmed = true
