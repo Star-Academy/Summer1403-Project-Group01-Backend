@@ -624,6 +624,13 @@ fabric.properties
 .history
 .ionide
 
+### ignore environment ###
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
 ### VisualStudio ###
 
 # User-specific files

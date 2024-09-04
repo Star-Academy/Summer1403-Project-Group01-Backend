@@ -4,16 +4,15 @@ namespace Web.Startup
 {
     public static partial class ServiceExtensions
     {
-        public static void AddCorsPolicy(this IServiceCollection services)
+        public static void AddCorsPolicy(this IServiceCollection services, IConfiguration config)
         {
+            var origins = config.GetSection("CorsSettings:Origins").Get<string[]>()!;
+            
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigins", corsPolicyBuilder =>
                 {
-                    corsPolicyBuilder.WithOrigins(
-                        "http://localhost:4200",
-                        "http://external.abriment.com:30081"
-                        )
+                    corsPolicyBuilder.WithOrigins(origins)
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
