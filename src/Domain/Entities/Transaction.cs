@@ -15,4 +15,5 @@ public class Transaction
     public DateTime Date { get; set; }
     [MaxLength(50)]
     public string Type { get; set; } = String.Empty;
+    public long TrackingId { get; set; }
 }
