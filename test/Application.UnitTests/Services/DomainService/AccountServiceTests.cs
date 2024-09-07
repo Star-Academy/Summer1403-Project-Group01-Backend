@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Account;
+using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.Mappers;
@@ -13,13 +14,13 @@ public class AccountServiceTests
 {
     private readonly IAccountRepository _accountRepository;
     private readonly AccountService _accountService;
-    private readonly ICsvReaderService _csvReaderService;
+    private readonly IFileReaderService _fileReaderService;
 
     public AccountServiceTests()
     {
         _accountRepository = Substitute.For<IAccountRepository>();
-        _csvReaderService = Substitute.For<ICsvReaderService>();
-        _accountService = new AccountService(_accountRepository, _csvReaderService);
+        _fileReaderService = Substitute.For<IFileReaderService>();
+        _accountService = new AccountService(_accountRepository, _fileReaderService);
     }
     
     [Fact]
@@ -31,34 +32,34 @@ public class AccountServiceTests
         {
             new AccountCsvModel
             {
-                AccountID = 1,
-                CardID = 100,
-                IBAN = "IBAN1",
+                AccountId = 1,
+                CardId = 100,
+                Iban = "IBAN1",
                 AccountType = "Savings",
                 BranchTelephone = "1234567890",
-                BranchAdress = "Main Street",
+                BranchAddress = "Main Street",
                 BranchName = "Main Branch",
                 OwnerName = "Mobin",
                 OwnerLastName = "Barfi",
-                OwnerID = 101
+                OwnerId = 101
             },
             new AccountCsvModel
             {
-                AccountID = 2,
-                CardID = 200,
-                IBAN = "IBAN2",
+                AccountId = 2,
+                CardId = 200,
+                Iban = "IBAN2",
                 AccountType = "Checking",
                 BranchTelephone = "0987654321",
-                BranchAdress = "Some Street",
+                BranchAddress = "Some Street",
                 BranchName = "Some Branch",
                 OwnerName = "Mohammad",
                 OwnerLastName = "Mohammadi",
-                OwnerID = 102
+                OwnerId = 102
             }
         };
         var existingAccountIds = new List<long> { 1 };
 
-        _csvReaderService.ReadFromCsv<AccountCsvModel>(filePath).Returns(accountCsvModels);
+        _fileReaderService.ReadFromFile<AccountCsvModel>(filePath).Returns(accountCsvModels);
         _accountRepository.GetAllIdsAsync().Returns(existingAccountIds);
 
         // Act
@@ -79,8 +80,8 @@ public class AccountServiceTests
     {
         // Arrange
         var filePath = "dummy.csv";
-        _csvReaderService
-            .When(x => x.ReadFromCsv<AccountCsvModel>(filePath))
+        _fileReaderService
+            .When(x => x.ReadFromFile<AccountCsvModel>(filePath))
             .Do(x => { throw new Exception("CSV read error"); });
 
         // Act
