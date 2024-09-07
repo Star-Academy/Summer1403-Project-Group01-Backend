@@ -1,15 +1,27 @@
-﻿namespace Application.DTOs.Account;
+﻿using CsvHelper.Configuration.Attributes;
+
+namespace Application.DTOs.Account;
 
 public class AccountCsvModel
 {
-    public long AccountID { get; set; }
-    public long CardID { get; set; }
-    public string IBAN { get; set; } = string.Empty;
+    [Name("AccountId", "AccountID")]
+    public long AccountId { get; set; }
+    [Name("CardId", "CardID")]
+    public long CardId { get; set; }
+    [Name("Iban", "IBAN", "Sheba")]
+    public string Iban { get; set; } = string.Empty;
+    [Name("AccountType")]
     public string AccountType { get; set; } = string.Empty;
+    [Name("BranchTelephone")]
     public string BranchTelephone { get; set; } = string.Empty;
-    public string BranchAdress { get; set; } = string.Empty;
+    [Name("BranchAddress", "BranchAdress")]
+    public string BranchAddress { get; set; } = string.Empty;
+    [Name("BranchName")]
     public string BranchName { get; set; } = string.Empty;
+    [Name("OwnerName")]
     public string OwnerName { get; set; } = string.Empty;
+    [Name("OwnerLastName", "OwnerFamilyName")]
     public string OwnerLastName { get; set; } = string.Empty;
-    public long OwnerID { get; set; }
+    [Name("OwnerId", "OwnerID")]
+    public long OwnerId { get; set; }
 }

@@ -215,19 +215,19 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c498039b-a975-46ce-9f43-126bcfddd220",
+                            Id = "8a0429eb-6031-4546-a06e-0a0f5ae9248c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "57d809b2-7032-45e1-b2b1-243e38e218bd",
+                            Id = "b70df7e0-cb8a-4131-bf26-3d2e52ee9834",
                             Name = "DataAdmin",
                             NormalizedName = "DATAADMIN"
                         },
                         new
                         {
-                            Id = "dc5862c7-2360-4213-b0f4-db79cb883df7",
+                            Id = "31f9f360-a3de-4dc3-bd7d-8f16d8da7fed",
                             Name = "DataAnalyst",
                             NormalizedName = "DATAANALYST"
                         });

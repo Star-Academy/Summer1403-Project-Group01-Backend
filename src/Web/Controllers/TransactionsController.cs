@@ -46,10 +46,10 @@ public class TransactionsController : ControllerBase
             return BadRequest(errorResponse);
         }
         
-        return Ok("Transactions uploaded successfully!");
+        return Ok(result.Message);
     }
 
-    [HttpGet()]
+    [HttpGet]
     [Authorize]
     [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin, AppRoles.DataAnalyst)]
     [ProducesResponseType(200)]

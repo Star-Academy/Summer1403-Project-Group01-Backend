@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class accountstransactions : Migration
+    public partial class updatetransactionentity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -86,7 +86,8 @@ namespace Infrastructure.Migrations
                     DestinationAccountId = table.Column<long>(type: "bigint", nullable: false),
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                    Type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    TrackingId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -216,9 +217,9 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "46a9f2ed-8738-448a-9ca9-3afa00eee4ff", null, "DataAdmin", "DATAADMIN" },
-                    { "48732a60-c9aa-4aec-9ef3-b880ab162088", null, "DataAnalyst", "DATAANALYST" },
-                    { "5a15c66d-6214-4dbb-a00d-10a4f7ca4cf8", null, "Admin", "ADMIN" }
+                    { "31f9f360-a3de-4dc3-bd7d-8f16d8da7fed", null, "DataAnalyst", "DATAANALYST" },
+                    { "8a0429eb-6031-4546-a06e-0a0f5ae9248c", null, "Admin", "ADMIN" },
+                    { "b70df7e0-cb8a-4131-bf26-3d2e52ee9834", null, "DataAdmin", "DATAADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
