@@ -2,6 +2,7 @@
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.Services.DomainService;
+using Application.Services.SharedService;
 using Infrastructure.Repositories;
 using Web.Services;
 
@@ -20,5 +21,6 @@ public static partial class ServiceExtensions
         services.AddScoped<ITransactionService, TransactionService>();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<ICsvReaderService, CsvReaderService>();
     }
 }

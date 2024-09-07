@@ -11,17 +11,19 @@ namespace Application.Services.DomainService;
 public class AccountService : IAccountService
 {
     private readonly IAccountRepository _accountRepository;
+    private readonly ICsvReaderService _csvReaderService;
 
-    public AccountService(IAccountRepository accountRepository)
+    public AccountService(IAccountRepository accountRepository, ICsvReaderService csvReaderService)
     {
         _accountRepository = accountRepository;
+        _csvReaderService = csvReaderService;
     }
 
     public async Task<Result> AddAccountsFromCsvAsync(string filePath)
     {
         try
         {
-            var accountCsvModels = CsvReaderService.ReadFromCsv<AccountCsvModel>(filePath);
+            var accountCsvModels = _csvReaderService.ReadFromCsv<AccountCsvModel>(filePath);
 
             var accounts = accountCsvModels
                 .Select(csvModel => csvModel.ToAccount())

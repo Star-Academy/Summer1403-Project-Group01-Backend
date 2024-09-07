@@ -11,15 +11,17 @@ namespace Application.Services.DomainService;
 public class TransactionService : ITransactionService
 {
     private readonly ITransactionRepository _transactionRepository;
+    private readonly ICsvReaderService _csvReaderService;
 
-    public TransactionService(ITransactionRepository transactionRepository)
+    public TransactionService(ITransactionRepository transactionRepository, ICsvReaderService csvReaderService)
     {
         _transactionRepository = transactionRepository;
+        _csvReaderService = csvReaderService;
     }
 
     public async Task<Result> AddTransactionsFromCsvAsync(string filePath)
     {
-        var transactionCsvModels = CsvReaderService.ReadFromCsv<TransactionCsvModel>(filePath);
+        var transactionCsvModels = _csvReaderService.ReadFromCsv<TransactionCsvModel>(filePath);
         
         var transactions = transactionCsvModels
             .Select(csvModel => csvModel.ToTransaction())
