@@ -13,19 +13,40 @@ public class TransactionService : ITransactionService
 {
     private readonly ITransactionRepository _transactionRepository;
     private readonly IFileReaderService _fileReaderService;
+    private readonly IAccountRepository _accountRepository;
 
-    public TransactionService(ITransactionRepository transactionRepository, IFileReaderService fileReaderService)
+    public TransactionService(ITransactionRepository transactionRepository, IFileReaderService fileReaderService, IAccountRepository accountRepository)
     {
         _transactionRepository = transactionRepository;
         _fileReaderService = fileReaderService;
+        _accountRepository = accountRepository;
     }
-
+    
+    private async Task<List<long>> ValidateTransactionCsvModelsAsync(List<TransactionCsvModel> transactionCsvModels)
+    {
+        var invalidTransactionIds = new List<long>();
+        foreach (var transactionCsvModel in transactionCsvModels)
+        {
+            var sourceAccount = await _accountRepository.GetByIdAsync(transactionCsvModel.SourceAccount);
+            var destinationAccount = await _accountRepository.GetByIdAsync(transactionCsvModel.DestinationAccount);
+            bool isValidDate = DateOnly.TryParseExact(transactionCsvModel.Date, "MM/dd/yyyy", null, System.Globalization.DateTimeStyles.None, out var date);
+            bool isValidTime = TimeOnly.TryParse(transactionCsvModel.Time, out var time);
+            if(sourceAccount == null || destinationAccount == null || !isValidDate || !isValidTime)
+            {
+                invalidTransactionIds.Add(transactionCsvModel.TransactionId);
+            }
+        }
+        return invalidTransactionIds;
+    }
+    
     public async Task<Result> AddTransactionsFromCsvAsync(string filePath)
     {
         try
         {
             var transactionCsvModels = _fileReaderService.ReadFromFile<TransactionCsvModel>(filePath);
+            var invalidTransactionCsvModels = await ValidateTransactionCsvModelsAsync(transactionCsvModels);
             var transactions = transactionCsvModels
+                .Where(csvModel => !invalidTransactionCsvModels.Contains(csvModel.TransactionId))
                 .Select(csvModel => csvModel.ToTransaction())
                 .ToList();
             
@@ -33,7 +54,9 @@ public class TransactionService : ITransactionService
             var newTransactions = transactions.Where(t => !existingTransactionsIds.Contains(t.TransactionId)).ToList();
             
             await _transactionRepository.CreateBulkAsync(newTransactions);
-            return Result.Ok();
+            return Result.Ok(invalidTransactionCsvModels.Count == 0
+                ? "All transactions were added successfully."
+                : $"Some transactions were not added because of invalid data: {string.Join(", ", invalidTransactionCsvModels)}");
         }
         catch (Exception ex)
         {
@@ -77,12 +100,14 @@ public class TransactionService : ITransactionService
                     AccountId = group.Key,
                     TransactionWithSources = group.Select(t => new TransactionCsvModel
                     {
-                        TransactionID = t.TransactionId,
-                        SourceAcount = t.SourceAccountId,
-                        DestiantionAccount = t.DestinationAccountId,
+                        TransactionId = t.TransactionId,
+                        SourceAccount = t.SourceAccountId,
+                        DestinationAccount = t.DestinationAccountId,
                         Amount = t.Amount,
-                        Date = t.Date,
+                        Date = DateOnly.FromDateTime(t.Date).ToString(),
+                        Time = TimeOnly.FromDateTime(t.Date).ToString(),
                         Type = t.Type,
+                        TrackingId = t.TrackingId
                     }).ToList()
                 };
 

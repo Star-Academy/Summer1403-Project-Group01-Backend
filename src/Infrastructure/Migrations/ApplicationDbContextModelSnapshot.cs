@@ -170,6 +170,9 @@ namespace Infrastructure.Migrations
                     b.Property<long>("SourceAccountId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("TrackingId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -212,19 +215,19 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5a15c66d-6214-4dbb-a00d-10a4f7ca4cf8",
+                            Id = "8a0429eb-6031-4546-a06e-0a0f5ae9248c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "46a9f2ed-8738-448a-9ca9-3afa00eee4ff",
+                            Id = "b70df7e0-cb8a-4131-bf26-3d2e52ee9834",
                             Name = "DataAdmin",
                             NormalizedName = "DATAADMIN"
                         },
                         new
                         {
-                            Id = "48732a60-c9aa-4aec-9ef3-b880ab162088",
+                            Id = "31f9f360-a3de-4dc3-bd7d-8f16d8da7fed",
                             Name = "DataAnalyst",
                             NormalizedName = "DATAANALYST"
                         });

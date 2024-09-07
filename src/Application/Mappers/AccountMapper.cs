@@ -9,16 +9,16 @@ public static class AccountMapper
     {
         return new Account
         {
-            AccountId = csvModel.AccountID,
-            CardId = csvModel.CardID,
-            Iban = csvModel.IBAN,
+            AccountId = csvModel.AccountId,
+            CardId = csvModel.CardId,
+            Iban = csvModel.Iban,
             AccountType = csvModel.AccountType,
             BranchTelephone = csvModel.BranchTelephone,
-            BranchAddress = csvModel.BranchAdress,
+            BranchAddress = csvModel.BranchAddress,
             BranchName = csvModel.BranchName,
             OwnerName = csvModel.OwnerName,
             OwnerLastName = csvModel.OwnerLastName,
-            OwnerId = csvModel.OwnerID
+            OwnerId = csvModel.OwnerId
         };
     }
 }

@@ -6,14 +6,17 @@ public static class TransactionMapper
 {
     public static Transaction ToTransaction(this TransactionCsvModel csvModel)
     {
+        var date = DateOnly.Parse(csvModel.Date).ToDateTime(TimeOnly.Parse(csvModel.Time));
+        var utcDate = DateTime.SpecifyKind(date, DateTimeKind.Utc);
         return new Transaction
         {
-            TransactionId = csvModel.TransactionID,
-            SourceAccountId = csvModel.SourceAcount,
-            DestinationAccountId = csvModel.DestiantionAccount,
+            TransactionId = csvModel.TransactionId,
+            SourceAccountId = csvModel.SourceAccount,
+            DestinationAccountId = csvModel.DestinationAccount,
             Amount = csvModel.Amount,
-            Date = csvModel.Date,
-            Type = csvModel.Type
+            Date = utcDate,
+            Type = csvModel.Type,
+            TrackingId = csvModel.TrackingId
         };
     }
 }

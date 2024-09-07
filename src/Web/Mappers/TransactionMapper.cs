@@ -27,7 +27,8 @@ public static class TransactionMapper
             DestinationAccountId = transaction.DestinationAccountId,
             Amount = transaction.Amount,
             Date = transaction.Date,
-            Type = transaction.Type
+            Type = transaction.Type,
+            TrackingId = transaction.TrackingId
         }).ToList();
     }
 }

@@ -5,11 +5,20 @@ namespace Application.DTOs.Transaction;
 
 public class TransactionCsvModel
 {
-    public long TransactionID { get; set; }
-    public long SourceAcount { get; set; }
-    public long DestiantionAccount { get; set; }
+    [Name("TransactionId", "TransactionID")]
+    public long TransactionId { get; set; }
+    [Name("SourceAccount", "SourceAcount")]
+    public long SourceAccount { get; set; }
+    [Name("DestinationAccount","DestiantionAccount")]
+    public long DestinationAccount { get; set; }
+    [Name("Amount")]
     public decimal Amount { get; set; }
-    [TypeConverter(typeof(PersianDateConverter))]
-    public DateTime Date { get; set; }
+    [Name("Date")]
+    public string Date { get; set; } = string.Empty;
+    [Name("Time")]
+    public string Time { get; set; } = string.Empty;
+    [Name("Type")]
     public string Type { get; set; } = string.Empty;
+    [Name("TrackingId", "TrackingID")]
+    public long TrackingId { get; set; }
 }

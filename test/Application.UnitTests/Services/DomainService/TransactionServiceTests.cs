@@ -1,8 +1,6 @@
-﻿using System.Globalization;
-using Application.DTOs.Transaction;
+﻿using Application.DTOs.Transaction;
 using Application.Interfaces;
 using Application.Interfaces.Repositories;
-using Application.Mappers;
 using Application.Services.DomainService;
 using Domain.Entities;
 using NSubstitute;
@@ -15,12 +13,13 @@ public class TransactionServiceTests
     private readonly ITransactionRepository _transactionRepository;
     private readonly IFileReaderService _fileReaderService;
     private readonly TransactionService _transactionService;
-
+    private readonly IAccountRepository _accountRepository;
     public TransactionServiceTests()
     {
         _transactionRepository = Substitute.For<ITransactionRepository>();
         _fileReaderService = Substitute.For<IFileReaderService>();
-        _transactionService = new TransactionService(_transactionRepository, _fileReaderService);
+        _accountRepository = Substitute.For<IAccountRepository>();
+        _transactionService = new TransactionService(_transactionRepository, _fileReaderService, _accountRepository);
     }
 
     [Fact]
@@ -30,19 +29,21 @@ public class TransactionServiceTests
         var filePath = "test.csv";
         var transactionCsvModels = new List<TransactionCsvModel>
         {
-            new() { TransactionID = 1, SourceAcount = 101, DestiantionAccount = 102, Amount = 100, Date = new DateTime(1399, 04, 15, new PersianCalendar()), Type = "کارت به کارت" },
-            new() { TransactionID = 2, SourceAcount = 101, DestiantionAccount = 103, Amount = 200, Date = new DateTime(1399, 04, 30, new PersianCalendar()), Type = "ساتنا" }
+            new() { TransactionId = 1, SourceAccount = 101, DestinationAccount = 102, Amount = 100, Date = "05/24/2018", Time = "6:42:05", Type = "کارت به کارت", TrackingId = 12102},
+            new() { TransactionId = 2, SourceAccount = 101, DestinationAccount = 103, Amount = 200, Date = "04/04/2017", Time = "4:12:08", Type = "ساتنا", TrackingId = 12103}
         };
-        // Expect these dates to be converted to Gregorian:
-        var expectedFirstDate = new DateTime(2020, 7, 5); // 1399/04/15 in Gregorian Calendar
-        var expectedSecondDate = new DateTime(2020, 7, 20); // 1399/04/30 in Gregorian Calendar
-
-        var transactions = transactionCsvModels.Select(csvModel => csvModel.ToTransaction()).ToList();
+        
+        var expectedFirstDateTime = new DateTime(2018, 5, 24, 6, 42, 5);
+        var expectedSecondDateTime = new DateTime(2017, 4, 4, 4, 12, 8);
+        
         var existingTransactionIds = new List<long> { 3 };
 
         _fileReaderService.ReadFromFile<TransactionCsvModel>(filePath).Returns(transactionCsvModels);
         _transactionRepository.GetAllIdsAsync().Returns(existingTransactionIds);
         _transactionRepository.CreateBulkAsync(Arg.Any<List<Transaction>>()).Returns(Task.CompletedTask);
+        _accountRepository.GetByIdAsync(101).Returns(new Account());
+        _accountRepository.GetByIdAsync(102).Returns(new Account());
+        _accountRepository.GetByIdAsync(103).Returns(new Account());
 
         // Act
         var result = await _transactionService.AddTransactionsFromCsvAsync(filePath);
@@ -53,8 +54,8 @@ public class TransactionServiceTests
         // Verifying if the dates were converted correctly
         await _transactionRepository.Received(1).CreateBulkAsync(Arg.Is<List<Transaction>>(x =>
                 x.Count == transactionCsvModels.Count &&
-                x[0].Date == expectedFirstDate && // Ensure the first date was converted correctly
-                x[1].Date == expectedSecondDate // Ensure the second date was converted correctly
+                x[0].Date == expectedFirstDateTime &&
+                x[1].Date == expectedSecondDateTime
         ));
     }
     
@@ -65,19 +66,24 @@ public class TransactionServiceTests
         var filePath = "test.csv";
         var transactionCsvModels = new List<TransactionCsvModel>
         {
-            new() { TransactionID = 1, SourceAcount = 101, DestiantionAccount = 102, Amount = 100, Date = new DateTime(1399, 04, 29, new PersianCalendar()), Type = "کارت به کارت" },
-            new() { TransactionID = 2, SourceAcount = 101, DestiantionAccount = 103, Amount = 200, Date = new DateTime(1399, 04, 15, new PersianCalendar()), Type = "ساتنا" },
-            new() { TransactionID = 3, SourceAcount = 104, DestiantionAccount = 105, Amount = 300, Date = new DateTime(1399, 04, 17, new PersianCalendar()), Type = "ساتنا"}
+            new() { TransactionId = 1, SourceAccount = 101, DestinationAccount = 102, Amount = 100, Date = "05/24/2018", Time = "10:00:00", Type = "کارت به کارت", TrackingId = 12101 },
+            new() { TransactionId = 2, SourceAccount = 101, DestinationAccount = 103, Amount = 200, Date = "05/24/2018", Time = "11:00:00", Type = "ساتنا", TrackingId = 12102 },
+            new() { TransactionId = 3, SourceAccount = 104, DestinationAccount = 105, Amount = 300, Date = "05/24/2018", Time = "12:00:00", Type = "ساتنا", TrackingId = 12103 }
         };
-
-        var transactions = transactionCsvModels.Select(csvModel => csvModel.ToTransaction()).ToList();
-    
-        // Let's say TransactionID = 3 already exists in the database.
+        
         var existingTransactionIds = new List<long> { 3 };
+        
+        var expectedFirstDateTime = new DateTime(2018, 5, 24, 10, 0, 0);
+        var expectedSecondDateTime = new DateTime(2018, 5, 24, 11, 0, 0);
 
         _fileReaderService.ReadFromFile<TransactionCsvModel>(filePath).Returns(transactionCsvModels);
         _transactionRepository.GetAllIdsAsync().Returns(existingTransactionIds);
         _transactionRepository.CreateBulkAsync(Arg.Any<List<Transaction>>()).Returns(Task.CompletedTask);
+        _accountRepository.GetByIdAsync(101).Returns(new Account());
+        _accountRepository.GetByIdAsync(102).Returns(new Account());
+        _accountRepository.GetByIdAsync(103).Returns(new Account());
+        _accountRepository.GetByIdAsync(104).Returns(new Account());
+        _accountRepository.GetByIdAsync(105).Returns(new Account());
 
         // Act
         var result = await _transactionService.AddTransactionsFromCsvAsync(filePath);
@@ -88,12 +94,11 @@ public class TransactionServiceTests
         // Only the new transactions (TransactionID = 1 and TransactionID = 2) should be added.
         await _transactionRepository.Received(1).CreateBulkAsync(Arg.Is<List<Transaction>>(x =>
             x.Count == 2 &&
-            x.Any(t => t.TransactionId == 1) &&
-            x.Any(t => t.TransactionId == 2) &&
+            x.Any(t => t.TransactionId == 1 && t.Date == expectedFirstDateTime) &&
+            x.Any(t => t.TransactionId == 2 && t.Date == expectedSecondDateTime) &&
             x.All(t => t.TransactionId != 3)
         ));
     }
-
 
     [Fact]
     public async Task AddTransactionsFromCsvAsync_ShouldReturnFail_WhenExceptionIsThrown()
@@ -125,6 +130,7 @@ public class TransactionServiceTests
         };
 
         _transactionRepository.GetAllTransactions().Returns(transactions);
+        
 
         // Act
         var result = await _transactionService.GetAllTransactionsAsync();
