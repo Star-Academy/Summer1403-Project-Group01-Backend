@@ -35,8 +35,7 @@ public class UsersController : ControllerBase
         if (!result.Succeed)
         {
             var errorResponse = Errors.New(nameof(Signup), result.Message);
-            return BadRequest(errorResponse);
-            // return StatusCode(500, Errors.New("Server Error", $"An unexpected error occurred: {ex.Message}"));
+            return StatusCode((int)result.ErrCode, errorResponse);
         }
 
         var response = result.Value!;
@@ -54,7 +53,7 @@ public class UsersController : ControllerBase
         if (!result.Succeed)
         {
             var errorResponse = Errors.New(nameof(Login), result.Message);
-            return Unauthorized(errorResponse);
+            return StatusCode((int)result.ErrCode, errorResponse);
         }
         
         var response = result.Value!;
@@ -76,7 +75,7 @@ public class UsersController : ControllerBase
         if (!result.Succeed)
         {
             var errorResponse = Errors.New(nameof(ChangeRole), result.Message);
-            return BadRequest(errorResponse);
+            return StatusCode((int)result.ErrCode, errorResponse);
         }
 
         return Ok("Role changed successfully!");
@@ -95,7 +94,7 @@ public class UsersController : ControllerBase
         if (!usersWithRolesResult.Succeed)
         {
             var errorResponse = Errors.New(nameof(ChangeRole), usersWithRolesResult.Message);
-            return BadRequest(errorResponse);
+            return StatusCode((int)usersWithRolesResult.ErrCode, errorResponse);
         }
 
         var response = usersWithRolesResult.Value!;

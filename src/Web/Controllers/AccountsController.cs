@@ -41,7 +41,7 @@ public class AccountsController : ControllerBase
         if (!result.Succeed)
         {
             var errorResponse = Errors.New(nameof(UploadAccounts), result.Message);
-            return BadRequest(errorResponse);
+            return StatusCode((int)result.ErrCode, errorResponse);
         }
         
         return Ok("Accounts uploaded successfully!");
@@ -58,7 +58,7 @@ public class AccountsController : ControllerBase
         if (!account.Succeed)
         {
             var errorResponse = Errors.New(nameof(GetAccountById), account.Message);
-            return NotFound(errorResponse);
+            return StatusCode((int)account.ErrCode, errorResponse);
         }
 
         var response = account.Value!;
@@ -77,7 +77,7 @@ public class AccountsController : ControllerBase
         if (!allAccounts.Succeed)
         {
             var errorResponse = Errors.New(nameof(GetAllAccounts), allAccounts.Message);
-            return BadRequest(errorResponse);
+            return StatusCode((int)allAccounts.ErrCode, errorResponse);
         }
 
         var response = allAccounts.Value!;
@@ -95,7 +95,7 @@ public class AccountsController : ControllerBase
         if (!accounts.Succeed)
         {
             var errorResponse = Errors.New(nameof(GetAccountsByFileId), accounts.Message);
-            return BadRequest(errorResponse);
+            return StatusCode((int)accounts.ErrCode, errorResponse);
         }
 
         var response = accounts.Value!;
@@ -113,7 +113,7 @@ public class AccountsController : ControllerBase
         if (!result.Succeed)
         {
             var errorResponse = Errors.New(nameof(DeleteAccountsByFileId), result.Message);
-            return BadRequest(errorResponse);
+            return StatusCode((int)result.ErrCode, errorResponse);
         }
 
         return Ok("Accounts deleted successfully!");

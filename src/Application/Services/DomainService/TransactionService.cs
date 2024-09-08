@@ -62,7 +62,7 @@ public class TransactionService : ITransactionService
             var fileAlreadyExists = await _fileIdRepository.IdExistsAsync(fileId);
             if (!fileAlreadyExists)
             {
-                return Result.Fail("File-Id do not exist");
+                return Result.Fail(ErrorCode.BadRequest, "File-Id do not exist");
             }
             await _transactionRepository.CreateBulkAsync(newTransactions);
             return Result.Ok(invalidTransactionCsvModels.Count == 0
@@ -71,7 +71,7 @@ public class TransactionService : ITransactionService
         }
         catch (Exception ex)
         {
-            return Result.Fail($"An error occurred: {ex.Message}");
+            return Result.Fail(ErrorCode.InternalServerError, $"An error occurred: {ex.Message}");
         }
     }
 
@@ -84,7 +84,7 @@ public class TransactionService : ITransactionService
         }
         catch (Exception ex)
         {
-            return Result<List<Transaction>>.Fail($"An error occurred: {ex.Message}");
+            return Result<List<Transaction>>.Fail(ErrorCode.InternalServerError, $"An error occurred: {ex.Message}");
         }
     }
 
@@ -129,7 +129,7 @@ public class TransactionService : ITransactionService
         }
         catch (Exception ex)
         {
-            return Result<List<GetTransactionsByAccountIdResponse>>.Fail($"An error occurred: {ex.Message}");
+            return Result<List<GetTransactionsByAccountIdResponse>>.Fail(ErrorCode.InternalServerError, $"An error occurred: {ex.Message}");
         }
     }
 
@@ -139,14 +139,14 @@ public class TransactionService : ITransactionService
         {
             if (!await _fileIdRepository.IdExistsAsync(fileId))
             {
-                return Result<List<Transaction>>.Fail("File-Id not found");
+                return Result<List<Transaction>>.Fail(ErrorCode.BadRequest, "File-Id not found");
             }
             var transactions = await _transactionRepository.GetByFileIdAsync(fileId);
             return Result<List<Transaction>>.Ok(transactions);
         }
         catch (Exception ex)
         {
-            return Result<List<Transaction>>.Fail($"An error occurred: {ex.Message}");
+            return Result<List<Transaction>>.Fail(ErrorCode.InternalServerError, $"An error occurred: {ex.Message}");
         }
     }
 
@@ -156,14 +156,14 @@ public class TransactionService : ITransactionService
         {
             if (!await _fileIdRepository.IdExistsAsync(fileId))
             {
-                return Result.Fail("File-Id not found");
+                return Result.Fail(ErrorCode.BadRequest, "File-Id not found");
             }
             await _transactionRepository.DeleteByFileIdAsync(fileId);
             return Result.Ok();
         }
         catch (Exception ex)
         {
-            return Result.Fail($"An error occurred: {ex.Message}");
+            return Result.Fail(ErrorCode.InternalServerError, $"An error occurred: {ex.Message}");
         }
     }
 }

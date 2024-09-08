@@ -31,7 +31,7 @@ public class UserService : IUserService
         {
             if (!await _roleManagerRepository.RoleExistsAsync(createUserRequest.Role))
             {
-                return Result<CreateUserResponse>.Fail("Role does not exist.");
+                return Result<CreateUserResponse>.Fail(ErrorCode.BadRequest, "Role does not exist.");
             }
 
             var appUser = createUserRequest.ToAppUser();
@@ -39,20 +39,20 @@ public class UserService : IUserService
             var appUserResult = await _userManagerRepository.CreateAsync(appUser, createUserRequest.Password);
             if (!appUserResult.Succeeded)
             {
-                return Result<CreateUserResponse>.Fail(appUserResult.Errors.FirstMessage());
+                return Result<CreateUserResponse>.Fail(ErrorCode.BadRequest, appUserResult.Errors.FirstMessage());
             }
 
             var roleResult = await _userManagerRepository.SetRoleAsync(appUser, createUserRequest.Role);
             if (!roleResult.Succeeded)
             {
-                return Result<CreateUserResponse>.Fail(roleResult.Errors.FirstMessage());
+                return Result<CreateUserResponse>.Fail(ErrorCode.BadRequest, roleResult.Errors.FirstMessage());
             }
 
             return Result<CreateUserResponse>.Ok(appUser.ToCreateUserResponse(createUserRequest.Role));
         }
         catch (Exception ex)
         {
-            return Result<CreateUserResponse>.Fail($"An unexpected error occurred: {ex.Message}");
+            return Result<CreateUserResponse>.Fail(ErrorCode.InternalServerError, $"An unexpected error occurred: {ex.Message}");
         }
     }
 
@@ -72,14 +72,14 @@ public class UserService : IUserService
             }
             else
             {
-                return Result<LoginUserResponse>.Fail("You should enter email or username!");
+                return Result<LoginUserResponse>.Fail(ErrorCode.UnAuthorized, "You should enter email or username!");
             }
 
-            if (appUser is null) return Result<LoginUserResponse>.Fail("Invalid username/email!");
+            if (appUser is null) return Result<LoginUserResponse>.Fail(ErrorCode.UnAuthorized, "Invalid username/email!");
 
             var succeed = await _userManagerRepository.CheckPasswordAsync(appUser, loginUserRequest.Password);
 
-            if (!succeed) return Result<LoginUserResponse>.Fail("Username/Email not found and/or password incorrect");
+            if (!succeed) return Result<LoginUserResponse>.Fail(ErrorCode.UnAuthorized, "Username/Email not found and/or password incorrect");
         
             var role = await _userManagerRepository.GetRoleAsync(appUser);
             var token = _tokenService.GenerateToken(appUser, role);
@@ -88,7 +88,7 @@ public class UserService : IUserService
         }
         catch (Exception ex)
         {
-            return Result<LoginUserResponse>.Fail($"An unexpected error occurred: {ex.Message}");
+            return Result<LoginUserResponse>.Fail(ErrorCode.InternalServerError, $"An unexpected error occurred: {ex.Message}");
         }
     }
 
@@ -98,19 +98,19 @@ public class UserService : IUserService
         {
             if (!await _roleManagerRepository.RoleExistsAsync(request.Role))
             {
-                return Result.Fail("role does not exist");
+                return Result.Fail(ErrorCode.BadRequest, "role does not exist");
             }
             AppUser? appUser = await _userManagerRepository.FindByNameAsync(request.UserName);
 
-            if (appUser is null) return Result<LoginUserResponse>.Fail("Invalid username");
+            if (appUser is null) return Result<LoginUserResponse>.Fail(ErrorCode.BadRequest, "Invalid username");
 
             var result = await _userManagerRepository.ChangeRoleAsync(appUser, request.Role);
         
-            return result.Succeeded ? Result.Ok() : Result.Fail(result.Errors.FirstMessage());
+            return result.Succeeded ? Result.Ok() : Result.Fail(ErrorCode.BadRequest, result.Errors.FirstMessage());
         }
         catch (Exception ex)
         {
-            return Result.Fail($"An unexpected error occurred: {ex.Message}");
+            return Result.Fail(ErrorCode.InternalServerError, $"An unexpected error occurred: {ex.Message}");
         }
     }
 
@@ -132,7 +132,7 @@ public class UserService : IUserService
         }
         catch (Exception ex)
         {
-            return Result<List<GetUserResponse>>.Fail($"An unexpected error occurred: {ex.Message}");
+            return Result<List<GetUserResponse>>.Fail(ErrorCode.InternalServerError, $"An unexpected error occurred: {ex.Message}");
         }
     }
 }
