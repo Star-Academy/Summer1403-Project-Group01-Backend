@@ -26,7 +26,7 @@ public class TransactionsController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public async Task<IActionResult> UploadTransactions([FromForm] IFormFile file)
+    public async Task<IActionResult> UploadTransactions([FromForm] IFormFile file, [FromForm] long fileId)
     {
         if (file.Length == 0)
             return BadRequest("No file uploaded.");
@@ -38,7 +38,7 @@ public class TransactionsController : ControllerBase
             await file.CopyToAsync(stream);
         }
 
-        var result = await _transactionService.AddTransactionsFromCsvAsync(filePath);
+        var result = await _transactionService.AddTransactionsFromCsvAsync(filePath, fileId);
         
         if (!result.Succeed)
         {
@@ -88,5 +88,45 @@ public class TransactionsController : ControllerBase
         var response = transactions.Value!;
         
         return Ok(response);
+    }
+    
+    [HttpGet("by-file-id/{fileId}")]
+    [Authorize]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin, AppRoles.DataAnalyst)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    public async Task<IActionResult> GetTransactionsByFileId(long fileId)
+    {
+        var transactions = await _transactionService.GetTransactionsByFileIdAsync(fileId);
+
+        if (!transactions.Succeed)
+        {
+            var errorResponse = Errors.New(nameof(GetAllTransactions), transactions.Message);
+            return BadRequest(errorResponse);
+        }
+
+        var response = transactions.Value!.ToGotAllTransactionsDto();
+        
+        return Ok(response);
+    }
+    
+    [HttpDelete("{fileId}")]
+    [Authorize]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    public async Task<IActionResult> DeleteTransactionsByFileId(long fileId)
+    {
+        var result = await _transactionService.DeleteTransactionsByFileIdAsync(fileId);
+
+        if (!result.Succeed)
+        {
+            var errorResponse = Errors.New(nameof(DeleteTransactionsByFileId), result.Message);
+            return BadRequest(errorResponse);
+        }
+
+        return Ok(result.Message);
     }
 }

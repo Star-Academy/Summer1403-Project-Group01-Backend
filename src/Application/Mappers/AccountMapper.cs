@@ -5,7 +5,7 @@ namespace Application.Mappers;
 
 public static class AccountMapper
 {
-    public static Account ToAccount(this AccountCsvModel csvModel)
+    public static Account ToAccount(this AccountCsvModel csvModel, long fileId)
     {
         return new Account
         {
@@ -18,7 +18,8 @@ public static class AccountMapper
             BranchName = csvModel.BranchName,
             OwnerName = csvModel.OwnerName,
             OwnerLastName = csvModel.OwnerLastName,
-            OwnerId = csvModel.OwnerId
+            OwnerId = csvModel.OwnerId,
+            FileId = fileId
         };
     }
 }

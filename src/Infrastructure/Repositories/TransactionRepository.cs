@@ -44,4 +44,19 @@ public class TransactionRepository : ITransactionRepository
             .Select(a => a.TransactionId)
             .ToListAsync();
     }
+
+    public async Task<List<Transaction>> GetByFileIdAsync(long fileId)
+    {
+        return await _dbContext.Transactions
+            .Where(transaction => transaction.FileId == fileId)
+            .ToListAsync();
+    }
+
+    public Task DeleteByFileIdAsync(long fileId)
+    {
+        var transactions = _dbContext.Transactions
+            .Where(transaction => transaction.FileId == fileId);
+        _dbContext.Transactions.RemoveRange(transactions);
+        return _dbContext.SaveChangesAsync();
+    }
 }

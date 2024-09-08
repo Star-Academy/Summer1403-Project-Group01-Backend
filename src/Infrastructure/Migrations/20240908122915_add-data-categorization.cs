@@ -9,32 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class updatetransactionentity : Migration
+    public partial class adddatacategorization : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Accounts",
-                columns: table => new
-                {
-                    AccountId = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CardId = table.Column<long>(type: "bigint", nullable: false),
-                    Iban = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    AccountType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    BranchTelephone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    BranchAddress = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    BranchName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    OwnerName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    OwnerLastName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    OwnerId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Accounts", x => x.AccountId);
-                });
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -77,33 +56,15 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transactions",
+                name: "FileIds",
                 columns: table => new
                 {
-                    TransactionId = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SourceAccountId = table.Column<long>(type: "bigint", nullable: false),
-                    DestinationAccountId = table.Column<long>(type: "bigint", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    TrackingId = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transactions", x => x.TransactionId);
-                    table.ForeignKey(
-                        name: "FK_Transactions_Accounts_DestinationAccountId",
-                        column: x => x.DestinationAccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "AccountId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Transactions_Accounts_SourceAccountId",
-                        column: x => x.SourceAccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "AccountId",
-                        onDelete: ReferentialAction.Restrict);
+                    table.PrimaryKey("PK_FileIds", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -212,15 +173,85 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Accounts",
+                columns: table => new
+                {
+                    AccountId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CardId = table.Column<long>(type: "bigint", nullable: false),
+                    Iban = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    AccountType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    BranchTelephone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    BranchAddress = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    BranchName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    OwnerName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    OwnerLastName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    OwnerId = table.Column<long>(type: "bigint", nullable: false),
+                    FileId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Accounts", x => x.AccountId);
+                    table.ForeignKey(
+                        name: "FK_Accounts_FileIds_FileId",
+                        column: x => x.FileId,
+                        principalTable: "FileIds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    TransactionId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SourceAccountId = table.Column<long>(type: "bigint", nullable: false),
+                    DestinationAccountId = table.Column<long>(type: "bigint", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    TrackingId = table.Column<long>(type: "bigint", nullable: false),
+                    FileId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.TransactionId);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Accounts_DestinationAccountId",
+                        column: x => x.DestinationAccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "AccountId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Accounts_SourceAccountId",
+                        column: x => x.SourceAccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "AccountId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Transactions_FileIds_FileId",
+                        column: x => x.FileId,
+                        principalTable: "FileIds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "31f9f360-a3de-4dc3-bd7d-8f16d8da7fed", null, "DataAnalyst", "DATAANALYST" },
-                    { "8a0429eb-6031-4546-a06e-0a0f5ae9248c", null, "Admin", "ADMIN" },
-                    { "b70df7e0-cb8a-4131-bf26-3d2e52ee9834", null, "DataAdmin", "DATAADMIN" }
+                    { "5031ea4e-f3ab-44f7-b7cf-ff2c6253a0f0", null, "DataAdmin", "DATAADMIN" },
+                    { "546d4bc0-6f2d-4d74-af64-c83b1b99f6c6", null, "DataAnalyst", "DATAANALYST" },
+                    { "e1624a94-c648-4bcd-9e55-d885a2057a9b", null, "Admin", "ADMIN" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Accounts_FileId",
+                table: "Accounts",
+                column: "FileId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -265,6 +296,11 @@ namespace Infrastructure.Migrations
                 column: "DestinationAccountId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Transactions_FileId",
+                table: "Transactions",
+                column: "FileId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_SourceAccountId",
                 table: "Transactions",
                 column: "SourceAccountId");
@@ -299,6 +335,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Accounts");
+
+            migrationBuilder.DropTable(
+                name: "FileIds");
         }
     }
 }

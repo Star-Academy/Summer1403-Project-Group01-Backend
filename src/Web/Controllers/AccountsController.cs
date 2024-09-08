@@ -25,7 +25,7 @@ public class AccountsController : ControllerBase
     [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> UploadAccounts([FromForm] IFormFile file)
+    public async Task<IActionResult> UploadAccounts([FromForm] IFormFile file, [FromForm] long fileId)
     {
         if (file.Length == 0)
             return BadRequest("No file uploaded.");
@@ -36,8 +36,8 @@ public class AccountsController : ControllerBase
         {
             await file.CopyToAsync(stream);
         }
-
-        var result = await _accountService.AddAccountsFromCsvAsync(filePath);
+        
+        var result = await _accountService.AddAccountsFromCsvAsync(filePath, fileId);
         if (!result.Succeed)
         {
             var errorResponse = Errors.New(nameof(UploadAccounts), result.Message);
@@ -82,5 +82,40 @@ public class AccountsController : ControllerBase
 
         var response = allAccounts.Value!;
         return Ok(response.ToGotAllAccountsDto());
+    }
+    
+    [HttpGet("by-file-id/{fileId}")]
+    [Authorize]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin, AppRoles.DataAnalyst)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    public async Task<IActionResult> GetAccountsByFileId(long fileId)
+    {
+        var accounts = await _accountService.GetAccountsByFileIdAsync(fileId);
+        if (!accounts.Succeed)
+        {
+            var errorResponse = Errors.New(nameof(GetAccountsByFileId), accounts.Message);
+            return BadRequest(errorResponse);
+        }
+
+        var response = accounts.Value!;
+        return Ok(response.ToGotAllAccountsDto());
+    }
+    
+    [HttpDelete("{fileId}")]
+    [Authorize]
+    [RequiresAnyRole(Claims.Role, AppRoles.Admin, AppRoles.DataAdmin)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    public async Task<IActionResult> DeleteAccountsByFileId(long fileId)
+    {
+        var result = await _accountService.DeleteAccountsByFileIdAsync(fileId);
+        if (!result.Succeed)
+        {
+            var errorResponse = Errors.New(nameof(DeleteAccountsByFileId), result.Message);
+            return BadRequest(errorResponse);
+        }
+
+        return Ok("Accounts deleted successfully!");
     }
 }

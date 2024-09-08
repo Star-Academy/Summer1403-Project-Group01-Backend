@@ -8,4 +8,6 @@ public interface IAccountRepository
     Task<Account?> GetByIdAsync(long accountId);
     Task<List<Account>> GetAllAccounts();
     Task<List<long>> GetAllIdsAsync();
+    Task<List<Account>> GetByFileIdAsync(long fileId);
+    Task DeleteByFileIdAsync(long fileId);
 }

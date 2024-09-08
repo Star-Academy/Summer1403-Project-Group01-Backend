@@ -15,12 +15,14 @@ public class AccountServiceTests
     private readonly IAccountRepository _accountRepository;
     private readonly AccountService _accountService;
     private readonly IFileReaderService _fileReaderService;
+    private readonly IFileIdRepository _fileIdRepository;
 
     public AccountServiceTests()
     {
+        _fileIdRepository = Substitute.For<IFileIdRepository>();
         _accountRepository = Substitute.For<IAccountRepository>();
         _fileReaderService = Substitute.For<IFileReaderService>();
-        _accountService = new AccountService(_accountRepository, _fileReaderService);
+        _accountService = new AccountService(_accountRepository, _fileReaderService, _fileIdRepository);
     }
     
     [Fact]
@@ -61,9 +63,10 @@ public class AccountServiceTests
 
         _fileReaderService.ReadFromFile<AccountCsvModel>(filePath).Returns(accountCsvModels);
         _accountRepository.GetAllIdsAsync().Returns(existingAccountIds);
+        _fileIdRepository.IdExistsAsync(1).Returns(false);
 
         // Act
-        var result = await _accountService.AddAccountsFromCsvAsync(filePath);
+        var result = await _accountService.AddAccountsFromCsvAsync(filePath, 1);
 
         // Assert
         Assert.True(result.Succeed);
@@ -83,9 +86,10 @@ public class AccountServiceTests
         _fileReaderService
             .When(x => x.ReadFromFile<AccountCsvModel>(filePath))
             .Do(x => { throw new Exception("CSV read error"); });
+        _fileIdRepository.IdExistsAsync(1).Returns(false);
 
         // Act
-        var result = await _accountService.AddAccountsFromCsvAsync(filePath);
+        var result = await _accountService.AddAccountsFromCsvAsync(filePath, 1);
 
         // Assert
         Assert.False(result.Succeed);

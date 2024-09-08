@@ -30,6 +30,8 @@ public class Account
     [MaxLength(50)]
     public string OwnerLastName { get; set; } = String.Empty;
     public long OwnerId { get; set; }
+    public long FileId { get; set; }
+    public FileId? File { get; set; }
 
     public List<Transaction> SourceTransactions { get; set; } = new();
     public List<Transaction> DestinationTransactions { get; set; } = new();

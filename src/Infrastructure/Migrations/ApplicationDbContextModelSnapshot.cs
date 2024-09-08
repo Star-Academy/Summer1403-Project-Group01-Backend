@@ -53,6 +53,9 @@ namespace Infrastructure.Migrations
                     b.Property<long>("CardId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("FileId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Iban")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -72,6 +75,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.HasKey("AccountId");
+
+                    b.HasIndex("FileId");
 
                     b.ToTable("Accounts");
                 });
@@ -150,6 +155,19 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.FileId", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FileIds");
+                });
+
             modelBuilder.Entity("Domain.Entities.Transaction", b =>
                 {
                     b.Property<long>("TransactionId")
@@ -167,6 +185,9 @@ namespace Infrastructure.Migrations
                     b.Property<long>("DestinationAccountId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("FileId")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("SourceAccountId")
                         .HasColumnType("bigint");
 
@@ -181,6 +202,8 @@ namespace Infrastructure.Migrations
                     b.HasKey("TransactionId");
 
                     b.HasIndex("DestinationAccountId");
+
+                    b.HasIndex("FileId");
 
                     b.HasIndex("SourceAccountId");
 
@@ -215,19 +238,19 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8a0429eb-6031-4546-a06e-0a0f5ae9248c",
+                            Id = "e1624a94-c648-4bcd-9e55-d885a2057a9b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "b70df7e0-cb8a-4131-bf26-3d2e52ee9834",
+                            Id = "5031ea4e-f3ab-44f7-b7cf-ff2c6253a0f0",
                             Name = "DataAdmin",
                             NormalizedName = "DATAADMIN"
                         },
                         new
                         {
-                            Id = "31f9f360-a3de-4dc3-bd7d-8f16d8da7fed",
+                            Id = "546d4bc0-6f2d-4d74-af64-c83b1b99f6c6",
                             Name = "DataAnalyst",
                             NormalizedName = "DATAANALYST"
                         });
@@ -339,11 +362,28 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.Account", b =>
+                {
+                    b.HasOne("Domain.Entities.FileId", "File")
+                        .WithMany()
+                        .HasForeignKey("FileId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("File");
+                });
+
             modelBuilder.Entity("Domain.Entities.Transaction", b =>
                 {
                     b.HasOne("Domain.Entities.Account", "DestinationAccount")
                         .WithMany("DestinationTransactions")
                         .HasForeignKey("DestinationAccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.FileId", "File")
+                        .WithMany()
+                        .HasForeignKey("FileId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -354,6 +394,8 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("DestinationAccount");
+
+                    b.Navigation("File");
 
                     b.Navigation("SourceAccount");
                 });
