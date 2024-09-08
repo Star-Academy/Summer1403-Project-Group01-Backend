@@ -36,4 +36,19 @@ public class AccountRepository : IAccountRepository
             .Select(a => a.AccountId)
             .ToListAsync();
     }
+
+    public async Task<List<Account>> GetByFileIdAsync(long fileId)
+    {
+        return await _dbContext.Accounts
+            .Where(a => a.FileId == fileId)
+            .ToListAsync();
+    }
+
+    public async Task DeleteByFileIdAsync(long fileId)
+    {
+        var accounts = _dbContext.Accounts
+            .Where(a => a.FileId == fileId);
+        _dbContext.Accounts.RemoveRange(accounts);
+        await _dbContext.SaveChangesAsync();
+    }
 }

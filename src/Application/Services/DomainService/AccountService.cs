@@ -13,26 +13,34 @@ public class AccountService : IAccountService
 {
     private readonly IAccountRepository _accountRepository;
     private readonly IFileReaderService _fileReaderService;
+    private readonly IFileIdRepository _fileIdRepository;
 
-    public AccountService(IAccountRepository accountRepository, IFileReaderService fileReaderService)
+    public AccountService(IAccountRepository accountRepository, IFileReaderService fileReaderService, IFileIdRepository fileIdRepository)
     {
         _accountRepository = accountRepository;
         _fileReaderService = fileReaderService;
+        _fileIdRepository = fileIdRepository;
     }
 
-    public async Task<Result> AddAccountsFromCsvAsync(string filePath)
+    public async Task<Result> AddAccountsFromCsvAsync(string filePath, long fileId)
     {
         try
         {
             var accountCsvModels = _fileReaderService.ReadFromFile<AccountCsvModel>(filePath);
 
             var accounts = accountCsvModels
-                .Select(csvModel => csvModel.ToAccount())
+                .Select(csvModel => csvModel.ToAccount(fileId))
                 .ToList();
         
             var existingAccountIds = await _accountRepository.GetAllIdsAsync();
             var newAccounts = accounts.Where(a => !existingAccountIds.Contains(a.AccountId)).ToList();
-
+            
+            var fileAlreadyExists = await _fileIdRepository.IdExistsAsync(fileId);
+            if (fileAlreadyExists)
+            {
+                return Result.Fail("File-Id already exists");
+            }
+            await _fileIdRepository.AddAsync(new FileId { Id = fileId });
             await _accountRepository.CreateBulkAsync(newAccounts);
             return Result.Ok();
         }
@@ -70,6 +78,41 @@ public class AccountService : IAccountService
         catch (Exception ex)
         {
             return Result<List<Account>>.Fail($"An unexpected error occurred: {ex.Message}");
+        }
+    }
+    
+    public async Task<Result<List<Account>>> GetAccountsByFileIdAsync(long fileId)
+    {
+        try
+        {
+            if (!await _fileIdRepository.IdExistsAsync(fileId))
+            {
+                return Result<List<Account>>.Fail("File-Id not found");
+            }
+            var accounts = await _accountRepository.GetByFileIdAsync(fileId);
+            return Result<List<Account>>.Ok(accounts);
+        }
+        catch (Exception ex)
+        {
+            return Result<List<Account>>.Fail($"An unexpected error occurred: {ex.Message}");
+        }
+    }
+
+    public async Task<Result> DeleteAccountsByFileIdAsync(long fileId)
+    {
+        try
+        {
+            if (!await _fileIdRepository.IdExistsAsync(fileId))
+            {
+                return Result<List<Account>>.Fail("File-Id not found");
+            }
+            await _accountRepository.DeleteByFileIdAsync(fileId);
+            await _fileIdRepository.DeleteByIdAsync(fileId);
+            return Result.Ok();
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail($"An unexpected error occurred: {ex.Message}");
         }
     }
 }
