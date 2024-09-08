@@ -3,9 +3,6 @@ name: CI_Backend
 on:
   pull_request:
     branches:
-      - dev
-  push:
-    branches:
       - main
 
 jobs:
