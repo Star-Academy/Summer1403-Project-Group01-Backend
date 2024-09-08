@@ -43,7 +43,7 @@ public class TransactionsController : ControllerBase
         if (!result.Succeed)
         {
             var errorResponse = Errors.New(nameof(UploadTransactions), result.Message);
-            return BadRequest(errorResponse);
+            return StatusCode((int)result.ErrCode, errorResponse);
         }
         
         return Ok(result.Message);
@@ -62,7 +62,7 @@ public class TransactionsController : ControllerBase
         if (!allTransactions.Succeed)
         {
             var errorResponse = Errors.New(nameof(GetAllTransactions), allTransactions.Message);
-            return BadRequest(errorResponse);
+            return StatusCode((int)allTransactions.ErrCode, errorResponse);
         }
 
         var response = allTransactions.Value!;
@@ -82,7 +82,7 @@ public class TransactionsController : ControllerBase
         if (!transactions.Succeed)
         {
             var errorResponse = Errors.New(nameof(GetAllTransactions), transactions.Message);
-            return BadRequest(errorResponse);
+            return StatusCode((int)transactions.ErrCode, errorResponse);
         }
 
         var response = transactions.Value!;
@@ -103,7 +103,7 @@ public class TransactionsController : ControllerBase
         if (!transactions.Succeed)
         {
             var errorResponse = Errors.New(nameof(GetAllTransactions), transactions.Message);
-            return BadRequest(errorResponse);
+            return StatusCode((int)transactions.ErrCode, errorResponse);
         }
 
         var response = transactions.Value!.ToGotAllTransactionsDto();
@@ -124,7 +124,7 @@ public class TransactionsController : ControllerBase
         if (!result.Succeed)
         {
             var errorResponse = Errors.New(nameof(DeleteTransactionsByFileId), result.Message);
-            return BadRequest(errorResponse);
+            return StatusCode((int)result.ErrCode, errorResponse);
         }
 
         return Ok(result.Message);

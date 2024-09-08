@@ -5,7 +5,6 @@ var builder = WebApplication.CreateBuilder(args);
 Env.Load();
 var config = builder.Configuration;
 
-
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
@@ -17,10 +16,8 @@ builder.Services.AddApplicationServices();
 builder.Services.AddSwaggerDocumentation();
 builder.Services.AddCorsPolicy(config);
 
-
 var app = builder.Build();
 app.UseMiddlewareServices();
-
 
 using (var scope = app.Services.CreateScope())
 {

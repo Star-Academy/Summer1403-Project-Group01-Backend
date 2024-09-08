@@ -4,7 +4,7 @@ public class Result
 {
     public string Message { get; protected set; } = string.Empty;
     public bool Succeed { get; protected set; }
-
+    public ErrorCode ErrCode { get; protected set; }
     public static Result Ok(string message = "succeed")
     {
         return new Result
@@ -14,12 +14,13 @@ public class Result
         };
     }
 
-    public static Result Fail(string message = "failed")
+    public static Result Fail(ErrorCode errorCode, string message = "failed")
     {
         return new Result
         {
             Succeed = false,
-            Message = message
+            Message = message,
+            ErrCode = errorCode
         };
     }
 }
@@ -37,12 +38,13 @@ public class Result<T> : Result
         };
     }
 
-    public static Result<T> Fail(string message = "failed")
+    public static Result<T> Fail(ErrorCode errorCode, string message = "failed")
     {
         return new Result<T>
         {
             Succeed = false,
-            Message = message
+            Message = message,
+            ErrCode = errorCode
         };
     }
 }

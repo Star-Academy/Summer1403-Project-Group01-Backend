@@ -38,7 +38,7 @@ public class AccountService : IAccountService
             var fileAlreadyExists = await _fileIdRepository.IdExistsAsync(fileId);
             if (fileAlreadyExists)
             {
-                return Result.Fail("File-Id already exists");
+                return Result.Fail(ErrorCode.BadRequest, "File-Id already exists");
             }
             await _fileIdRepository.AddAsync(new FileId { Id = fileId });
             await _accountRepository.CreateBulkAsync(newAccounts);
@@ -46,7 +46,7 @@ public class AccountService : IAccountService
         }
         catch (Exception ex)
         {
-            return Result.Fail($"An unexpected error occurred: {ex.Message}");
+            return Result.Fail(ErrorCode.InternalServerError, $"An unexpected error occurred: {ex.Message}");
         }
     }
 
@@ -57,14 +57,14 @@ public class AccountService : IAccountService
             var account = await _accountRepository.GetByIdAsync(accountId);
             if (account == null)
             {
-                return Result<Account>.Fail("Account not found");
+                return Result<Account>.Fail(ErrorCode.NotFound, "Account not found");
             }
         
             return Result<Account>.Ok(account);
         }
         catch (Exception ex)
         {
-            return Result<Account>.Fail($"An unexpected error occurred: {ex.Message}");
+            return Result<Account>.Fail(ErrorCode.InternalServerError, $"An unexpected error occurred: {ex.Message}");
         }
     }
 
@@ -77,7 +77,7 @@ public class AccountService : IAccountService
         }
         catch (Exception ex)
         {
-            return Result<List<Account>>.Fail($"An unexpected error occurred: {ex.Message}");
+            return Result<List<Account>>.Fail(ErrorCode.InternalServerError, $"An unexpected error occurred: {ex.Message}");
         }
     }
     
@@ -87,14 +87,14 @@ public class AccountService : IAccountService
         {
             if (!await _fileIdRepository.IdExistsAsync(fileId))
             {
-                return Result<List<Account>>.Fail("File-Id not found");
+                return Result<List<Account>>.Fail(ErrorCode.BadRequest, "File-Id not found");
             }
             var accounts = await _accountRepository.GetByFileIdAsync(fileId);
             return Result<List<Account>>.Ok(accounts);
         }
         catch (Exception ex)
         {
-            return Result<List<Account>>.Fail($"An unexpected error occurred: {ex.Message}");
+            return Result<List<Account>>.Fail(ErrorCode.InternalServerError, $"An unexpected error occurred: {ex.Message}");
         }
     }
 
@@ -104,7 +104,7 @@ public class AccountService : IAccountService
         {
             if (!await _fileIdRepository.IdExistsAsync(fileId))
             {
-                return Result<List<Account>>.Fail("File-Id not found");
+                return Result<List<Account>>.Fail(ErrorCode.BadRequest, "File-Id not found");
             }
             await _accountRepository.DeleteByFileIdAsync(fileId);
             await _fileIdRepository.DeleteByIdAsync(fileId);
@@ -112,7 +112,7 @@ public class AccountService : IAccountService
         }
         catch (Exception ex)
         {
-            return Result.Fail($"An unexpected error occurred: {ex.Message}");
+            return Result.Fail(ErrorCode.InternalServerError, $"An unexpected error occurred: {ex.Message}");
         }
     }
 }

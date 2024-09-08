@@ -24,13 +24,13 @@ public class ProfileService : IProfileService
         {
             var user = await _userManagerRepository.FindByIdAsync(infoRequest.UserId);
             if (user == null)
-                return Result<EditProfileInfoResponse>.Fail("User not found!");
+                return Result<EditProfileInfoResponse>.Fail(ErrorCode.BadRequest, "User not found!");
         
             if (user.UserName != infoRequest.UserName)
             {
                 var existingUser = await _userManagerRepository.FindByNameAsync(infoRequest.UserName);
                 if (existingUser != null)
-                    return Result<EditProfileInfoResponse>.Fail("Username is already reserved by another user!");
+                    return Result<EditProfileInfoResponse>.Fail(ErrorCode.BadRequest, "Username is already reserved by another user!");
             }
         
             user.UserName = infoRequest.UserName;
@@ -39,13 +39,13 @@ public class ProfileService : IProfileService
 
             var updateResult = await _userManagerRepository.UpdateAsync(user);
             if (!updateResult.Succeeded)
-                return Result<EditProfileInfoResponse>.Fail(updateResult.Errors.FirstMessage());
+                return Result<EditProfileInfoResponse>.Fail(ErrorCode.BadRequest, updateResult.Errors.FirstMessage());
         
             return Result<EditProfileInfoResponse>.Ok(user.ToEditProfileInfoResponse());
         }
         catch (Exception ex)
         {
-            return Result<EditProfileInfoResponse>.Fail($"An unexpected error occurred: {ex.Message}");
+            return Result<EditProfileInfoResponse>.Fail(ErrorCode.InternalServerError, $"An unexpected error occurred: {ex.Message}");
         }
     }
 
@@ -56,7 +56,7 @@ public class ProfileService : IProfileService
             var user = await _userManagerRepository.FindByIdAsync(getProfileInfoRequest.UserId);
         
             if (user == null)
-                return Result<GetProfileInfoResponse>.Fail("User not found!");
+                return Result<GetProfileInfoResponse>.Fail(ErrorCode.NotFound, "User not found!");
 
             var role = await _userManagerRepository.GetRoleAsync(user);
         
@@ -64,7 +64,7 @@ public class ProfileService : IProfileService
         }
         catch (Exception ex)
         {
-            return Result<GetProfileInfoResponse>.Fail($"An unexpected error occurred: {ex.Message}");
+            return Result<GetProfileInfoResponse>.Fail(ErrorCode.InternalServerError, $"An unexpected error occurred: {ex.Message}");
         }
     }
 
@@ -74,21 +74,21 @@ public class ProfileService : IProfileService
         {
             var user = await _userManagerRepository.FindByIdAsync(request.UserId);
             if (user == null)
-                return Result.Fail("User not found!");
+                return Result.Fail(ErrorCode.BadRequest, "User not found!");
 
             var isPasswordCorrect = await _userManagerRepository.CheckPasswordAsync(user, request.CurrentPassword);
             if (!isPasswordCorrect)
-                return Result.Fail("Incorrect current password!");
+                return Result.Fail(ErrorCode.BadRequest, "Incorrect current password!");
 
             var passwordChangeResult = await _userManagerRepository.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
             if (!passwordChangeResult.Succeeded)
-                return Result.Fail(passwordChangeResult.Errors.FirstMessage());
+                return Result.Fail(ErrorCode.BadRequest, passwordChangeResult.Errors.FirstMessage());
 
             return Result.Ok();
         }
         catch (Exception ex)
         {
-            return Result.Fail($"An unexpected error occurred: {ex.Message}");
+            return Result.Fail(ErrorCode.InternalServerError, $"An unexpected error occurred: {ex.Message}");
         }
     }
 }
