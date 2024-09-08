@@ -43,10 +43,10 @@ public class TransactionServiceTests
         _fileReaderService.ReadFromFile<TransactionCsvModel>(filePath).Returns(transactionCsvModels);
         _transactionRepository.GetAllIdsAsync().Returns(existingTransactionIds);
         _transactionRepository.CreateBulkAsync(Arg.Any<List<Transaction>>()).Returns(Task.CompletedTask);
-        _accountRepository.GetByIdAsync(101).Returns(new Account());
-        _accountRepository.GetByIdAsync(102).Returns(new Account());
-        _accountRepository.GetByIdAsync(103).Returns(new Account());
-        _fileIdRepository.IdExistsAsync(1).Returns(false);
+        _accountRepository.GetByIdAsync(101).Returns(new Account {FileId = 1});
+        _accountRepository.GetByIdAsync(102).Returns(new Account {FileId = 1});
+        _accountRepository.GetByIdAsync(103).Returns(new Account {FileId = 1});
+        _fileIdRepository.IdExistsAsync(1).Returns(true);
 
         // Act
         var result = await _transactionService.AddTransactionsFromCsvAsync(filePath, 1);
@@ -82,12 +82,12 @@ public class TransactionServiceTests
         _fileReaderService.ReadFromFile<TransactionCsvModel>(filePath).Returns(transactionCsvModels);
         _transactionRepository.GetAllIdsAsync().Returns(existingTransactionIds);
         _transactionRepository.CreateBulkAsync(Arg.Any<List<Transaction>>()).Returns(Task.CompletedTask);
-        _accountRepository.GetByIdAsync(101).Returns(new Account());
-        _accountRepository.GetByIdAsync(102).Returns(new Account());
-        _accountRepository.GetByIdAsync(103).Returns(new Account());
-        _accountRepository.GetByIdAsync(104).Returns(new Account());
-        _accountRepository.GetByIdAsync(105).Returns(new Account());
-        _fileIdRepository.IdExistsAsync(1).Returns(false);
+        _accountRepository.GetByIdAsync(101).Returns(new Account {FileId = 1});
+        _accountRepository.GetByIdAsync(102).Returns(new Account {FileId = 1});
+        _accountRepository.GetByIdAsync(103).Returns(new Account {FileId = 1});
+        _accountRepository.GetByIdAsync(104).Returns(new Account {FileId = 1});
+        _accountRepository.GetByIdAsync(105).Returns(new Account {FileId = 1});
+        _fileIdRepository.IdExistsAsync(1).Returns(true);
 
         // Act
         var result = await _transactionService.AddTransactionsFromCsvAsync(filePath, 1);
