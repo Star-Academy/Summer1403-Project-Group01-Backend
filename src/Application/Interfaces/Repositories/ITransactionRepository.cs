@@ -9,4 +9,6 @@ public interface ITransactionRepository
     Task<List<Transaction>> GetBySourceAccountId(long accountId);
     Task<List<Transaction>> GetByDestinationAccountId(long accountId);
     Task<List<long>> GetAllIdsAsync();
+    Task<List<Transaction>> GetByFileIdAsync(long fileId);
+    Task DeleteByFileIdAsync(long fileId);
 }

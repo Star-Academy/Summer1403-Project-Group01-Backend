@@ -14,12 +14,14 @@ public class TransactionServiceTests
     private readonly IFileReaderService _fileReaderService;
     private readonly TransactionService _transactionService;
     private readonly IAccountRepository _accountRepository;
+    private readonly IFileIdRepository _fileIdRepository;
     public TransactionServiceTests()
     {
+        _fileIdRepository = Substitute.For<IFileIdRepository>();
         _transactionRepository = Substitute.For<ITransactionRepository>();
         _fileReaderService = Substitute.For<IFileReaderService>();
         _accountRepository = Substitute.For<IAccountRepository>();
-        _transactionService = new TransactionService(_transactionRepository, _fileReaderService, _accountRepository);
+        _transactionService = new TransactionService(_transactionRepository, _fileReaderService, _accountRepository, _fileIdRepository);
     }
 
     [Fact]
@@ -44,9 +46,10 @@ public class TransactionServiceTests
         _accountRepository.GetByIdAsync(101).Returns(new Account());
         _accountRepository.GetByIdAsync(102).Returns(new Account());
         _accountRepository.GetByIdAsync(103).Returns(new Account());
+        _fileIdRepository.IdExistsAsync(1).Returns(false);
 
         // Act
-        var result = await _transactionService.AddTransactionsFromCsvAsync(filePath);
+        var result = await _transactionService.AddTransactionsFromCsvAsync(filePath, 1);
 
         // Assert
         Assert.True(result.Succeed);
@@ -84,9 +87,10 @@ public class TransactionServiceTests
         _accountRepository.GetByIdAsync(103).Returns(new Account());
         _accountRepository.GetByIdAsync(104).Returns(new Account());
         _accountRepository.GetByIdAsync(105).Returns(new Account());
+        _fileIdRepository.IdExistsAsync(1).Returns(false);
 
         // Act
-        var result = await _transactionService.AddTransactionsFromCsvAsync(filePath);
+        var result = await _transactionService.AddTransactionsFromCsvAsync(filePath, 1);
 
         // Assert
         Assert.True(result.Succeed);
@@ -110,9 +114,10 @@ public class TransactionServiceTests
         _fileReaderService
             .ReadFromFile<TransactionCsvModel>(filePath)
             .Throws(new Exception(exceptionMessage));
+        _fileIdRepository.IdExistsAsync(1).Returns(false);
         
         // Act
-        var result = await _transactionService.AddTransactionsFromCsvAsync(filePath);
+        var result = await _transactionService.AddTransactionsFromCsvAsync(filePath, 1);
 
         // Assert
         Assert.False(result.Succeed);

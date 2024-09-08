@@ -4,7 +4,7 @@ using Domain.Entities;
 namespace Application.Mappers;
 public static class TransactionMapper
 {
-    public static Transaction ToTransaction(this TransactionCsvModel csvModel)
+    public static Transaction ToTransaction(this TransactionCsvModel csvModel, long fileId)
     {
         var date = DateOnly.Parse(csvModel.Date).ToDateTime(TimeOnly.Parse(csvModel.Time));
         var utcDate = DateTime.SpecifyKind(date, DateTimeKind.Utc);
@@ -16,7 +16,8 @@ public static class TransactionMapper
             Amount = csvModel.Amount,
             Date = utcDate,
             Type = csvModel.Type,
-            TrackingId = csvModel.TrackingId
+            TrackingId = csvModel.TrackingId,
+            FileId = fileId
         };
     }
 }

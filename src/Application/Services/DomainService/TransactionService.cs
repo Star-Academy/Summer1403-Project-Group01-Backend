@@ -14,24 +14,30 @@ public class TransactionService : ITransactionService
     private readonly ITransactionRepository _transactionRepository;
     private readonly IFileReaderService _fileReaderService;
     private readonly IAccountRepository _accountRepository;
-
-    public TransactionService(ITransactionRepository transactionRepository, IFileReaderService fileReaderService, IAccountRepository accountRepository)
+    private readonly IFileIdRepository _fileIdRepository;
+    public TransactionService(ITransactionRepository transactionRepository,
+        IFileReaderService fileReaderService,
+        IAccountRepository accountRepository,
+        IFileIdRepository fileIdRepository)
     {
         _transactionRepository = transactionRepository;
         _fileReaderService = fileReaderService;
         _accountRepository = accountRepository;
+        _fileIdRepository = fileIdRepository;
     }
     
-    private async Task<List<long>> ValidateTransactionCsvModelsAsync(List<TransactionCsvModel> transactionCsvModels)
+    private async Task<List<long>> ValidateTransactionCsvModelsAsync(List<TransactionCsvModel> transactionCsvModels, long fileId)
     {
         var invalidTransactionIds = new List<long>();
         foreach (var transactionCsvModel in transactionCsvModels)
         {
             var sourceAccount = await _accountRepository.GetByIdAsync(transactionCsvModel.SourceAccount);
             var destinationAccount = await _accountRepository.GetByIdAsync(transactionCsvModel.DestinationAccount);
+            bool isValidSourceAccount = (sourceAccount != null) && (sourceAccount.FileId == fileId);
+            bool isValidDestinationAccount = (destinationAccount != null) && (destinationAccount.FileId == fileId);
             bool isValidDate = DateOnly.TryParseExact(transactionCsvModel.Date, "MM/dd/yyyy", null, System.Globalization.DateTimeStyles.None, out var date);
             bool isValidTime = TimeOnly.TryParse(transactionCsvModel.Time, out var time);
-            if(sourceAccount == null || destinationAccount == null || !isValidDate || !isValidTime)
+            if(!isValidSourceAccount || !isValidDestinationAccount || !isValidDate || !isValidTime)
             {
                 invalidTransactionIds.Add(transactionCsvModel.TransactionId);
             }
@@ -39,24 +45,29 @@ public class TransactionService : ITransactionService
         return invalidTransactionIds;
     }
     
-    public async Task<Result> AddTransactionsFromCsvAsync(string filePath)
+    public async Task<Result> AddTransactionsFromCsvAsync(string filePath, long fileId)
     {
         try
         {
             var transactionCsvModels = _fileReaderService.ReadFromFile<TransactionCsvModel>(filePath);
-            var invalidTransactionCsvModels = await ValidateTransactionCsvModelsAsync(transactionCsvModels);
+            var invalidTransactionCsvModels = await ValidateTransactionCsvModelsAsync(transactionCsvModels, fileId);
             var transactions = transactionCsvModels
                 .Where(csvModel => !invalidTransactionCsvModels.Contains(csvModel.TransactionId))
-                .Select(csvModel => csvModel.ToTransaction())
+                .Select(csvModel => csvModel.ToTransaction(fileId))
                 .ToList();
             
             var existingTransactionsIds = await _transactionRepository.GetAllIdsAsync();
             var newTransactions = transactions.Where(t => !existingTransactionsIds.Contains(t.TransactionId)).ToList();
             
+            var fileAlreadyExists = await _fileIdRepository.IdExistsAsync(fileId);
+            if (!fileAlreadyExists)
+            {
+                return Result.Fail("File-Id do not exist");
+            }
             await _transactionRepository.CreateBulkAsync(newTransactions);
             return Result.Ok(invalidTransactionCsvModels.Count == 0
                 ? "All transactions were added successfully."
-                : $"Some transactions were not added because of invalid data: {string.Join(", ", invalidTransactionCsvModels)}");
+                : $"{invalidTransactionCsvModels.Count} transactions were not added because of invalid data: {string.Join(", ", invalidTransactionCsvModels)}");
         }
         catch (Exception ex)
         {
@@ -119,6 +130,40 @@ public class TransactionService : ITransactionService
         catch (Exception ex)
         {
             return Result<List<GetTransactionsByAccountIdResponse>>.Fail($"An error occurred: {ex.Message}");
+        }
+    }
+
+    public async Task<Result<List<Transaction>>> GetTransactionsByFileIdAsync(long fileId)
+    {
+        try
+        {
+            if (!await _fileIdRepository.IdExistsAsync(fileId))
+            {
+                return Result<List<Transaction>>.Fail("File-Id not found");
+            }
+            var transactions = await _transactionRepository.GetByFileIdAsync(fileId);
+            return Result<List<Transaction>>.Ok(transactions);
+        }
+        catch (Exception ex)
+        {
+            return Result<List<Transaction>>.Fail($"An error occurred: {ex.Message}");
+        }
+    }
+
+    public async Task<Result> DeleteTransactionsByFileIdAsync(long fileId)
+    {
+        try
+        {
+            if (!await _fileIdRepository.IdExistsAsync(fileId))
+            {
+                return Result.Fail("File-Id not found");
+            }
+            await _transactionRepository.DeleteByFileIdAsync(fileId);
+            return Result.Ok();
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail($"An error occurred: {ex.Message}");
         }
     }
 }
