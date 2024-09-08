@@ -11,6 +11,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbConte
 {
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<FileId> Files { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -33,6 +34,18 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbConte
             .HasOne(t => t.DestinationAccount)
             .WithMany(a => a.DestinationTransactions)
             .HasForeignKey(t => t.DestinationAccountId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<Transaction>()
+            .HasOne(t => t.File)
+            .WithMany()
+            .HasForeignKey(t => t.FileId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<Account>()
+            .HasOne(t => t.File)
+            .WithMany()
+            .HasForeignKey(t => t.FileId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

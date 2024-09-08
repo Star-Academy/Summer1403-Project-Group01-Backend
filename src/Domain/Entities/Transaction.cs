@@ -16,4 +16,6 @@ public class Transaction
     [MaxLength(50)]
     public string Type { get; set; } = String.Empty;
     public long TrackingId { get; set; }
+    public long FileId { get; set; }
+    public FileId? File { get; set; }
 }
