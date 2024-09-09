@@ -35,6 +35,11 @@ public class AccountService : IAccountService
             var existingAccountIds = await _accountRepository.GetAllIdsAsync();
             var newAccounts = accounts.Where(a => !existingAccountIds.Contains(a.AccountId)).ToList();
             
+            if(newAccounts.Count == 0)
+            {
+                return Result.Fail(ErrorCode.BadRequest, "No new accounts to add");
+            }
+            
             var fileAlreadyExists = await _fileIdRepository.IdExistsAsync(fileId);
             if (fileAlreadyExists)
             {
